@@ -7,6 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Geist+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script>
+  // ─── VARIABLE DE FASE ACTUAL ───────────────────────────────────────────────
+  // Cambia este número para actualizar el estado de todo el roadmap.
+  // 1 = Fase 1 completada (en desarrollo: Fase 2)
+  // 2 = Fase 2 completada (en desarrollo: Fase 3)
+  // 3 = Fase 3 completada, etc.
+  const FASE_ACTUAL = 2;
+  // ──────────────────────────────────────────────────────────────────────────
+</script>
+
 <style>
 :root {
   --bg:       #0d0f0b;
@@ -66,14 +77,8 @@ body::after {
 body::before {
   content:'';
   position:fixed; inset:0; z-index:0; pointer-events:none;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,113,74,.04) 0%, transparent 55%),
-              radial-gradient(ellipse 50% 35% at 50% 100%, rgba(109,184,122,.025) 0%, transparent 55%);
-  animation: breathe 15s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1.2; }
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,113,74,.05) 0%, transparent 55%),
+              radial-gradient(ellipse 50% 35% at 50% 100%, rgba(109,184,122,.03) 0%, transparent 55%);
 }
 
 .wrap       { max-width:1100px; margin:0 auto; padding:0 2.5rem; position:relative; z-index:1; }
@@ -87,180 +92,143 @@ nav {
   background: rgba(13,15,11,.85);
   backdrop-filter: blur(16px) saturate(1.2);
   border-bottom: 1px solid var(--border);
-  transition: background 0.3s, padding 0.3s;
+  transition: background 0.3s, padding 0.3s, border-color 0.3s;
 }
-
 nav.scrolled {
   padding: .65rem 2.5rem;
-  background: rgba(13,15,11,.95);
-  border-bottom-color: var(--accent);
+  background: rgba(13,15,11,.97);
+  border-bottom-color: var(--border2);
 }
-
 .nav-brand { 
   display:flex; align-items:center; gap:.65rem; font-family:var(--mono); font-size:.88rem;
-  transition: transform 0.2s;
+  text-decoration: none;
 }
-.nav-brand:hover { transform: scale(1.02); }
-.brand-bolt { 
-  color:var(--accent); 
-  transition: transform 0.3s ease;
-}
-.nav-brand:hover .brand-bolt { transform: rotate(15deg); }
+.brand-bolt { color:var(--accent); }
 .brand-name { color:var(--text-hi); font-weight:500; letter-spacing:.02em; }
 .brand-v { font-size:.6rem; background:var(--s3); color:var(--muted); padding:.12rem .5rem; border-radius:3px; border:1px solid var(--border2); font-weight:300; }
 .nav-links { display:flex; align-items:center; gap:2.2rem; }
 .nav-links a { 
   color:var(--muted); text-decoration:none; font-size:.82rem; font-weight:400; letter-spacing:.02em; 
-  transition: color .2s, transform .2s; 
+  transition: color .2s;
   position: relative;
 }
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
   background: var(--accent);
-  transition: width 0.2s ease;
+  transition: width 0.25s ease;
 }
-.nav-links a:hover { 
-  color:var(--text-hi); 
-  transform: translateY(-1px);
-}
+.nav-links a:hover { color:var(--text-hi); }
 .nav-links a:hover::after { width: 100%; }
+.nav-links a.active-nav { color: var(--accent); }
+.nav-links a.active-nav::after { width: 100%; }
+
 .btn-nav { 
   display:inline-flex; align-items:center; gap:.4rem; border:1px solid var(--border2); color:var(--text); 
   padding:.38rem .95rem; border-radius:5px; text-decoration:none; font-size:.78rem; 
-  font-family:var(--mono); font-weight:400; transition: border-color .2s, color .2s, transform .2s, background .2s; 
+  font-family:var(--mono); font-weight:400; transition: border-color .2s, color .2s, background .2s; 
 }
-.btn-nav:hover { 
-  border-color:var(--accent); color:var(--accent); 
-  transform: translateY(-2px);
-  background: var(--acc-lo);
-}
+.btn-nav:hover { border-color:var(--accent); color:var(--accent); background: var(--acc-lo); }
+.btn-nav::after { display: none !important; }
 
 .rule { 
-  border:none; 
-  height: 1px;
+  border:none; height: 1px;
   background: linear-gradient(90deg, transparent, var(--border), transparent); 
   margin: 0;
 }
 
 /* HERO */
-.hero { padding:7.5rem 0 6rem; }
+.hero { padding:8rem 0 6rem; }
+
 .hero-kicker { 
   display:inline-flex; align-items:center; gap:.7rem; font-family:var(--mono); font-size:.7rem; 
   color:var(--muted); letter-spacing:.14em; text-transform:uppercase; margin-bottom:2.8rem;
-  animation: fadeInUp 0.8s ease-out;
+  animation: fadeInUp 0.7s ease-out both;
 }
 .live-dot { 
   width:6px; height:6px; border-radius:50%; background:var(--green); 
-  box-shadow:0 0 6px var(--green); animation: pulse 2.2s ease infinite; 
+  box-shadow:0 0 8px var(--green); animation: pulse 2.2s ease infinite; 
 }
 @keyframes pulse { 
   0%,100%{ opacity:1; transform: scale(1); } 
-  50%{ opacity:.3; transform: scale(1.2); } 
+  50%{ opacity:.4; transform: scale(1.3); } 
 }
 
-.hero-layout { display:grid; grid-template-columns:1fr 380px; gap:5rem; align-items:end; }
+.hero-layout { display:grid; grid-template-columns:1fr 360px; gap:5rem; align-items:end; }
 
 .hero h1 { 
-  font-family:var(--serif); font-size:clamp(3.2rem,7vw,5.8rem); font-weight:900; 
+  font-family:var(--serif); font-size:clamp(3.2rem,7vw,5.6rem); font-weight:900; 
   line-height:.92; letter-spacing:-.02em; color:var(--text-hi); margin-bottom:2rem;
-  animation: fadeInUp 0.8s ease-out 0.1s both;
+  animation: fadeInUp 0.7s ease-out 0.08s both;
 }
 .hero h1 em { 
-  font-style:italic; color:var(--accent); 
-  position: relative;
-  display: inline-block;
-}
-.hero h1 em::after {
-  content: '';
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: var(--acc-lo);
-  z-index: -1;
-  transform: skewX(-10deg);
+  font-style:italic; color:var(--accent);
+  position: relative; display: inline-block;
 }
 .hero h1 .sub-line { 
-  display:block; font-weight:400; font-size:.55em; color:var(--muted); 
-  letter-spacing:.01em; line-height:1.4; margin-top:.6rem;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
+  display:block; font-family: var(--sans); font-weight:400; font-size:.32em; color:var(--muted); 
+  letter-spacing:.01em; line-height:1.5; margin-top:.9rem;
+  animation: fadeInUp 0.7s ease-out 0.16s both;
 }
 
 .hero-desc { 
-  font-size:1rem; color:var(--muted); max-width:500px; line-height:1.85; margin-bottom:2.8rem;
-  animation: fadeInUp 0.8s ease-out 0.3s both;
+  font-size:1.01rem; color:var(--muted); max-width:520px; line-height:1.9; margin-bottom:2.8rem;
+  animation: fadeInUp 0.7s ease-out 0.22s both;
 }
 .hero-desc strong { color:var(--text); font-weight:500; }
 
+/* Badge de progreso en el hero */
+.progress-badge {
+  display: inline-flex; align-items: center; gap: .7rem;
+  background: var(--s2); border: 1px solid var(--border2);
+  padding: .55rem 1rem; border-radius: 6px;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.7s ease-out 0.1s both;
+}
+.pb-label { font-family: var(--mono); font-size: .68rem; color: var(--muted); }
+.pb-bar-wrap { width: 100px; height: 4px; background: var(--border); border-radius: 2px; }
+.pb-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease; }
+.pb-pct { font-family: var(--mono); font-size: .68rem; color: var(--accent); }
+
 .hero-actions { 
   display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:3.5rem;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
+  animation: fadeInUp 0.7s ease-out 0.28s both;
 }
 .btn-primary { 
   display:inline-flex; align-items:center; gap:.5rem; background:var(--accent); color:#0d0f0b; 
   text-decoration:none; padding:.8rem 1.7rem; border-radius:5px; font-size:.87rem; font-weight:500; 
   transition: background .2s, transform .15s, box-shadow .2s; 
-  position: relative;
-  overflow: hidden;
 }
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-.btn-primary:hover::before {
-  width: 300px;
-  height: 300px;
-}
-.btn-primary:hover { 
-  background:#d97c55; transform:translateY(-2px); 
-  box-shadow: 0 5px 15px rgba(200,113,74,0.3);
-}
+.btn-primary:hover { background:#d97c55; transform:translateY(-2px); box-shadow: 0 6px 18px rgba(200,113,74,.28); }
+
 .btn-outline { 
   display:inline-flex; align-items:center; gap:.5rem; border:1px solid var(--border2); 
   color:var(--text); text-decoration:none; padding:.8rem 1.7rem; border-radius:5px; 
-  font-size:.87rem; font-weight:400; transition: border-color .2s, color .2s, transform .2s, background .2s; 
+  font-size:.87rem; font-weight:400; transition: border-color .2s, color .2s, background .2s; 
 }
-.btn-outline:hover { 
-  border-color:var(--accent); color:var(--accent); 
-  transform: translateY(-2px);
-  background: var(--acc-lo);
-}
+.btn-outline:hover { border-color:var(--accent); color:var(--accent); background: var(--acc-lo); }
 
+/* Status sidebar */
 .status-list { 
-  display:flex; flex-direction:column; gap:.55rem; 
-  animation: fadeInRight 0.8s ease-out 0.2s both;
+  display:flex; flex-direction:column; gap:.5rem;
+  animation: fadeInRight 0.7s ease-out 0.2s both;
 }
 .st-item { 
   display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem; 
   background:var(--s1); border:1px solid var(--border); border-radius:6px;
-  transition: all 0.2s;
+  transition: border-color 0.2s, background 0.2s;
   cursor: default;
 }
-.st-item:hover {
-  transform: translateX(5px);
-  border-color: var(--border2);
-  background: var(--s2);
-}
+.st-item.st-active { border-color: var(--acc-line); background: rgba(200,113,74,.04); }
 .st-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
 .st-green { background:var(--green); }
 .st-amber { background:var(--amber); animation:pulse 2.2s infinite; }
-.st-grey  { background:var(--muted); }
+.st-grey  { background:var(--muted); opacity: .5; }
 .st-item span { font-family:var(--mono); font-size:.72rem; color:var(--text); }
 .st-item span em { color:var(--muted); font-style:normal; }
+.st-item.st-active span { color: var(--text-hi); }
 
 .section { padding:6rem 0; }
 
@@ -268,11 +236,7 @@ nav.scrolled {
   font-family:var(--mono); font-size:.68rem; color:var(--accent); letter-spacing:.14em; 
   text-transform:uppercase; margin-bottom:1.1rem; display:flex; align-items:center; gap:.6rem; 
 }
-.sec-label::before { 
-  content:''; width:20px; height:1px; background:var(--accent);
-  transition: width 0.3s;
-}
-.sec-label:hover::before { width: 40px; }
+.sec-label::before { content:''; width:20px; height:1px; background:var(--accent); }
 .sec-title { 
   font-family:var(--serif); font-size:clamp(2.2rem,5vw,3.4rem); color:var(--text-hi); 
   line-height:1.0; letter-spacing:-.025em; margin-bottom:1.2rem; 
@@ -283,58 +247,39 @@ nav.scrolled {
 .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
 .about-body p { 
   color:var(--muted); line-height:1.85; margin-bottom:1.1rem; font-size:.95rem;
-  transition: transform 0.3s;
 }
-.about-body p:hover { transform: translateX(5px); }
 .about-body p strong { color:var(--text); font-weight:500; }
 
 .stack-rows { display:flex; flex-direction:column; gap:.5rem; margin-top:2rem; }
 .s-row { 
   display:grid; grid-template-columns:32px 1fr; gap:.85rem; align-items:center; 
   padding:.85rem 1rem; background:var(--s1); border:1px solid var(--border); 
-  border-radius:6px; transition: all 0.2s; 
+  border-radius:6px; transition: border-color 0.2s, background 0.2s, transform 0.2s; 
 }
-.s-row:hover { 
-  border-color:var(--accent); 
-  transform: translateX(8px) scale(1.02);
-  background: var(--s2);
-}
-.s-ic { 
-  color:var(--accent); font-size:.82rem; display:flex; align-items:center; justify-content:center;
-  transition: transform 0.3s;
-}
-.s-row:hover .s-ic { transform: rotate(360deg); }
+.s-row:hover { border-color:var(--border2); transform: translateX(5px); background: var(--s2); }
+.s-ic { color:var(--accent); font-size:.82rem; display:flex; align-items:center; justify-content:center; }
 .s-text h5 { font-size:.85rem; font-weight:500; color:var(--text-hi); margin-bottom:.1rem; }
 .s-text p  { font-size:.77rem; color:var(--muted); }
 
 /* CODE */
 .code-block { 
   background:var(--s1); border:1px solid var(--border); border-radius:8px; 
-  overflow:hidden; margin-top:1.5rem; 
-  transition: transform 0.3s, box-shadow 0.3s;
+  overflow:hidden; margin-top:1.5rem; cursor: pointer;
+  transition: border-color 0.2s;
 }
-.code-block:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
+.code-block:hover { border-color: var(--border2); }
 .code-bar { 
   display:flex; align-items:center; gap:.42rem; padding:.6rem 1rem; 
   background:var(--s2); border-bottom:1px solid var(--border); 
 }
-.cbdot { 
-  width:9px; height:9px; border-radius:50%; 
-  transition: transform 0.2s;
-}
-.cbdot:hover { transform: scale(1.5); }
+.cbdot { width:9px; height:9px; border-radius:50%; }
 .cr { background:#ff5f57; } .cy { background:#febc2e; } .cg { background:#28c840; }
 .cfile { font-family:var(--mono); font-size:.66rem; color:var(--muted); margin-left:.35rem; }
+.copy-hint { font-family:var(--mono); font-size:.62rem; color:var(--muted); margin-left:auto; opacity: 0; transition: opacity 0.2s; }
+.code-block:hover .copy-hint { opacity: 1; }
+.code-block.copied .copy-hint { color: var(--green); opacity: 1; }
 .code-body { 
   padding:1.4rem 1.6rem; font-family:var(--mono); font-size:.77rem; line-height:2; overflow-x:auto;
-  animation: codeGlow 4s infinite;
-}
-@keyframes codeGlow {
-  0%, 100% { text-shadow: 0 0 5px rgba(200,113,74,0); }
-  50% { text-shadow: 0 0 5px rgba(200,113,74,0.1); }
 }
 .kw  { color:#b48ead; }
 .fn  { color:#81a1c1; }
@@ -347,40 +292,17 @@ nav.scrolled {
   border-radius:10px; overflow:hidden; gap:1px; background:var(--border); margin-top:3rem; 
 }
 .m-card { 
-  background:var(--s1); padding:1.6rem 1.3rem; transition: all 0.2s; 
-  position: relative;
-  overflow: hidden;
+  background:var(--s1); padding:1.6rem 1.3rem; transition: background 0.2s; 
+  position: relative; overflow: hidden;
 }
-.m-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(200,113,74,0.05), transparent);
-  transition: left 0.5s;
-}
-.m-card:hover::before { left: 100%; }
-.m-card:hover { 
-  background:var(--s2); 
-  transform: scale(1.02);
-  z-index: 1;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+.m-card:hover { background:var(--s2); }
 .m-card.central { 
   background:var(--s2); border:1px solid var(--acc-line);
-  box-shadow: 0 0 15px rgba(200,113,74,0.1);
 }
 .mc-ic { 
   width:30px; height:30px; border-radius:6px; background:rgba(200,113,74,.1); 
   color:var(--accent); display:flex; align-items:center; justify-content:center; 
   font-size:.78rem; margin-bottom:.9rem;
-  transition: transform 0.3s, background 0.3s;
-}
-.m-card:hover .mc-ic { 
-  transform: scale(1.1) rotate(5deg); 
-  background: rgba(200,113,74,.2);
 }
 .m-card h4 { font-size:.9rem; font-weight:500; color:var(--text-hi); margin-bottom:.3rem; }
 .mc-note { font-family:var(--mono); font-size:.63rem; color:var(--accent); margin-bottom:.5rem; }
@@ -391,34 +313,15 @@ nav.scrolled {
 .rel-box { 
   background:var(--s1); border:1px solid var(--border); border-radius:10px; 
   padding:2.2rem; margin-top:2rem; 
-  transition: transform 0.3s;
 }
-.rel-box:hover { transform: translateY(-5px); }
-.rel-row { 
-  display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; margin-bottom:.7rem;
-  animation: slideIn 0.5s ease-out;
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
+.rel-row { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; margin-bottom:.7rem; }
 .rel-node { 
   font-family:var(--mono); font-size:.76rem; background:var(--s2); border:1px solid var(--border2); 
   padding:.28rem .7rem; border-radius:4px; color:var(--text); cursor:default; 
-  transition: all 0.2s; 
+  transition: border-color 0.2s, color 0.2s; 
 }
-.rel-node:hover { 
-  border-color:var(--accent); color:var(--accent); 
-  transform: scale(1.05);
-}
-.rel-node.hl { 
-  border-color:var(--acc-line); color:var(--accent);
-  animation: highlight 2s infinite;
-}
-@keyframes highlight {
-  0%, 100% { box-shadow: 0 0 5px rgba(200,113,74,0.2); }
-  50% { box-shadow: 0 0 15px rgba(200,113,74,0.4); }
-}
+.rel-node:hover { border-color:var(--accent); color:var(--accent); }
+.rel-node.hl { border-color:var(--acc-line); color:var(--accent); }
 .rel-arr { color:var(--border2); font-size:.7rem; }
 .rel-note { 
   margin-top:1.8rem; padding:1.1rem 1.4rem; background:rgba(200,113,74,.04); 
@@ -428,56 +331,51 @@ nav.scrolled {
 .rel-note strong { color:var(--text); font-weight:500; }
 .rel-note code { font-family:var(--mono); font-size:.78em; color:var(--accent); }
 
-/* PHASES */
+/* ── PHASES ─────────────────────────────────────────────────────────────── */
 .phases-wrap { 
   display:flex; flex-direction:column; gap:1px; background:var(--border); 
   border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-top:3rem; 
 }
-.ph { 
-  display:grid; grid-template-columns:200px 1fr; background:var(--bg);
-  transition: all 0.3s;
-}
-.ph:hover { transform: translateX(5px); }
+.ph { display:grid; grid-template-columns:200px 1fr; background:var(--bg); }
+
+/* estados dinámicos */
+.ph[data-status="done"]    { }
+.ph[data-status="wip"]     { }
+.ph[data-status="pending"] { opacity: .7; }
+
 .ph-side { 
   background:var(--s1); padding:1.8rem 1.5rem; border-right:1px solid var(--border); 
   display:flex; flex-direction:column; gap:.35rem; justify-content:center;
-  transition: background 0.2s;
 }
-.ph:hover .ph-side { background: var(--s2); }
 .ph-num  { font-family:var(--mono); font-size:.62rem; color:var(--muted); }
 .ph-name { font-size:.9rem; font-weight:500; color:var(--text-hi); line-height:1.35; }
 .ph-tag  { 
   display:inline-block; margin-top:.3rem; font-family:var(--mono); font-size:.6rem; 
-  padding:.18rem .6rem; border-radius:3px; 
-  transition: transform 0.2s;
+  padding:.18rem .6rem; border-radius:3px;
 }
-.ph-tag:hover { transform: scale(1.05); }
-.t-done { background:rgba(109,184,122,.1); color:var(--green); }
-.t-wip  { background:rgba(212,164,76,.1);  color:var(--amber); }
-.t-pend { background:rgba(106,114,96,.1);  color:var(--muted); }
-.ph-body { 
-  background:var(--s1); padding:1.8rem 2rem;
-  transition: background 0.2s;
-}
-.ph:hover .ph-body { background: var(--s2); }
+.t-done { background:rgba(109,184,122,.1);  color:var(--green); }
+.t-wip  { background:rgba(212,164,76,.1);   color:var(--amber); }
+.t-pend { background:rgba(106,114,96,.1);   color:var(--muted); }
+
+.ph-body { background:var(--s1); padding:1.8rem 2rem; }
 .ph-body h5 { font-size:.95rem; font-weight:500; color:var(--text-hi); margin-bottom:.65rem; }
 .ph-body p  { font-size:.85rem; color:var(--muted); line-height:1.75; margin-bottom:1.1rem; }
 .ph-body code { font-family:var(--mono); font-size:.82em; color:var(--accent); }
 .cmds { display:flex; flex-wrap:wrap; gap:.4rem; }
 .cmd-t { 
   font-family:var(--mono); font-size:.7rem; padding:.22rem .6rem; border-radius:3px; 
-  border:1px solid; transition: all 0.2s; 
-}
-.cmd-t:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  border:1px solid; transition: background 0.15s; 
 }
 .cmd-done { color:var(--green);  background:rgba(109,184,122,.06); border-color:rgba(109,184,122,.2); }
-.cmd-done:hover { background:rgba(109,184,122,.15); }
+.cmd-done:hover { background:rgba(109,184,122,.12); }
 .cmd-wip  { color:var(--amber);  background:rgba(212,164,76,.06);  border-color:rgba(212,164,76,.2); }
-.cmd-wip:hover { background:rgba(212,164,76,.15); }
+.cmd-wip:hover  { background:rgba(212,164,76,.12); }
 .cmd-pend { color:var(--muted);  background:rgba(106,114,96,.05);  border-color:rgba(106,114,96,.18); }
-.cmd-pend:hover { background:rgba(106,114,96,.15); }
+
+/* Marcador de fase activa en el sidebar */
+.ph[data-status="wip"] .ph-side {
+  border-left: 2px solid var(--accent);
+}
 
 /* TECH */
 .tech-grid { 
@@ -485,35 +383,15 @@ nav.scrolled {
   border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-top:3rem; 
 }
 .tech-card { 
-  background:var(--s1); padding:1.7rem 1.6rem; transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
+  background:var(--s1); padding:1.7rem 1.6rem; transition: background 0.2s;
+  position: relative; overflow: hidden;
 }
-.tech-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--accent);
-  transition: width 0.3s;
-}
-.tech-card:hover::after { width: 100%; }
-.tech-card:hover { 
-  background:var(--s2); 
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+.tech-card:hover { background:var(--s2); }
 .tech-card h5 { 
   font-size:.88rem; font-weight:500; color:var(--text-hi); margin-bottom:.6rem; 
   display:flex; align-items:center; gap:.6rem; 
 }
-.tech-card h5 i { 
-  color:var(--accent); font-size:.82rem;
-  transition: transform 0.3s;
-}
-.tech-card:hover h5 i { transform: rotate(360deg); }
+.tech-card h5 i { color:var(--accent); font-size:.82rem; }
 .tech-card p { font-size:.82rem; color:var(--muted); line-height:1.7; }
 .tech-card code { font-family:var(--mono); font-size:.76em; color:var(--accent); }
 
@@ -521,22 +399,12 @@ nav.scrolled {
 .cmd-table { margin-top:3rem; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
 .cmd-row { 
   display:grid; grid-template-columns:240px 1fr 88px; border-bottom:1px solid var(--border); 
-  transition: all 0.15s; 
+  transition: background 0.12s; 
 }
 .cmd-row:last-child { border-bottom:none; }
-.cmd-row:hover { 
-  background:var(--s1); 
-  transform: scale(1.01);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  position: relative;
-  z-index: 1;
-}
+.cmd-row:hover { background:var(--s1); }
 .cmd-row > div { padding:.82rem 1.1rem; }
-.cname { 
-  font-family:var(--mono); font-size:.78rem; color:var(--accent);
-  transition: transform 0.2s;
-}
-.cmd-row:hover .cname { transform: translateX(5px); }
+.cname { font-family:var(--mono); font-size:.78rem; color:var(--accent); }
 .cdesc { font-size:.82rem; color:var(--muted); }
 .cphase { font-family:var(--mono); font-size:.66rem; text-align:right; }
 .cp1 { color:var(--green); } .cp2 { color:var(--amber); } .cp3 { color:var(--muted); }
@@ -546,35 +414,25 @@ nav.scrolled {
   border-bottom:1px solid var(--border); grid-column:span 3; 
 }
 
+/* Fila pendiente vs completada en comandos */
+.cmd-row[data-cmd-status="done"] .cname { color: var(--green); }
+.cmd-row[data-cmd-status="wip"]  .cname { color: var(--amber); }
+.cmd-row[data-cmd-status="pending"] { opacity: .55; }
+
 /* CTA */
 .cta-wrap { padding:7rem 0 6rem; }
 .cta-box { 
   background:var(--s1); border:1px solid var(--border); border-radius:12px; 
   padding:4rem; position:relative; overflow:hidden; 
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.cta-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
 .cta-box::before { 
   content:''; position:absolute; top:0; left:0; right:0; height:1px; 
-  background:linear-gradient(90deg, transparent, var(--accent), transparent);
-  animation: scan 3s linear infinite;
-}
-@keyframes scan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  background:linear-gradient(90deg, transparent, var(--acc-line), transparent);
 }
 .cta-box::after { 
   content:'v3'; position:absolute; right:3.5rem; bottom:2.5rem; 
   font-family:var(--serif); font-size:8rem; font-weight:900; color:var(--border); 
   line-height:1; pointer-events:none; user-select:none; letter-spacing:-.05em;
-  transition: transform 0.3s, color 0.3s;
-}
-.cta-box:hover::after {
-  transform: scale(1.05) rotate(2deg);
-  color: var(--border2);
 }
 .cta-box h2 { 
   font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem); color:var(--text-hi); 
@@ -585,73 +443,45 @@ nav.scrolled {
 .btn-dc { 
   display:inline-flex; align-items:center; gap:.5rem; background:#5865f2; color:#fff; 
   text-decoration:none; padding:.8rem 1.7rem; border-radius:5px; font-size:.87rem; 
-  font-weight:500; transition: all .2s; 
-  position: relative;
-  overflow: hidden;
+  font-weight:500; transition: background .2s, transform .2s, box-shadow .2s; 
 }
-.btn-dc::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+.btn-dc:hover { background:#4752c4; transform:translateY(-2px); box-shadow: 0 6px 18px rgba(88,101,242,.28); }
+
+/* STATS BAR en hero */
+.hero-stats {
+  display: flex; gap: 2.5rem; margin-top: 1rem;
+  animation: fadeInUp 0.7s ease-out 0.35s both;
 }
-.btn-dc:hover::before {
-  width: 300px;
-  height: 300px;
+.hs-item { }
+.hs-num { font-family: var(--mono); font-size: 1.4rem; font-weight: 500; color: var(--text-hi); line-height: 1; }
+.hs-label { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+
+/* Separator decorativo */
+.sep-deco {
+  display: flex; align-items: center; gap: 1.5rem;
+  margin: 3rem 0 2rem;
 }
-.btn-dc:hover { 
-  background:#4752c4; transform:translateY(-2px); 
-  box-shadow: 0 5px 15px rgba(88,101,242,0.3);
-}
+.sep-line { flex: 1; height: 1px; background: var(--border); }
+.sep-text { font-family: var(--mono); font-size: .64rem; color: var(--muted); letter-spacing: .1em; white-space: nowrap; }
 
 footer { border-top:1px solid var(--border); padding:2rem 0; position:relative; z-index:1; }
 .foot { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
 .foot-l { font-family:var(--mono); font-size:.72rem; color:var(--muted); }
 .foot-r { display:flex; gap:1.5rem; }
-.foot-r a { 
-  color:var(--muted); text-decoration:none; font-size:.82rem; 
-  transition: all .2s; 
-  display: inline-block;
-}
-.foot-r a:hover { 
-  color:var(--text-hi); 
-  transform: translateY(-2px);
-}
+.foot-r a { color:var(--muted); text-decoration:none; font-size:.82rem; transition: color .2s; }
+.foot-r a:hover { color:var(--text-hi); }
 
-.rv { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.rv { opacity:0; transform:translateY(16px); transition:opacity .55s ease, transform .55s ease; }
 .rv.on { opacity:1; transform:none; }
-.rv-d1 { transition-delay:.07s; } .rv-d2 { transition-delay:.13s; }
+.rv-d1 { transition-delay:.07s; } .rv-d2 { transition-delay:.14s; }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(20px); }
+  from { opacity: 0; transform: translateX(18px); }
   to { opacity: 1; transform: translateX(0); }
-}
-
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Loading animation for cards */
-@keyframes cardPulse {
-  0% { box-shadow: 0 0 0 0 rgba(200,113,74,0); }
-  70% { box-shadow: 0 0 0 5px rgba(200,113,74,0.1); }
-  100% { box-shadow: 0 0 0 0 rgba(200,113,74,0); }
-}
-
-.m-card.central {
-  animation: cardPulse 2s infinite;
 }
 
 @media(max-width:920px) {
@@ -675,17 +505,18 @@ html {
   .hero h1     { font-size:2.9rem; }
   .cta-box     { padding:2.5rem 1.8rem; }
   .cta-box::after { display:none; }
+  .hero-stats  { gap: 1.5rem; }
 }
 </style>
 </head>
 <body>
 
 <nav id="mainNav">
-  <div class="nav-brand">
+  <a href="#" class="nav-brand">
     <i class="fas fa-bolt brand-bolt"></i>
     <span class="brand-name">iDinox</span>
     <span class="brand-v">v3</span>
-  </div>
+  </a>
   <div class="nav-links">
     <a href="#que-es">¿Qué es?</a>
     <a href="#modelos">Modelos</a>
@@ -706,29 +537,48 @@ html {
     <div class="hero-layout">
       <div>
         <h1>
-          El bot que tu<br>
-          liga de <em>HaxBall</em><br>
-          merece.
-          <span class="sub-line">Sin planillas. Sin costo. Sin trampas.</span>
+          La liga sin<br>
+          la planilla de<br>
+          <em>Google Sheets.</em>
+          <span class="sub-line">Todo en Discord. Sin costo. Sin trampa.</span>
         </h1>
+
+        <div class="progress-badge" id="heroBadge">
+          <span class="pb-label">Progreso</span>
+          <div class="pb-bar-wrap">
+            <div class="pb-bar" id="pbBar" style="width:0%"></div>
+          </div>
+          <span class="pb-pct" id="pbPct">—</span>
+        </div>
+
         <p class="hero-desc">
-          Gestión completa de equipos, temporadas, mercado de fichajes y estadísticas —
-          <strong>todo en Discord</strong>, construido por gente que juega y sabe lo
-          que una liga competitiva realmente necesita. Desde 2023 acompañando a las 
-          comunidades más exigentes de habla hispana.
+          Equipos, fichajes, estadísticas y temporadas — gestionados directo desde Discord, 
+          sin planillas que se rompen ni trabajo manual cada temporada. 
+          <strong>Código abierto para siempre.</strong> Hecho por gente que lleva años jugando y organizando ligas.
         </p>
         <div class="hero-actions">
           <a href="https://github.com/KvensOs/iDinox-v3" class="btn-primary" target="_blank"><i class="fab fa-github"></i> Ver en GitHub</a>
           <a href="#fases" class="btn-outline"><i class="fas fa-map-signs"></i> Hoja de ruta</a>
           <a href="https://discord.gg/RFSK6ZeWnF" class="btn-outline" target="_blank"><i class="fab fa-discord"></i> Discord</a>
         </div>
+        <div class="hero-stats">
+          <div class="hs-item">
+            <div class="hs-num">8</div>
+            <div class="hs-label">Modelos relacionales</div>
+          </div>
+          <div class="hs-item">
+            <div class="hs-num">30+</div>
+            <div class="hs-label">Comandos slash</div>
+          </div>
+          <div class="hs-item">
+            <div class="hs-num">0€</div>
+            <div class="hs-label">Coste para siempre</div>
+          </div>
+        </div>
       </div>
-      <div class="status-list">
-        <div class="st-item"><span class="st-dot st-green"></span><span>Fase 1: Configuración &amp; Equipos <em>— completa</em></span></div>
-        <div class="st-item"><span class="st-dot st-amber"></span><span>Fase 2: Mercado &amp; Fichajes <em>— en desarrollo</em></span></div>
-        <div class="st-item"><span class="st-dot st-grey"></span><span>Fase 3: Estadísticas &amp; Perfil <em>— planificada</em></span></div>
-        <div class="st-item"><span class="st-dot st-grey"></span><span>Fase 4: Gestión de Temporadas <em>— planificada</em></span></div>
-        <div class="st-item"><span class="st-dot st-grey"></span><span>Fase 5: Utilidades <em>— planificada</em></span></div>
+
+      <div class="status-list" id="statusList">
+        <!-- generado por JS según FASE_ACTUAL -->
       </div>
     </div>
   </div>
@@ -742,40 +592,41 @@ html {
     <div class="about-grid">
       <div class="rv">
         <p class="sec-label">qué es iDinox</p>
-        <h2 class="sec-title">No es un bot<br>genérico.<br><em style="font-style:italic;color:var(--accent)">Es un motor<br>de ligas.</em></h2>
+        <h2 class="sec-title">No es un bot<br>genérico.<br><em style="font-style:italic;color:var(--accent)">Es la liga<br>completa.</em></h2>
         <div class="about-body" style="margin-top:2rem">
-          <p>Nace de la necesidad real de comunidades de HaxBall que organizaban sus ligas con planillas de Google Sheets, mensajes sueltos y mucho trabajo manual cada temporada. La frustración de ver cómo los datos se perdían, los jugadores se confundían y los administradores terminaban quemados fue el combustible para crear algo mejor.</p>
-          <p>Con iDinox v3 <strong>todo queda registrado</strong> desde la inscripción de un jugador hasta el palmarés histórico. La base de datos relacional garantiza que los datos de temporadas pasadas nunca desaparecen aunque el servidor arranque de cero. Cada gol, cada asistencia, cada campeonato queda inmortalizado.</p>
-          <p>La arquitectura soporta <strong>multi-modalidad</strong> nativa: X4 y X5 conviven en el mismo servidor como instancias completamente independientes, con sus propios canales, roles, equipos, temporadas y mercados. Una comunidad puede tener su liga de 4 y su liga de 5 funcionando en paralelo sin interferencias.</p>
+          <p>Nace de algo concreto: comunidades de HaxBall que organizaban sus ligas con planillas de Google Sheets, mensajes sueltos y mucho trabajo manual cada temporada. Datos perdidos, jugadores confundidos, admins quemados. Con iDinox v3 eso se acabó.</p>
+          <p><strong>Todo queda registrado</strong> — desde la inscripción de un jugador hasta el palmarés histórico. La base de datos relacional garantiza que los datos de temporadas pasadas nunca desaparecen aunque el servidor arranque de cero.</p>
+          <p>La arquitectura soporta <strong>multi-modalidad</strong> nativa: X4 y X5 conviven en el mismo servidor como instancias completamente independientes, con sus propios canales, roles, equipos, temporadas y mercados.</p>
         </div>
       </div>
       <div class="rv rv-d1">
         <div class="stack-rows">
           <div class="s-row">
             <div class="s-ic"><i class="fas fa-code"></i></div>
-            <div class="s-text"><h5>TypeScript ESM + Discord.js v14</h5><p>Tipado fuerte. Autocomplete dinámico en todos los slash commands. Código legible y mantenible.</p></div>
+            <div class="s-text"><h5>TypeScript ESM + Discord.js v14</h5><p>Tipado fuerte. Autocomplete dinámico en todos los slash commands. Código que se puede mantener.</p></div>
           </div>
           <div class="s-row">
             <div class="s-ic"><i class="fas fa-database"></i></div>
-            <div class="s-text"><h5>SQLite + Sequelize</h5><p>8 modelos relacionales. Seed automático con <code style="font-family:var(--mono);font-size:.85em;color:var(--accent)">npx tsx</code>. Sin servidor externo, sin costes, sin complicaciones.</p></div>
+            <div class="s-text"><h5>SQLite + Sequelize</h5><p>8 modelos relacionales. Seed automático. Sin servidor externo, sin costes, sin complicaciones.</p></div>
           </div>
           <div class="s-row">
             <div class="s-ic"><i class="fas fa-layer-group"></i></div>
-            <div class="s-text"><h5>Multi-modalidad nativa</h5><p>X4 y X5 con universos separados bajo el mismo bot y servidor. Cada modalidad con su propia configuración, roles y canales.</p></div>
+            <div class="s-text"><h5>Multi-modalidad nativa</h5><p>X4 y X5 con universos separados bajo el mismo bot. Cada modalidad con su propia configuración completa.</p></div>
           </div>
           <div class="s-row">
             <div class="s-ic"><i class="fas fa-folder-open"></i></div>
-            <div class="s-text"><h5>Estructura clara</h5><p><code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">commands/ · models/ · events/ · utils/ · core/</code> — cada cosa en su lugar.</p></div>
+            <div class="s-text"><h5>Estructura clara</h5><p><code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">commands/ · models/ · events/ · utils/ · core/</code></p></div>
           </div>
           <div class="s-row">
             <div class="s-ic"><i class="fab fa-github"></i></div>
-            <div class="s-text"><h5>100 % MIT, 0 € de coste</h5><p>Open source de verdad. Sin planes de pago. Sin anuncios. Sin trampas. Para siempre.</p></div>
+            <div class="s-text"><h5>100 % MIT, 0 € de coste</h5><p>Open source sin asteriscos. Sin planes de pago. Sin anuncios. Para siempre.</p></div>
           </div>
         </div>
-        <div class="code-block">
+        <div class="code-block" id="codeSnippet">
           <div class="code-bar">
             <span class="cbdot cr"></span><span class="cbdot cy"></span><span class="cbdot cg"></span>
-            <span class="cfile">league-team.ts — snippet real</span>
+            <span class="cfile">league-team.ts</span>
+            <span class="copy-hint">clic para copiar</span>
           </div>
           <div class="code-body">
 <span class="cm">// DT creado automáticamente al añadir equipo</span><br>
@@ -806,57 +657,57 @@ html {
     <div class="rv">
       <p class="sec-label">base de datos</p>
       <h2 class="sec-title">Ocho modelos<br>que lo conectan todo.</h2>
-      <p class="sec-sub">Una base relacional que guarda la historia completa de cada liga. Temporadas cerradas, equipos eliminados, palmarés de hace tres años — todo queda. Porque la historia de una liga es tan importante como su presente.</p>
+      <p class="sec-sub">Una base relacional que guarda la historia completa de cada liga. Temporadas cerradas, equipos eliminados, campeones de hace tres años — todo queda. La historia de una liga importa tanto como su presente.</p>
     </div>
     <div class="models-grid rv rv-d1">
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-toggle-on"></i></div>
         <h4>Modality</h4>
         <div class="mc-fields">id · name (unique) · displayName<br>playersPerTeam · settings (JSON) · isActive</div>
-        <p>X4, X5, etc. Cada modalidad tiene canales, roles y mercado independiente. El campo <code style="font-family:var(--mono);font-size:.85em;color:var(--accent)">settings</code> almacena toda la configuración de Discord: canales de logs, roles de administración, estado del mercado.</p>
+        <p>X4, X5, etc. Cada modalidad tiene canales, roles y mercado independiente. El campo <code style="font-family:var(--mono);font-size:.85em;color:var(--accent)">settings</code> almacena toda la configuración de Discord.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-calendar-alt"></i></div>
         <h4>Season</h4>
         <div class="mc-fields">id · name · modalityId (FK)<br>isActive · startedAt · endedAt</div>
-        <p>Temporadas independientes por modalidad. Al cerrar una, todas sus competencias se cierran en cascada automáticamente. Nunca más una competencia olvidada abierta.</p>
+        <p>Temporadas independientes por modalidad. Al cerrar una, todas sus competencias se cierran en cascada. Nunca más una competencia olvidada abierta.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-shield-alt"></i></div>
         <h4>Team</h4>
         <div class="mc-fields">id · name · abbreviation · logoPath<br>modalityId · roleId · uniformHome · uniformAway<br>emergencySigns · isActive</div>
-        <p>Logo descargado a disco, uniformes con validación. Soft delete: <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">roleId = "deleted_${id}"</code> para liberar el rol sin perder el historial.</p>
+        <p>Logo descargado a disco, uniformes con validación. Soft delete: <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">roleId = "deleted_${id}"</code> para liberar el rol sin perder historial.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-user"></i></div>
         <h4>Player</h4>
         <div class="mc-fields">id · discordId (unique)<br>username · globalName</div>
-        <p>Perfil global del jugador, completamente independiente de temporada o modalidad. Un registro por Discord ID. Un jugador, una identidad.</p>
+        <p>Perfil global del jugador, independiente de temporada o modalidad. Un registro por Discord ID. Un jugador, una identidad.</p>
       </div>
       <div class="m-card central">
         <div class="mc-ic" style="background:rgba(200,113,74,.2)"><i class="fas fa-link"></i></div>
         <h4>Participant</h4>
         <div class="mc-note">nodo central</div>
         <div class="mc-fields">id · playerId · teamId (nullable)<br>seasonId · modalityId · position · isActive<br><em style="color:var(--accent)">UNIQUE (playerId, seasonId, modalityId)</em></div>
-        <p>Une Player + Team + Season. <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">teamId = null</code> significa agente libre. Un jugador puede tener Participant en X4 y X5 simultáneamente, o estar en un equipo en una modalidad y ser agente libre en otra.</p>
+        <p>Une Player + Team + Season. <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">teamId = null</code> es agente libre. Un jugador puede tener Participant en X4 y X5 simultáneamente.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-flag-checkered"></i></div>
         <h4>Competition</h4>
         <div class="mc-fields">id · name · seasonId (FK)<br>type (league|cup|friendly|other) · isActive</div>
-        <p>Ligas, copas, amistosos. Sin <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">modalityId</code> propio — se hereda del Season al que pertenece. Una fuente de verdad.</p>
+        <p>Ligas, copas, amistosos. Sin <code style="font-family:var(--mono);font-size:.82em;color:var(--accent)">modalityId</code> propio — se hereda del Season. Una fuente de verdad.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-chart-bar"></i></div>
         <h4>Stat</h4>
         <div class="mc-fields">id · participantId (FK) · competitionId (FK)<br>goles · asistencias · amarillas · rojas</div>
-        <p>Estadísticas granulares por Participant y competencia. Nunca se mezclan entre temporadas o modalidades. Cada gol cuenta en su contexto exacto.</p>
+        <p>Stats granulares por Participant y competencia. Nunca se mezclan entre temporadas o modalidades. Cada gol cuenta en su contexto exacto.</p>
       </div>
       <div class="m-card">
         <div class="mc-ic"><i class="fas fa-medal"></i></div>
         <h4>Award</h4>
         <div class="mc-fields">id · name · type (team|individual)<br>winnerId · seasonId · modalityId<br>competitionId (nullable) · notes</div>
-        <p>Premios individuales o por equipo. MVP, bota de oro, campeón — con notas opcionales y referencia a competencia. El palmarés que toda liga merece.</p>
+        <p>MVP, bota de oro, campeón de liga — con notas opcionales y referencia a competencia. El palmarés que toda liga merece.</p>
       </div>
     </div>
     <div class="rel-box rv rv-d2">
@@ -877,7 +728,7 @@ html {
         <span class="rel-node">Award</span>
       </div>
       <div class="rel-note">
-        <strong>Participant</strong> es el nodo central — une <strong>Player</strong> + <strong>Team</strong> + <strong>Season</strong>. El índice <code>UNIQUE (playerId, seasonId, modalityId)</code> garantiza integridad a nivel de base de datos sin necesidad de validaciones extra en la aplicación. Las <strong>Stats</strong> son por Participant + Competition: así el historial es granular y nunca se mezcla entre temporadas o modalidades. Esta estructura permite consultas complejas como "todos los goles de un jugador en copas" o "asistencias de un equipo en liga" de forma trivial.
+        <strong>Participant</strong> es el nodo central — une <strong>Player</strong> + <strong>Team</strong> + <strong>Season</strong>. El índice <code>UNIQUE (playerId, seasonId, modalityId)</code> garantiza integridad a nivel de base de datos. Las <strong>Stats</strong> son por Participant + Competition: el historial es granular y nunca se mezcla entre temporadas o modalidades.
       </div>
     </div>
   </div>
@@ -891,103 +742,10 @@ html {
     <div class="rv">
       <p class="sec-label">hoja de ruta</p>
       <h2 class="sec-title">5 fases.<br>Un sistema completo.</h2>
-      <p class="sec-sub">Cada fase añade una capa funcional sin romper nada anterior. La Fase 1 sienta las bases — las siguientes construyen encima. El desarrollo es incremental, estable y siempre hacia adelante.</p>
+      <p class="sec-sub">Cada fase añade una capa funcional sin romper nada de lo anterior. El desarrollo es incremental, estable y siempre hacia adelante.</p>
     </div>
-    <div class="phases-wrap rv rv-d1">
-      <div class="ph">
-        <div class="ph-side">
-          <span class="ph-num">Fase 01</span>
-          <span class="ph-name">Configuración<br>&amp; Equipos</span>
-          <span class="ph-tag t-done">completada</span>
-        </div>
-        <div class="ph-body">
-          <h5>Los cimientos del sistema</h5>
-          <p>Configuración de roles y canales por modalidad. Creación de equipos con logo descargado a disco (<code>logos/ABREV.ext</code>), uniformes con validación de formato, y DT asignado automáticamente con nickname <code>#ABREV DT Nombre</code>. Gestión de competencias dentro de temporadas activas. Autocomplete dinámico en todos los comandos — añadir una nueva modalidad no requiere tocar código, solo usar <code>/setup</code>. Los equipos pueden tener emergencySigns (fichajes de emergencia) configurados por los administradores.</p>
-          <div class="cmds">
-            <span class="cmd-t cmd-done">/setup</span>
-            <span class="cmd-t cmd-done">/league-team add</span>
-            <span class="cmd-t cmd-done">/league-team edit</span>
-            <span class="cmd-t cmd-done">/league-team delete</span>
-            <span class="cmd-t cmd-done">/league-competition new</span>
-            <span class="cmd-t cmd-done">/league-competition edit</span>
-            <span class="cmd-t cmd-done">/league-competition close</span>
-            <span class="cmd-t cmd-done">/league-competition delete</span>
-            <span class="cmd-t cmd-done">/club-unis</span>
-          </div>
-        </div>
-      </div>
-      <div class="ph">
-        <div class="ph-side">
-          <span class="ph-num">Fase 02</span>
-          <span class="ph-name">Mercado<br>&amp; Fichajes</span>
-          <span class="ph-tag t-wip">en desarrollo</span>
-        </div>
-        <div class="ph-body">
-          <h5>El flujo diario de la liga</h5>
-          <p>Abrir y cerrar mercado por modalidad. Lista de agentes libres (Participants con <code>teamId = null</code>). Fichajes con notificación automática al canal configurado y nickname <code>#ABREV Nombre</code>. Baja con restauración de nickname y notificación al canal de bajas. Consultar estado de un jugador en X4 y X5 simultáneamente, sin restricción de permisos. Los DTs pueden fichar directamente a agentes libres, y los administradores tienen control total sobre el flujo. El sistema de emergencySigns permite habilitar fichajes extra para equipos con bajas.</p>
-          <div class="cmds">
-            <span class="cmd-t cmd-wip">/market open</span>
-            <span class="cmd-t cmd-wip">/market close</span>
-            <span class="cmd-t cmd-wip">/market agents</span>
-            <span class="cmd-t cmd-wip">/market sign</span>
-            <span class="cmd-t cmd-wip">/market release</span>
-            <span class="cmd-t cmd-wip">/player check</span>
-          </div>
-        </div>
-      </div>
-      <div class="ph">
-        <div class="ph-side">
-          <span class="ph-num">Fase 03</span>
-          <span class="ph-name">Estadísticas<br>&amp; Perfil</span>
-          <span class="ph-tag t-pend">planificada</span>
-        </div>
-        <div class="ph-body">
-          <h5>La cara visible de la liga</h5>
-          <p>Perfil completo de jugador con stats por competencia y temporada. Ficha del equipo con plantilla actual e historial de participantes. Rankings filtrables de goles, asistencias y tarjetas. Comparativa cara a cara entre dos jugadores. Palmarés histórico completo con registro de trofeos y premios individuales y colectivos. Los perfiles serán accesibles por mención o ID, mostrando la trayectoria completa del jugador en la comunidad. Las estadísticas se podrán filtrar por temporada, competencia y modalidad.</p>
-          <div class="cmds">
-            <span class="cmd-t cmd-pend">/perfil</span>
-            <span class="cmd-t cmd-pend">/club</span>
-            <span class="cmd-t cmd-pend">/league-tops</span>
-            <span class="cmd-t cmd-pend">/league-compare</span>
-            <span class="cmd-t cmd-pend">/league-history</span>
-            <span class="cmd-t cmd-pend">/league-trophy add</span>
-          </div>
-        </div>
-      </div>
-      <div class="ph">
-        <div class="ph-side">
-          <span class="ph-num">Fase 04</span>
-          <span class="ph-name">Gestión de<br>Temporadas</span>
-          <span class="ph-tag t-pend">planificada</span>
-        </div>
-        <div class="ph-body">
-          <h5>El ciclo completo de una liga</h5>
-          <p>Crear nueva temporada desactiva la anterior (<code>isActive = false</code>, <code>endedAt = now</code>) y cierra todas sus Competition activas en cascada. Cierre manual sin crear nueva. Consulta de historial de temporadas activas y pasadas. El dato histórico nunca se pierde — solo se archiva. Las temporadas archivadas son de solo lectura pero siempre consultables. Al iniciar una temporada nueva, todos los participantes se convierten automáticamente en agentes libres (teamId = null), listos para el próximo mercado.</p>
-          <div class="cmds">
-            <span class="cmd-t cmd-pend">/season new</span>
-            <span class="cmd-t cmd-pend">/season end</span>
-            <span class="cmd-t cmd-pend">/season info</span>
-          </div>
-        </div>
-      </div>
-      <div class="ph">
-        <div class="ph-side">
-          <span class="ph-num">Fase 05</span>
-          <span class="ph-name">Utilidades</span>
-          <span class="ph-tag t-pend">planificada</span>
-        </div>
-        <div class="ph-body">
-          <h5>Herramientas para el día a día</h5>
-          <p>Comunicación masiva a hasta 3 roles vía DM. Referencia de horarios para comunidades de Venezuela y América Latina (porque el huso horario importa). Generador de timestamps para Discord con todos los formatos. Sistema de tickets integrado en el servidor para soporte y consultas. Subida y registro de grabaciones de partidos, con enlaces permanentes. Estas utilidades hacen la vida más fácil a administradores y jugadores por igual, centralizando funciones que antes requerían bots externos.</p>
-          <div class="cmds">
-            <span class="cmd-t cmd-pend">/broadcast</span>
-            <span class="cmd-t cmd-pend">/hora</span>
-            <span class="cmd-t cmd-pend">/timestamp</span>
-            <span class="cmd-t cmd-pend">/ticket setup</span>
-            <span class="cmd-t cmd-pend">/upload</span>
-          </div>
-        </div>
-      </div>
+    <div class="phases-wrap rv rv-d1" id="phasesWrap">
+      <!-- generado por JS -->
     </div>
   </div>
 </section>
@@ -1000,52 +758,52 @@ html {
     <div class="rv">
       <p class="sec-label">arquitectura &amp; decisiones</p>
       <h2 class="sec-title">Bajo el capó.</h2>
-      <p class="sec-sub">Decisiones que tienen un porqué. No son caprichos — son respuestas a problemas reales de ligas que crecen y cambian cada temporada. Cada línea de código está pensada para escalar y mantenerse en el tiempo.</p>
+      <p class="sec-sub">Decisiones que tienen un porqué. No son caprichos — son respuestas a problemas reales de ligas que crecen y cambian cada temporada.</p>
     </div>
     <div class="tech-grid rv rv-d1">
       <div class="tech-card">
         <h5><i class="fas fa-user-shield"></i> DT sin campo fijo en la DB</h5>
-        <p>El Director Técnico no se almacena en Team. Se detecta dinámicamente: DT = quien tiene <code>rol_dt</code> de los settings de la modalidad y pertenece al equipo. Cambiar de DT es solo cambiar el rol de Discord — sin queries de actualización, sin comandos especiales, sin riesgo de inconsistencias. Si un DT abandona el servidor, el equipo se queda sin DT automáticamente, evitando equipos huérfanos no detectados.</p>
+        <p>El Director Técnico no se almacena en Team. Se detecta dinámicamente: DT = quien tiene <code>rol_dt</code> de los settings de la modalidad y pertenece al equipo. Cambiar de DT es solo cambiar el rol de Discord — sin queries de actualización, sin comandos especiales.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-trash-can-arrow-up"></i> Soft delete en equipos</h5>
-        <p>Eliminar un equipo no borra nada: <code>isActive = false</code> y <code>roleId = "deleted_${id}"</code>. Libera el roleId para nuevos equipos pero preserva todo el historial de stats, participants y awards intacto. Los participantes del equipo eliminado se convierten automáticamente en agentes libres, y el historial del equipo sigue siendo consultable. Esto permite, por ejemplo, ver que "Los Pumas" existieron y ganaron la liga en 2023, aunque ya no estén activos.</p>
+        <p>Eliminar un equipo no borra nada: <code>isActive = false</code> y <code>roleId = "deleted_${id}"</code>. Libera el roleId para nuevos equipos pero conserva todo el historial de stats, participants y awards. "Los Pumas" ganaron la liga en 2023 aunque ya no estén activos — eso queda.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-arrows-split-up-and-left"></i> Competition hereda modalidad de Season</h5>
-        <p>Las Competition no tienen <code>modalityId</code> propio. Lo heredan del Season al que pertenecen. Un dato, una fuente de verdad — no hay duplicación ni posibilidad de inconsistencia entre tablas. Esto simplifica muchísimo las consultas: para saber la modalidad de una competencia, solo hay que seguir la relación Competition → Season → Modality. Nunca puede haber una competencia de X4 en una temporada de X5.</p>
+        <p>Las Competition no tienen <code>modalityId</code> propio — lo heredan del Season al que pertenecen. Un dato, una fuente de verdad. Nunca puede haber una competencia de X4 en una temporada de X5.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-fingerprint"></i> Participant UNIQUE a nivel DB</h5>
-        <p>El índice único sobre <code>(playerId, seasonId, modalityId)</code> garantiza integridad sin validaciones extra en la capa de aplicación. No hay forma de duplicar un participante, ni por error ni por condición de carrera. Esto significa que un jugador no puede estar dos veces en la misma temporada y modalidad, ni siquiera si dos comandos se ejecutan simultáneamente. La base de datos lo impide en el nivel más bajo.</p>
+        <p>El índice único sobre <code>(playerId, seasonId, modalityId)</code> garantiza integridad sin validaciones extra en la capa de aplicación. Ni por error ni por condición de carrera se puede duplicar un participante.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-calendar-xmark"></i> Cierre en cascada automático</h5>
-        <p>Al cerrar una temporada, todas sus Competition activas se cierran automáticamente. Sin pasos manuales olvidados, sin competencias abiertas en temporadas archivadas que contaminen queries futuras. Esto asegura que cuando una temporada termina, realmente termina. Las estadísticas de esas competencias siguen siendo accesibles, pero ya no se pueden modificar ni aparecen en las listas de competencias activas.</p>
+        <p>Al cerrar una temporada, todas sus Competition activas se cierran solas. Sin pasos manuales, sin competencias abiertas en temporadas archivadas que contaminen queries futuras.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-magnifying-glass"></i> Autocomplete dinámico desde la DB</h5>
-        <p>Los campos de modalidad, equipo y competencia en los slash commands se cargan desde la DB en cada interacción via <code>autocompleteModality()</code>. Añadir una modalidad o equipo nuevo lo hace disponible al instante, sin tocar código. Esto significa que los administradores pueden crear nuevas modalidades o equipos y los comandos los reconocerán inmediatamente, sin necesidad de reiniciar el bot ni desplegar cambios.</p>
+        <p>Los campos de modalidad, equipo y competencia en los slash commands se cargan desde la DB en cada interacción. Añadir una modalidad o equipo nuevo lo hace disponible al instante, sin tocar código ni reiniciar el bot.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-user-plus"></i> Player.findOrCreate en lugar de findOne</h5>
-        <p>Los DTs creados desde <code>/league-team add</code> pueden no haber usado nunca <code>/start</code>. Usar <code>findOrCreate</code> garantiza que siempre existe su registro de Player sin romper el flujo, aunque nunca hayan interactuado directamente con el bot. Esto evita errores de "jugador no encontrado" y simplifica la lógica: en cualquier comando que reciba un usuario de Discord, podemos hacer findOrCreate y estar seguros de que tenemos su registro.</p>
+        <p>Los DTs creados desde <code>/league-team add</code> pueden no haber usado nunca <code>/start</code>. <code>findOrCreate</code> garantiza que siempre existe su registro de Player sin romper el flujo — aunque nunca hayan tocado el bot directamente.</p>
       </div>
       <div class="tech-card">
         <h5><i class="fas fa-shirt"></i> Validación de uniformes con regex</h5>
-        <p>Los campos <code>uniformHome</code> y <code>uniformAway</code> deben iniciar con <code>/colors</code> (regex <code>/^\/colors\b/i</code>). Se valida en todos los comandos que los modifican — tanto en creación como en edición posterior por el DT o sub-DT. Esto asegura que los uniformes siempre sean códigos de colores válidos de HaxBall, evitando errores cuando los jugadores intenten usarlos en el juego.</p>
+        <p>Los campos <code>uniformHome</code> y <code>uniformAway</code> deben iniciar con <code>/colors</code> (regex <code>/^\/colors\b/i</code>). Se valida en creación y en edición posterior por DT o sub-DT, asegurando que siempre sean códigos válidos de HaxBall.</p>
       </div>
     </div>
 
-    <!-- SETTINGS JSON -->
     <div class="rv rv-d2" style="margin-top:4rem">
       <p class="sec-label">configuración por modalidad</p>
       <h3 style="font-family:var(--serif);font-size:1.8rem;color:var(--text-hi);margin-bottom:.8rem;letter-spacing:-.02em">El objeto <em style="font-style:italic;color:var(--accent)">ModalitySettings</em></h3>
-      <p style="color:var(--muted);font-size:.9rem;max-width:580px;margin-bottom:1.5rem;line-height:1.8">Cada modalidad almacena su configuración completa en un campo JSON. El bot lee este objeto para saber a qué canales enviar notificaciones y qué roles tienen permisos de administración. Esto permite que cada modalidad funcione como un servidor independiente dentro del mismo Discord, con sus propias reglas y canales.</p>
+      <p style="color:var(--muted);font-size:.9rem;max-width:580px;margin-bottom:1.5rem;line-height:1.8">Cada modalidad almacena su configuración completa en un campo JSON. El bot lee este objeto para saber a qué canales enviar notificaciones y qué roles tienen permisos. Cada modalidad funciona como un servidor independiente dentro del mismo Discord.</p>
       <div class="code-block">
         <div class="code-bar">
           <span class="cbdot cr"></span><span class="cbdot cy"></span><span class="cbdot cg"></span>
           <span class="cfile">ModalitySettings — tipo TypeScript</span>
+          <span class="copy-hint">clic para copiar</span>
         </div>
         <div class="code-body">
 <span class="kw">type</span> <span class="fn">ModalitySettings</span> = {<br>
@@ -1062,18 +820,17 @@ html {
       </div>
     </div>
 
-    <!-- UTILITIES -->
     <div class="rv rv-d2" style="margin-top:3rem">
       <p class="sec-label">utilidades del core</p>
       <h3 style="font-family:var(--serif);font-size:1.8rem;color:var(--text-hi);margin-bottom:2rem;letter-spacing:-.02em">Funciones que usa todo el bot</h3>
       <div class="tech-grid">
         <div class="tech-card">
           <h5><i class="fas fa-terminal"></i> discordLogger</h5>
-          <p>Envía embeds con color e icono al canal <code>canal_logs</code> de la modalidad. Niveles: <code>info</code> (azul), <code>success</code> (verde), <code>warn</code> (amarillo), <code>error</code> (rojo), <code>fatal</code> (rojo oscuro). Todos los comandos lo usan para auditoría automática de cada acción: quién, cuándo, qué. Los logs incluyen el usuario que ejecutó el comando, los parámetros usados y el resultado. Esto da trazabilidad completa y facilita la depuración.</p>
+          <p>Envía embeds con color e icono al canal <code>canal_logs</code> de la modalidad. Niveles: <code>info</code>, <code>success</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>. Todos los comandos lo usan — quién, cuándo, qué. Trazabilidad completa sin esfuerzo.</p>
         </div>
         <div class="tech-card">
           <h5><i class="fas fa-lock"></i> Permisos granulares</h5>
-          <p><code>isAdmin(member, client)</code> para admin global del servidor (permiso de administrador en Discord). <code>isModalityAdmin(member, client, settings)</code> para admin de modalidad (rol configurado en settings). <code>isDT(member, team, settings)</code> para DT de equipo. <code>DENIED_EMBED</code> como objeto reutilizable para respuestas de acceso denegado, con mensajes claros sobre qué permiso falta y cómo obtenerlo. El sistema distingue entre falta de permiso global, de modalidad o de equipo.</p>
+          <p><code>isAdmin</code> para admin global del servidor. <code>isModalityAdmin</code> para admin de modalidad. <code>isDT</code> para DT de equipo. <code>DENIED_EMBED</code> como respuesta reutilizable con mensajes claros sobre qué permiso falta y cómo obtenerlo.</p>
         </div>
       </div>
     </div>
@@ -1088,47 +845,10 @@ html {
     <div class="rv">
       <p class="sec-label">referencia completa</p>
       <h2 class="sec-title">Todos los comandos.</h2>
-      <p class="sec-sub" style="max-width: none;">Más de 30 comandos organizados por fase. Cada uno con autocomplete, validaciones y logging. Diseñados para ser intuitivos pero potentes.</p>
+      <p class="sec-sub" style="max-width: none;">30+ comandos organizados por fase. Cada uno con autocomplete, validaciones y logging automático.</p>
     </div>
-    <div class="cmd-table rv rv-d1">
-      <div class="cmd-row"><div class="cmd-group-label">Fase 1 — Configuración &amp; Equipos</div></div>
-      <div class="cmd-row"><div class="cname">/setup</div><div class="cdesc">Configura roles y canales de una modalidad. Sin campo → muestra config actual. Guarda en settings JSON.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-team add</div><div class="cdesc">Crea equipo. Descarga logo, crea Player+Participant del DT, setea nickname #ABREV DT Nombre</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-team edit</div><div class="cdesc">Edita nombre, abreviación (renombra logo y actualiza nicknames), rol, uniformes. Solo admin o DT.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-team delete</div><div class="cdesc">Soft delete: isActive=false, roleId="deleted_id", libera jugadores del equipo. Solo admin.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-competition new</div><div class="cdesc">Crea competencia (liga/copa/amistoso/otro) en la temporada activa. Nombre único por temporada.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-competition edit</div><div class="cdesc">Edita nombre y tipo de competencia. Solo si está activa.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-competition close</div><div class="cdesc">Soft close: isActive=false, preserva todos los datos y stats asociadas. No se puede reabrir.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/league-competition delete</div><div class="cdesc">Elimina permanentemente. Verifica stats existentes antes de proceder. Solo si no hay stats.</div><div class="cphase cp1">Fase 1</div></div>
-      <div class="cmd-row"><div class="cname">/club-unis</div><div class="cdesc">DT o sub-DT edita uniformes de su equipo. Requiere formato /colors. Actualiza en DB y notifica.</div><div class="cphase cp1">Fase 1</div></div>
-
-      <div class="cmd-row"><div class="cmd-group-label">Fase 2 — Mercado &amp; Fichajes</div></div>
-      <div class="cmd-row"><div class="cname">/market open</div><div class="cdesc">Abre el mercado de fichajes de la modalidad (marketOpen = true). Solo admin de modalidad.</div><div class="cphase cp2">Fase 2</div></div>
-      <div class="cmd-row"><div class="cname">/market close</div><div class="cdesc">Cierra el mercado de fichajes (marketOpen = false). Solo admin de modalidad.</div><div class="cphase cp2">Fase 2</div></div>
-      <div class="cmd-row"><div class="cname">/market agents</div><div class="cdesc">Lista Participants con teamId=null en la temporada activa de la modalidad. Filtrable por posición.</div><div class="cphase cp2">Fase 2</div></div>
-      <div class="cmd-row"><div class="cname">/market sign</div><div class="cdesc">Ficha un jugador. Asigna teamId, setea nickname #ABREV, notifica en canal. DT o admin.</div><div class="cphase cp2">Fase 2</div></div>
-      <div class="cmd-row"><div class="cname">/market release</div><div class="cdesc">Da de baja. teamId=null, limpia nickname, notifica en canal de bajas. DT o admin.</div><div class="cphase cp2">Fase 2</div></div>
-      <div class="cmd-row"><div class="cname">/player check</div><div class="cdesc">Estado del jugador en X4 y X5 simultáneamente. Sin restricción de permisos. Muestra equipo actual y histórico reciente.</div><div class="cphase cp2">Fase 2</div></div>
-
-      <div class="cmd-row"><div class="cmd-group-label">Fase 3 — Estadísticas &amp; Perfil</div></div>
-      <div class="cmd-row"><div class="cname">/perfil</div><div class="cdesc">Stats completas por competencia, temporada y modalidad. Gráfico de rendimiento histórico.</div><div class="cphase cp3">Fase 3</div></div>
-      <div class="cmd-row"><div class="cname">/club</div><div class="cdesc">Ficha del equipo con plantilla actual e historial de temporadas. Incluye palmarés del club.</div><div class="cphase cp3">Fase 3</div></div>
-      <div class="cmd-row"><div class="cname">/league-tops</div><div class="cdesc">Rankings filtrables de goles, asistencias, tarjetas. Por temporada, modalidad, competencia.</div><div class="cphase cp3">Fase 3</div></div>
-      <div class="cmd-row"><div class="cname">/league-compare</div><div class="cdesc">Comparativa cara a cara entre dos jugadores. Stats totales y por temporada en tabla comparativa.</div><div class="cphase cp3">Fase 3</div></div>
-      <div class="cmd-row"><div class="cname">/league-history</div><div class="cdesc">Palmarés histórico completo con todas las temporadas. Todos los campeones y MVPs.</div><div class="cphase cp3">Fase 3</div></div>
-      <div class="cmd-row"><div class="cname">/league-trophy add</div><div class="cdesc">Registra un Award para jugador o equipo en una temporada. Admin de liga.</div><div class="cphase cp3">Fase 3</div></div>
-
-      <div class="cmd-row"><div class="cmd-group-label">Fase 4 — Temporadas</div></div>
-      <div class="cmd-row"><div class="cname">/season new</div><div class="cdesc">Nueva temporada — archiva la anterior y cierra Competition en cascada. Todos los participantes pasan a agentes libres.</div><div class="cphase cp3">Fase 4</div></div>
-      <div class="cmd-row"><div class="cname">/season end</div><div class="cdesc">Cierra la temporada activa sin crear una nueva. Útil para finalizar liga sin continuidad.</div><div class="cphase cp3">Fase 4</div></div>
-      <div class="cmd-row"><div class="cname">/season info</div><div class="cdesc">Consulta temporadas activas e historial de anteriores. Fechas de inicio y fin.</div><div class="cphase cp3">Fase 4</div></div>
-
-      <div class="cmd-row"><div class="cmd-group-label">Fase 5 — Utilidades</div></div>
-      <div class="cmd-row"><div class="cname">/broadcast</div><div class="cdesc">DM masivo a hasta 3 roles del servidor. Confirmación de envío y logs.</div><div class="cphase cp3">Fase 5</div></div>
-      <div class="cmd-row"><div class="cname">/hora</div><div class="cdesc">Referencia de hora Venezuela vs. resto de América Latina. Útil para coordinar partidos.</div><div class="cphase cp3">Fase 5</div></div>
-      <div class="cmd-row"><div class="cname">/timestamp</div><div class="cdesc">Generador de timestamps para Discord. Soporta todos los formatos (t, T, d, D, f, F, R).</div><div class="cphase cp3">Fase 5</div></div>
-      <div class="cmd-row"><div class="cname">/ticket setup</div><div class="cdesc">Sistema de tickets integrado en el servidor. Configurable por modalidad.</div><div class="cphase cp3">Fase 5</div></div>
-      <div class="cmd-row"><div class="cname">/upload</div><div class="cdesc">Subida y registro de grabaciones de partidos. Enlace permanente en el historial del equipo.</div><div class="cphase cp3">Fase 5</div></div>
+    <div class="cmd-table rv rv-d1" id="cmdTable">
+      <!-- generado por JS -->
     </div>
   </div>
 </section>
@@ -1140,7 +860,7 @@ html {
   <div class="wrap">
     <div class="cta-box rv">
       <h2>¿Tu liga merece<br>algo mejor?</h2>
-      <p>iDinox v3 es gratuito, open source y hecho para la comunidad de HaxBall. Si organizas una liga seria y quieres dejar de hacer todo a mano, este es tu bot. No hay trampas, no hay costes ocultos, no hay sorpresas. Solo código limpio y funcionalidades que realmente importan.</p>
+      <p>iDinox v3 es gratuito, open source y hecho para la comunidad de HaxBall. Si organizas una liga seria y estás cansado de hacerlo todo a mano, este es tu bot. Sin costes ocultos, sin sorpresas.</p>
       <div class="cta-btns">
         <a href="https://github.com/KvensOs/iDinox-v3" class="btn-primary" target="_blank"><i class="fab fa-github"></i> Estrella en GitHub</a>
         <a href="https://discord.gg/RFSK6ZeWnF" class="btn-dc" target="_blank"><i class="fab fa-discord"></i> Discord de desarrollo</a>
@@ -1163,6 +883,265 @@ html {
 </footer>
 
 <script>
+// ────────────────────────────────────────────────────────────────────────────
+// DATOS DE FASES
+// ────────────────────────────────────────────────────────────────────────────
+const FASES = [
+  {
+    num: 1,
+    nombre: "Configuración\n& Equipos",
+    titulo: "Los cimientos del sistema",
+    desc: `Configuración de roles y canales por modalidad. Creación de equipos con logo descargado a disco (<code>logos/ABREV.ext</code>), uniformes con validación, y DT asignado automáticamente con nickname <code>#ABREV DT Nombre</code>. Gestión de competencias dentro de temporadas activas. Autocomplete dinámico en todos los comandos — añadir una modalidad nueva no requiere tocar código, solo usar <code>/setup</code>.`,
+    cmds: [
+      { cmd: "/setup", estado: "done" },
+      { cmd: "/league-team add", estado: "done" },
+      { cmd: "/league-team edit", estado: "done" },
+      { cmd: "/league-team delete", estado: "done" },
+      { cmd: "/league-competition new", estado: "done" },
+      { cmd: "/league-competition edit", estado: "done" },
+      { cmd: "/league-competition close", estado: "done" },
+      { cmd: "/league-competition delete", estado: "done" },
+      { cmd: "/club-unis", estado: "done" },
+    ]
+  },
+  {
+    num: 2,
+    nombre: "Mercado\n& Fichajes",
+    titulo: "El flujo diario de la liga",
+    desc: `Abrir y cerrar mercado por modalidad. Lista de agentes libres (Participants con <code>teamId = null</code>). Fichajes con notificación automática al canal configurado y nickname <code>#ABREV Nombre</code>. Baja con restauración de nickname. Los DTs pueden fichar directamente a agentes libres, y los admins tienen control total. El sistema de emergencySigns permite habilitar fichajes extra para equipos con bajas.`,
+    cmds: [
+      { cmd: "/market open", estado: "wip" },
+      { cmd: "/market close", estado: "wip" },
+      { cmd: "/market agents", estado: "wip" },
+      { cmd: "/market sign", estado: "wip" },
+      { cmd: "/market release", estado: "wip" },
+      { cmd: "/player check", estado: "wip" },
+    ]
+  },
+  {
+    num: 3,
+    nombre: "Estadísticas\n& Perfil",
+    titulo: "La cara visible de la liga",
+    desc: `Perfil completo de jugador con stats por competencia y temporada. Ficha del equipo con plantilla actual e historial. Rankings filtrables de goles, asistencias y tarjetas. Comparativa cara a cara entre dos jugadores. Palmarés histórico con trofeos y premios. Los perfiles serán accesibles por mención o ID, mostrando la trayectoria completa del jugador.`,
+    cmds: [
+      { cmd: "/perfil", estado: "pending" },
+      { cmd: "/club", estado: "pending" },
+      { cmd: "/league-tops", estado: "pending" },
+      { cmd: "/league-compare", estado: "pending" },
+      { cmd: "/league-history", estado: "pending" },
+      { cmd: "/league-trophy add", estado: "pending" },
+    ]
+  },
+  {
+    num: 4,
+    nombre: "Gestión de\nTemporadas",
+    titulo: "El ciclo completo de una liga",
+    desc: `Crear nueva temporada desactiva la anterior y cierra todas sus Competition en cascada. Cierre manual sin crear nueva. Consulta del historial de temporadas. El dato histórico nunca se pierde — solo se archiva. Al iniciar una temporada nueva, todos los participantes se convierten en agentes libres listos para el próximo mercado.`,
+    cmds: [
+      { cmd: "/season new", estado: "pending" },
+      { cmd: "/season end", estado: "pending" },
+      { cmd: "/season info", estado: "pending" },
+    ]
+  },
+  {
+    num: 5,
+    nombre: "Utilidades",
+    titulo: "Herramientas para el día a día",
+    desc: `Comunicación masiva a hasta 3 roles vía DM. Referencia de horarios para comunidades de Venezuela y América Latina. Generador de timestamps para Discord. Sistema de tickets integrado. Subida y registro de grabaciones de partidos con enlaces permanentes. Funciones que antes requerían bots externos, ahora en un solo lugar.`,
+    cmds: [
+      { cmd: "/broadcast", estado: "pending" },
+      { cmd: "/hora", estado: "pending" },
+      { cmd: "/timestamp", estado: "pending" },
+      { cmd: "/ticket setup", estado: "pending" },
+      { cmd: "/upload", estado: "pending" },
+    ]
+  }
+];
+
+// ────────────────────────────────────────────────────────────────────────────
+// CALCULAR ESTADOS según FASE_ACTUAL
+// ────────────────────────────────────────────────────────────────────────────
+function getFaseStatus(faseNum) {
+  if (faseNum < FASE_ACTUAL) return "done";
+  if (faseNum === FASE_ACTUAL) return "wip";
+  return "pending";
+}
+
+function getCmdStatus(faseNum) {
+  const fs = getFaseStatus(faseNum);
+  if (fs === "done") return "done";
+  if (fs === "wip") return "wip";
+  return "pending";
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// STATUS SIDEBAR (hero)
+// ────────────────────────────────────────────────────────────────────────────
+const LABELS = [
+  "Configuración & Equipos",
+  "Mercado & Fichajes",
+  "Estadísticas & Perfil",
+  "Gestión de Temporadas",
+  "Utilidades"
+];
+const STATUS_TEXTS = {
+  done:    "— completada",
+  wip:     "— en desarrollo",
+  pending: "— planificada"
+};
+
+function buildStatusList() {
+  const el = document.getElementById('statusList');
+  el.innerHTML = '';
+  FASES.forEach(f => {
+    const status = getFaseStatus(f.num);
+    const item = document.createElement('div');
+    item.className = 'st-item' + (status === 'wip' ? ' st-active' : '');
+    const dotClass = status === 'done' ? 'st-green' : status === 'wip' ? 'st-amber' : 'st-grey';
+    item.innerHTML = `<span class="st-dot ${dotClass}"></span><span>Fase ${f.num}: ${LABELS[f.num-1]} <em>${STATUS_TEXTS[status]}</em></span>`;
+    el.appendChild(item);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// PROGRESS BADGE
+// ────────────────────────────────────────────────────────────────────────────
+function buildProgressBadge() {
+  const pct = Math.round(((FASE_ACTUAL - 1) / 5) * 100);
+  document.getElementById('pbBar').style.width = pct + '%';
+  document.getElementById('pbPct').textContent = pct + '%';
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// PHASES
+// ────────────────────────────────────────────────────────────────────────────
+function buildPhases() {
+  const wrap = document.getElementById('phasesWrap');
+  wrap.innerHTML = '';
+
+  FASES.forEach(f => {
+    const status = getFaseStatus(f.num);
+    const tagClass = { done: 't-done', wip: 't-wip', pending: 't-pend' }[status];
+    const tagText  = { done: 'completada', wip: 'en desarrollo', pending: 'planificada' }[status];
+
+    // calcular estilo de comandos según el status de la fase
+    const cmdClass = { done: 'cmd-done', wip: 'cmd-wip', pending: 'cmd-pend' }[status];
+
+    const ph = document.createElement('div');
+    ph.className = 'ph';
+    ph.dataset.status = status;
+
+    const nombreHtml = f.nombre.replace('\n', '<br>');
+    const cmdsHtml = f.cmds.map(c =>
+      `<span class="cmd-t ${cmdClass}">${c.cmd}</span>`
+    ).join('');
+
+    ph.innerHTML = `
+      <div class="ph-side">
+        <span class="ph-num">Fase 0${f.num}</span>
+        <span class="ph-name">${nombreHtml}</span>
+        <span class="ph-tag ${tagClass}">${tagText}</span>
+      </div>
+      <div class="ph-body">
+        <h5>${f.titulo}</h5>
+        <p>${f.desc}</p>
+        <div class="cmds">${cmdsHtml}</div>
+      </div>
+    `;
+    wrap.appendChild(ph);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// COMMANDS TABLE
+// ────────────────────────────────────────────────────────────────────────────
+const CMD_DATA = [
+  { fase: 1, group: "Fase 1 — Configuración & Equipos", rows: [
+    { cmd: "/setup",                    desc: "Configura roles y canales de una modalidad. Sin campo → muestra config actual." },
+    { cmd: "/league-team add",          desc: "Crea equipo. Descarga logo, crea Player+Participant del DT, setea nickname #ABREV DT Nombre." },
+    { cmd: "/league-team edit",         desc: "Edita nombre, abreviación (renombra logo y actualiza nicknames), rol, uniformes. Solo admin o DT." },
+    { cmd: "/league-team delete",       desc: "Soft delete: isActive=false, roleId='deleted_id', libera jugadores del equipo." },
+    { cmd: "/league-competition new",   desc: "Crea competencia (liga/copa/amistoso/otro) en la temporada activa." },
+    { cmd: "/league-competition edit",  desc: "Edita nombre y tipo de competencia. Solo si está activa." },
+    { cmd: "/league-competition close", desc: "Soft close: isActive=false, preserva todos los datos y stats. No se puede reabrir." },
+    { cmd: "/league-competition delete",desc: "Elimina permanentemente. Verifica stats antes de proceder." },
+    { cmd: "/club-unis",                desc: "DT o sub-DT edita uniformes de su equipo. Requiere formato /colors." },
+  ]},
+  { fase: 2, group: "Fase 2 — Mercado & Fichajes", rows: [
+    { cmd: "/market open",    desc: "Abre el mercado de fichajes (marketOpen = true). Solo admin de modalidad." },
+    { cmd: "/market close",   desc: "Cierra el mercado de fichajes (marketOpen = false). Solo admin de modalidad." },
+    { cmd: "/market agents",  desc: "Lista Participants con teamId=null en la temporada activa. Filtrable por posición." },
+    { cmd: "/market sign",    desc: "Ficha un jugador. Asigna teamId, setea nickname, notifica en canal. DT o admin." },
+    { cmd: "/market release", desc: "Da de baja. teamId=null, limpia nickname, notifica en canal de bajas." },
+    { cmd: "/player check",   desc: "Estado del jugador en X4 y X5 simultáneamente. Sin restricción de permisos." },
+  ]},
+  { fase: 3, group: "Fase 3 — Estadísticas & Perfil", rows: [
+    { cmd: "/perfil",           desc: "Stats completas por competencia, temporada y modalidad." },
+    { cmd: "/club",             desc: "Ficha del equipo con plantilla actual e historial de temporadas." },
+    { cmd: "/league-tops",      desc: "Rankings filtrables de goles, asistencias, tarjetas." },
+    { cmd: "/league-compare",   desc: "Comparativa cara a cara entre dos jugadores." },
+    { cmd: "/league-history",   desc: "Palmarés histórico completo con todas las temporadas." },
+    { cmd: "/league-trophy add",desc: "Registra un Award para jugador o equipo en una temporada." },
+  ]},
+  { fase: 4, group: "Fase 4 — Temporadas", rows: [
+    { cmd: "/season new",  desc: "Nueva temporada — archiva la anterior y cierra Competition en cascada." },
+    { cmd: "/season end",  desc: "Cierra la temporada activa sin crear una nueva." },
+    { cmd: "/season info", desc: "Consulta temporadas activas e historial de anteriores." },
+  ]},
+  { fase: 5, group: "Fase 5 — Utilidades", rows: [
+    { cmd: "/broadcast",    desc: "DM masivo a hasta 3 roles del servidor." },
+    { cmd: "/hora",         desc: "Referencia de hora Venezuela vs. resto de América Latina." },
+    { cmd: "/timestamp",    desc: "Generador de timestamps para Discord con todos los formatos." },
+    { cmd: "/ticket setup", desc: "Sistema de tickets integrado. Configurable por modalidad." },
+    { cmd: "/upload",       desc: "Subida y registro de grabaciones de partidos." },
+  ]},
+];
+
+const PHASE_COLORS = { done: 'cp1', wip: 'cp2', pending: 'cp3' };
+
+function buildCmdTable() {
+  const table = document.getElementById('cmdTable');
+  table.innerHTML = '';
+
+  CMD_DATA.forEach(section => {
+    const status = getFaseStatus(section.fase);
+    const colClass = PHASE_COLORS[status];
+    const labelSpan = { done: ' ✓', wip: ' ↻', pending: '' }[status];
+
+    // group label
+    const groupRow = document.createElement('div');
+    groupRow.className = 'cmd-row';
+    groupRow.innerHTML = `<div class="cmd-group-label">${section.group}${labelSpan}</div>`;
+    table.appendChild(groupRow);
+
+    section.rows.forEach(r => {
+      const row = document.createElement('div');
+      row.className = 'cmd-row';
+      row.dataset.cmdStatus = status;
+      row.innerHTML = `
+        <div class="cname">${r.cmd}</div>
+        <div class="cdesc">${r.desc}</div>
+        <div class="cphase ${colClass}">Fase ${section.fase}</div>
+      `;
+      table.appendChild(row);
+    });
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildStatusList();
+  buildPhases();
+  buildCmdTable();
+  // delay para animación de la barra
+  setTimeout(buildProgressBadge, 300);
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+// SCROLL REVEAL
+// ────────────────────────────────────────────────────────────────────────────
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { 
     if (e.isIntersecting) { 
@@ -1170,59 +1149,49 @@ const obs = new IntersectionObserver(entries => {
       obs.unobserve(e.target); 
     } 
   });
-}, { threshold: 0.06, rootMargin: '0px' });
+}, { threshold: 0.06 });
 document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
+// ────────────────────────────────────────────────────────────────────────────
+// NAV SCROLL
+// ────────────────────────────────────────────────────────────────────────────
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('mainNav');
-  if (window.scrollY > 50) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
+  nav.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-document.querySelectorAll('.m-card, .tech-card, .s-row').forEach(card => {
-  card.addEventListener('mouseenter', function(e) {
-    this.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-  });
-});
-
-document.addEventListener('mousemove', (e) => {
-  const x = e.clientX / window.innerWidth;
-  const y = e.clientY / window.innerHeight;
-  document.body.style.setProperty('--mouse-x', x);
-  document.body.style.setProperty('--mouse-y', y);
-});
-
-document.querySelectorAll('.code-block').forEach(block => {
-  block.addEventListener('click', () => {
-    const code = block.querySelector('.code-body').innerText;
-    navigator.clipboard.writeText(code).then(() => {
-      block.style.opacity = '0.8';
-      setTimeout(() => block.style.opacity = '1', 200);
-    });
-  });
-});
-
+// ────────────────────────────────────────────────────────────────────────────
+// NAV ACTIVE
+// ────────────────────────────────────────────────────────────────────────────
 const sections = document.querySelectorAll('section[id]');
 window.addEventListener('scroll', () => {
   let current = '';
   sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (scrollY >= (sectionTop - 300)) {
-      current = section.getAttribute('id');
-    }
+    if (scrollY >= section.offsetTop - 300) current = section.getAttribute('id');
   });
+  document.querySelectorAll('.nav-links a:not(.btn-nav)').forEach(link => {
+    link.classList.remove('active-nav');
+    if (link.getAttribute('href') === `#${current}`) link.classList.add('active-nav');
+  });
+}, { passive: true });
 
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${current}`) {
-      link.style.color = 'var(--accent)';
-    } else {
-      link.style.color = '';
-    }
+// ────────────────────────────────────────────────────────────────────────────
+// CODE COPY
+// ────────────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.code-block').forEach(block => {
+  block.addEventListener('click', () => {
+    const code = block.querySelector('.code-body').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      const hint = block.querySelector('.copy-hint');
+      if (hint) {
+        block.classList.add('copied');
+        hint.textContent = '¡copiado!';
+        setTimeout(() => {
+          block.classList.remove('copied');
+          hint.textContent = 'clic para copiar';
+        }, 1800);
+      }
+    });
   });
 });
 </script>
