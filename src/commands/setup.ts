@@ -19,6 +19,7 @@ const FIELDS: {
     type: "role" | "channel";
 }[] = [
         { key: "rol_admin", label: "Rol — Administrador de Modalidad", type: "role" },
+        { key: "rol_estadistiquero", label: "Rol — Estadistiquero", type: "role" },
         { key: "rol_dt", label: "Rol — Director Técnico", type: "role" },
         { key: "rol_sub_dt", label: "Rol — Sub-Director Técnico", type: "role" },
         { key: "canal_mercado_fichajes", label: "Canal — Fichajes", type: "channel" },
@@ -79,6 +80,7 @@ export default {
                 .setRequired(false)
                 .addChoices(
                     { name: "Rol — Administrador de Modalidad", value: "rol_admin" },
+                    { name: "Rol — Estadistiquero", value: "rol_estadistiquero" },
                     { name: "Rol — Director Técnico", value: "rol_dt" },
                     { name: "Rol — Sub-Director Técnico", value: "rol_sub_dt" },
                     { name: "Canal — Fichajes", value: "canal_mercado_fichajes" },

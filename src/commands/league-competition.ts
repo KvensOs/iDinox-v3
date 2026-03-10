@@ -9,6 +9,9 @@ import {
     ButtonStyle,
     ComponentType,
     AutocompleteInteraction,
+    ChannelType,
+    PermissionFlagsBits,
+    TextChannel,
 } from "discord.js";
 
 import { Op, UniqueConstraintError } from "sequelize";
@@ -19,6 +22,8 @@ import { Modality } from "../database/models/Modality.js";
 import { isAdmin, DENIED_EMBED } from "../utils/permissions.js";
 import { logger } from "../utils/logger.js";
 import { autocompleteModality } from "../utils/modalityAutocomplete.js";
+
+// ─── Constantes ───────────────────────────────────────────────────────────────
 
 const COMPETITION_TYPES: { name: string; value: CompetitionType }[] = [
     { name: "Liga", value: "league" },
@@ -38,6 +43,8 @@ function getTypeLabel(type: CompetitionType | undefined | null): string {
     return TYPE_LABELS[type ?? "other"] ?? "Otro";
 }
 
+// ─── Helpers de DB ────────────────────────────────────────────────────────────
+
 async function getActiveSeason(modalityId: number): Promise<Season | null> {
     return Season.findOne({ where: { modalityId, isActive: true } });
 }
@@ -45,6 +52,77 @@ async function getActiveSeason(modalityId: number): Promise<Season | null> {
 async function findCompetition(seasonId: number, name: string): Promise<Competition | null> {
     return Competition.findOne({ where: { seasonId, name } });
 }
+
+// ─── Canal de estadísticas ────────────────────────────────────────────────────
+
+/**
+ * Configura los permisos de un canal de estadísticas:
+ * - @everyone: no puede enviar mensajes
+ * - rol_estadistiquero (si existe): puede enviar
+ * - rol_admin (si existe): puede enviar
+ */
+async function configureStatsChannel(
+    channel: TextChannel,
+    modality: Modality,
+): Promise<void> {
+    const guild = channel.guild;
+    const { rol_estadistiquero, rol_admin } = modality.settings;
+
+    // Bloquear @everyone
+    await channel.permissionOverwrites.edit(guild.roles.everyone, {
+        SendMessages: false,
+    });
+
+    // Permitir rol_estadistiquero si existe
+    if (rol_estadistiquero) {
+        const role = guild.roles.cache.get(rol_estadistiquero);
+        if (role) {
+            await channel.permissionOverwrites.edit(role, { SendMessages: true });
+        }
+    }
+
+    // Permitir rol_admin si existe
+    if (rol_admin) {
+        const role = guild.roles.cache.get(rol_admin);
+        if (role) {
+            await channel.permissionOverwrites.edit(role, { SendMessages: true });
+        }
+    }
+}
+
+/**
+ * Crea un canal de texto nuevo con el nombre estándar y permisos configurados.
+ * Nombre: stats-competicion-modalidad (Discord normaliza a kebab-case automáticamente)
+ */
+async function createStatsChannel(
+    interaction: ChatInputCommandInteraction,
+    modality: Modality,
+    competitionName: string,
+): Promise<TextChannel | null> {
+    const guild = interaction.guild!;
+
+    const safeName = `stats-${competitionName}-${modality.name}`
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+        .slice(0, 100);
+
+    const channel = await guild.channels.create({
+        name: safeName,
+        type: ChannelType.GuildText,
+        permissionOverwrites: [
+            {
+                id: guild.roles.everyone.id,
+                deny: [PermissionFlagsBits.SendMessages],
+            },
+        ],
+    });
+
+    await configureStatsChannel(channel, modality);
+    return channel;
+}
+
+// ─── Comando ──────────────────────────────────────────────────────────────────
 
 export default {
     category: "🏆 Competencias",
@@ -70,6 +148,15 @@ export default {
                     opt.setName("tipo").setDescription("Tipo de competencia.").setRequired(true)
                         .addChoices(...COMPETITION_TYPES)
                 )
+                .addChannelOption(opt =>
+                    opt.setName("canal_estadisticas")
+                        .setDescription("Canal donde se cargarán las stats. Deja vacío para crear uno automáticamente.")
+                        .addChannelTypes(ChannelType.GuildText)
+                )
+                .addBooleanOption(opt =>
+                    opt.setName("crear_canal")
+                        .setDescription("Crear un canal de estadísticas automáticamente.")
+                )
         )
 
         .addSubcommand(sub =>
@@ -86,6 +173,15 @@ export default {
                 )
                 .addStringOption(opt =>
                     opt.setName("tipo").setDescription("Nuevo tipo.").addChoices(...COMPETITION_TYPES)
+                )
+                .addChannelOption(opt =>
+                    opt.setName("canal_estadisticas")
+                        .setDescription("Nuevo canal de stats (selecciona uno existente).")
+                        .addChannelTypes(ChannelType.GuildText)
+                )
+                .addBooleanOption(opt =>
+                    opt.setName("crear_canal")
+                        .setDescription("Crear un nuevo canal de estadísticas automáticamente.")
                 )
         )
 
@@ -130,7 +226,6 @@ export default {
 
             const subcommand = interaction.options.getSubcommand(false);
             const query = focused.value.toLowerCase();
-
             const whereExtra = subcommand === "close" ? { isActive: true } : {};
 
             const competitions = await Competition.findAll({
@@ -190,7 +285,7 @@ export default {
         } catch (error) {
             logger.error(
                 `/league-competition ${sub} | user: ${interaction.user.id} | modalidad: ${modalityName}`,
-                error
+                error,
             );
             await interaction.editReply({
                 embeds: [new EmbedBuilder().setColor(0xE74C3C).setTitle("Algo salió mal")
@@ -200,6 +295,8 @@ export default {
     },
 };
 
+// ─── Handlers ─────────────────────────────────────────────────────────────────
+
 async function handleNew(
     interaction: ChatInputCommandInteraction,
     modality: Modality,
@@ -207,34 +304,61 @@ async function handleNew(
 ): Promise<void> {
     const nombre = interaction.options.getString("nombre", true).trim();
     const tipo = interaction.options.getString("tipo", true) as CompetitionType;
+    const crearCanal = interaction.options.getBoolean("crear_canal") ?? false;
 
-    try {
-        await Competition.create({ name: nombre, seasonId: season.id, type: tipo, isActive: true });
-    } catch (err) {
-        if (err instanceof UniqueConstraintError) {
-            await interaction.editReply({
-                content: `Ya existe una competencia llamada **${nombre}** en la temporada **${season.name}**.`,
-            });
-            return;
-        }
+    const canalOptRaw = interaction.options.getChannel("canal_estadisticas");
+    const canalOpt = canalOptRaw
+        ? interaction.guild!.channels.cache.get(canalOptRaw.id) as TextChannel | undefined ?? null
+        : null;
+
+    let statsChannel: TextChannel | null = null;
+
+    if (canalOpt) {
+        statsChannel = canalOpt;
+        await configureStatsChannel(statsChannel, modality);
+    } else if (crearCanal) {
+        statsChannel = await createStatsChannel(interaction, modality, nombre);
+    }
+
+    const competition = await Competition.create({
+        name: nombre,
+        seasonId: season.id,
+        type: tipo,
+        isActive: true,
+        canalEstadisticas: statsChannel?.id ?? null,
+    }).catch((err: unknown) => {
+        if (err instanceof UniqueConstraintError) return null;
         throw err;
+    });
+
+    if (!competition) {
+        await interaction.editReply({
+            content: `Ya existe una competencia llamada **${nombre}** en la temporada **${season.name}**.`,
+        });
+        return;
     }
 
     logger.success(
-        `/league-competition new | ${interaction.user.username} creó **${nombre}** (${tipo}) en ${modality.displayName} · ${season.name}`
+        `/league-competition new | ${interaction.user.username} creó **${nombre}** (${tipo}) en ${modality.displayName} · ${season.name}`,
     );
+
+    const fields: { name: string; value: string; inline?: boolean }[] = [
+        { name: "Tipo", value: getTypeLabel(tipo), inline: true },
+        { name: "Temporada", value: `\`${season.name}\``, inline: true },
+        { name: "Estado", value: "🟢 Activa", inline: true },
+    ];
+
+    if (statsChannel) {
+        fields.push({ name: "Canal de stats", value: statsChannel.toString(), inline: true });
+    }
 
     await interaction.editReply({
         embeds: [
             new EmbedBuilder()
                 .setColor(0x2ECC71)
-                .setTitle("🏆 Competencia creada")
+                .setTitle("Competencia creada")
                 .setDescription(`**${nombre}** ha sido añadida a **${modality.displayName}**.`)
-                .addFields(
-                    { name: "Tipo", value: getTypeLabel(tipo), inline: true },
-                    { name: "Temporada", value: `\`${season.name}\``, inline: true },
-                    { name: "Estado", value: "🟢 Activa", inline: true },
-                )
+                .addFields(fields)
                 .setFooter({ text: `iDinox v3 · Creada por ${interaction.user.username}` })
                 .setTimestamp(),
         ],
@@ -249,11 +373,11 @@ async function handleEdit(
     const compName = interaction.options.getString("competencia", true);
     const newNombre = interaction.options.getString("nombre")?.trim();
     const newTipo = interaction.options.getString("tipo") as CompetitionType | null;
-
-    if (!newNombre && !newTipo) {
-        await interaction.editReply({ content: "No se indicó ningún cambio." });
-        return;
-    }
+    const canalOptRaw = interaction.options.getChannel("canal_estadisticas");
+    const canalOpt = canalOptRaw
+        ? interaction.guild!.channels.cache.get(canalOptRaw.id) as TextChannel | undefined ?? null
+        : null;
+    const crearCanal = interaction.options.getBoolean("crear_canal") ?? false;
 
     const competition = await findCompetition(season.id, compName);
     if (!competition) {
@@ -261,12 +385,20 @@ async function handleEdit(
         return;
     }
 
+    // Resolver canal nuevo si se indicó
+    let newStatsChannel: TextChannel | null = null;
+
+    if (canalOpt) {
+        newStatsChannel = canalOpt;
+        await configureStatsChannel(newStatsChannel, modality);
+    } else if (crearCanal) {
+        newStatsChannel = await createStatsChannel(interaction, modality, competition.name);
+    }
+
     const cambios: string[] = [];
 
     if (newNombre && newNombre !== competition.name) {
-        const duplicado = await Competition.findOne({
-            where: { seasonId: season.id, name: newNombre },
-        });
+        const duplicado = await Competition.findOne({ where: { seasonId: season.id, name: newNombre } });
         if (duplicado) {
             await interaction.editReply({ content: `Ya existe una competencia llamada **${newNombre}** en esta temporada.` });
             return;
@@ -280,6 +412,14 @@ async function handleEdit(
         competition.type = newTipo;
     }
 
+    if (newStatsChannel) {
+        const anterior = competition.canalEstadisticas
+            ? `<#${competition.canalEstadisticas}>`
+            : "_ninguno_";
+        cambios.push(`Canal de stats: ${anterior} → ${newStatsChannel.toString()}`);
+        competition.canalEstadisticas = newStatsChannel.id;
+    }
+
     if (cambios.length === 0) {
         await interaction.editReply({ content: "Los valores indicados son iguales a los actuales. Sin cambios." });
         return;
@@ -288,14 +428,14 @@ async function handleEdit(
     await competition.save();
 
     logger.success(
-        `/league-competition edit | ${interaction.user.username} editó **${competition.name}** en ${modality.displayName}`
+        `/league-competition edit | ${interaction.user.username} editó **${competition.name}** en ${modality.displayName}`,
     );
 
     await interaction.editReply({
         embeds: [
             new EmbedBuilder()
                 .setColor(0x3498DB)
-                .setTitle("✏️ Competencia actualizada")
+                .setTitle("Competencia actualizada")
                 .setDescription(`**${competition.name}** ha sido modificada en **${modality.displayName}**.`)
                 .addFields({ name: "Cambios", value: cambios.join("\n") })
                 .setFooter({ text: `iDinox v3 · Editada por ${interaction.user.username}` })
@@ -325,14 +465,14 @@ async function handleClose(
     await competition.save();
 
     logger.success(
-        `/league-competition close | ${interaction.user.username} cerró **${competition.name}** en ${modality.displayName}`
+        `/league-competition close | ${interaction.user.username} cerró **${competition.name}** en ${modality.displayName}`,
     );
 
     await interaction.editReply({
         embeds: [
             new EmbedBuilder()
                 .setColor(0xF1C40F)
-                .setTitle("🔴 Competencia cerrada")
+                .setTitle("Competencia cerrada")
                 .setDescription(`**${competition.name}** ha sido cerrada en **${modality.displayName}**.`)
                 .addFields(
                     { name: "Temporada", value: `\`${season.name}\``, inline: true },
@@ -361,11 +501,11 @@ async function handleDelete(
 
     const confirmEmbed = new EmbedBuilder()
         .setColor(0xE74C3C)
-        .setTitle(`⚠️ Eliminar competencia: ${competition.name}`)
+        .setTitle(`Eliminar competencia: ${competition.name}`)
         .setDescription(
             totalStats > 0
                 ? `Esta competencia tiene **${totalStats} registros de estadísticas** que también serán eliminados. Esta acción es irreversible.`
-                : "Esta competencia no tiene estadísticas vinculadas. Esta acción es irreversible."
+                : "Esta competencia no tiene estadísticas vinculadas. Esta acción es irreversible.",
         )
         .addFields(
             { name: "Nombre", value: `\`${competition.name}\``, inline: true },
@@ -394,12 +534,11 @@ async function handleDelete(
             return;
         }
 
-        await i.update({ content: "⏳ Procesando...", embeds: [], components: [] });
-
-        await competition.destroy(); 
+        await i.update({ content: "Procesando...", embeds: [], components: [] });
+        await competition.destroy();
 
         logger.success(
-            `/league-competition delete | ${interaction.user.username} eliminó **${competition.name}** en ${modality.displayName} | ${totalStats} stats eliminadas`
+            `/league-competition delete | ${interaction.user.username} eliminó **${competition.name}** en ${modality.displayName} | ${totalStats} stats eliminadas`,
         );
 
         await interaction.editReply({

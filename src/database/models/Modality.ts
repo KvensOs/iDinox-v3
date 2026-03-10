@@ -17,25 +17,27 @@ import { sequelize } from "../../core/database.js";
 */
 
 export interface ModalitySettings {
-    marketOpen:             boolean;
-    rol_dt:                 string | null;
-    rol_sub_dt:             string | null;
-    rol_admin:              string | null;
+    marketOpen: boolean;
+    rol_dt: string | null;
+    rol_sub_dt: string | null;
+    rol_admin: string | null;
+    rol_estadistiquero: string | null;
     canal_mercado_fichajes: string | null;
-    canal_mercado_bajas:    string | null;
-    canal_resultados:       string | null;
-    canal_logs:             string | null;
+    canal_mercado_bajas: string | null;
+    canal_resultados: string | null;
+    canal_logs: string | null;
 }
 
 export const DEFAULT_SETTINGS: ModalitySettings = {
-    marketOpen:             false,
-    rol_dt:                 null,
-    rol_sub_dt:             null,
-    rol_admin:              null,
+    marketOpen: false,
+    rol_dt: null,
+    rol_sub_dt: null,
+    rol_admin: null,
+    rol_estadistiquero: null,
     canal_mercado_fichajes: null,
-    canal_mercado_bajas:    null,
-    canal_resultados:       null,
-    canal_logs:             null,
+    canal_mercado_bajas: null,
+    canal_resultados: null,
+    canal_logs: null,
 };
 
 /*
@@ -48,12 +50,12 @@ export class Modality extends Model<
     InferAttributes<Modality>,
     InferCreationAttributes<Modality>
 > {
-    declare id:             CreationOptional<number>;
-    declare name:           string;
-    declare displayName:    string;
+    declare id: CreationOptional<number>;
+    declare name: string;
+    declare displayName: string;
     declare playersPerTeam: number;
-    declare settings:       CreationOptional<ModalitySettings>;
-    declare isActive:       CreationOptional<boolean>;
+    declare settings: CreationOptional<ModalitySettings>;
+    declare isActive: CreationOptional<boolean>;
 }
 
 /*
@@ -65,32 +67,32 @@ export class Modality extends Model<
 Modality.init(
     {
         id: {
-            type:          DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
-            primaryKey:    true,
+            primaryKey: true,
         },
 
         name: {
-            type:      DataTypes.STRING(60),
+            type: DataTypes.STRING(60),
             allowNull: false,
-            unique:    true,
+            unique: true,
             validate: {
                 notEmpty: true,
-                len:      [2, 60],
+                len: [2, 60],
             },
         },
 
         displayName: {
-            type:      DataTypes.STRING(60),
+            type: DataTypes.STRING(60),
             allowNull: false,
             validate: {
                 notEmpty: true,
-                len:      [2, 60],
+                len: [2, 60],
             },
         },
 
         playersPerTeam: {
-            type:      DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
                 min: 1,
@@ -99,14 +101,14 @@ Modality.init(
         },
 
         settings: {
-            type:         DataTypes.JSON,
-            allowNull:    false,
+            type: DataTypes.JSON,
+            allowNull: false,
             defaultValue: () => ({ ...DEFAULT_SETTINGS }),
         },
 
         isActive: {
-            type:         DataTypes.BOOLEAN,
-            allowNull:    false,
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
             defaultValue: true,
         },
     },
@@ -120,7 +122,7 @@ Modality.init(
 
         hooks: {
             beforeValidate(modality) {
-                if (modality.name)        modality.name        = modality.name.trim();
+                if (modality.name) modality.name = modality.name.trim();
                 if (modality.displayName) modality.displayName = modality.displayName.trim();
             },
 

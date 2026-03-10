@@ -6,3 +6,6 @@ logos
 page
 fases.md
 paraia.md
+database.sqlite
+database.sqlite-shm
+database.sqlite-wal
