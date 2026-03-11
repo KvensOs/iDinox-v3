@@ -22,13 +22,14 @@ import { Team }        from "../database/models/Team.js";
 import { Season }      from "../database/models/Season.js";
 import { Modality, ModalitySettings, DEFAULT_SETTINGS } from "../database/models/Modality.js";
 import { Stat, StatValues } from "../database/models/Stat.js";
+import { Award }       from "../database/models/Award.js";
+import { AwardWinner } from "../database/models/AwardWinner.js";
 import { logger }    from "../utils/logger.js";
 
 const __dirname    = path.dirname(fileURLToPath(import.meta.url));
 const LOGOS_DIR    = path.join(__dirname, "../../logos");
 const COLOR_FALLBACK = "#2B2D31";
 const COLLECTOR_TTL  = 120_000;
-
 
 const resolveSettings = (raw: Partial<ModalitySettings> | null): ModalitySettings =>
     ({ ...DEFAULT_SETTINGS, ...raw });
@@ -63,6 +64,16 @@ interface PlayerRow {
     isDT:      boolean;
     isSubDT:   boolean;
 }
+
+// ─── Tipos para campeonatos ───────────────────────────────────────────────────
+
+type AwardWithSeason = Award & { season: Season };
+
+interface ClubTitles {
+    team: AwardWithSeason[];
+}
+
+// ─── Carga de plantilla ───────────────────────────────────────────────────────
 
 async function loadRoster(
     team:     Team,
@@ -121,11 +132,46 @@ async function loadRoster(
     return rows;
 }
 
+// ─── Carga de títulos del equipo ──────────────────────────────────────────────
+
+async function loadClubTitles(teamId: number): Promise<ClubTitles> {
+    const winners = await AwardWinner.findAll({
+        where: { teamId },
+        include: [
+            {
+                model:    Award,
+                as:       "award",
+                required: true,
+                where:    { type: "team" },
+                include:  [{ model: Season, as: "season", required: true }],
+            },
+        ],
+    }) as (AwardWinner & { award: AwardWithSeason })[];
+
+    // Deduplicar por award.id (podría llegar duplicado si hay varias filas por equipo)
+    const seen  = new Set<number>();
+    const team: AwardWithSeason[] = [];
+
+    for (const w of winners) {
+        if (seen.has(w.award.id)) continue;
+        seen.add(w.award.id);
+        team.push(w.award);
+    }
+
+    // Orden cronológico: temporada más reciente primero (por id DESC)
+    team.sort((a, b) => b.season.id - a.season.id);
+
+    return { team };
+}
+
+// ─── Embed ────────────────────────────────────────────────────────────────────
+
 function buildEmbed(
     team:     Team,
     modality: Modality,
     season:   Season,
     roster:   PlayerRow[],
+    titles:   ClubTitles,
     guild:    NonNullable<ChatInputCommandInteraction["guild"]>,
     hasLogo:  boolean,
 ): EmbedBuilder {
@@ -134,9 +180,9 @@ function buildEmbed(
         ? rol.hexColor
         : COLOR_FALLBACK;
 
-    const dt      = roster.find(r => r.isDT);
-    const subdt   = roster.find(r => r.isSubDT);
-    const dtStr   = dt    ? `<@${dt.discordId}>`    : "`Vacante`";
+    const dt       = roster.find(r => r.isDT);
+    const subdt    = roster.find(r => r.isSubDT);
+    const dtStr    = dt    ? `<@${dt.discordId}>`    : "`Vacante`";
     const subdtStr = subdt ? `<@${subdt.discordId}>` : "`Vacante`";
 
     const listaStr = roster.length
@@ -148,7 +194,7 @@ function buildEmbed(
         }).join("\n")
         : "_Sin jugadores registrados._";
 
-    return new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(color)
         .setAuthor({
             name:    `${team.name} · ${modality.displayName}`,
@@ -170,6 +216,12 @@ function buildEmbed(
                 ].join("\n"),
                 inline: true,
             },
+            ...(titles.team.length ? [{
+                name:  `Campeonatos (${titles.team.length})`,
+                value: titles.team
+                    .map(a => `· **${a.name}** · \`${a.season.name}\``)
+                    .join("\n"),
+            }] : []),
             {
                 name:  `Plantilla (${roster.length}/${modality.playersPerTeam})`,
                 value: listaStr,
@@ -178,10 +230,14 @@ function buildEmbed(
                 name:  "Equipación",
                 value: `🏠 ${team.uniformHome || "`N/A`"}  ·  ✈️ ${team.uniformAway || "`N/A`"}`,
             },
-        )
+        );
+
+    return embed
         .setFooter({ text: "iDinox v3 · Ficha de Club" })
         .setTimestamp();
 }
+
+// ─── Autocomplete ─────────────────────────────────────────────────────────────
 
 async function autocompleteTeam(interaction: AutocompleteInteraction): Promise<void> {
     const focused = interaction.options.getFocused().toLowerCase();
@@ -211,6 +267,8 @@ async function autocompleteTeam(interaction: AutocompleteInteraction): Promise<v
         }))
     );
 }
+
+// ─── Comando ──────────────────────────────────────────────────────────────────
 
 export default {
     category: "👥 Gestión de Equipos",
@@ -314,12 +372,15 @@ export default {
             const logoFilename = team.logoPath ? path.basename(team.logoPath) : null;
             const logoFullPath = logoFilename ? path.join(LOGOS_DIR, logoFilename) : null;
             const hasLogo      = !!(logoFullPath && await fileExists(logoFullPath));
-            const files        = hasLogo ? [new AttachmentBuilder(logoFullPath, { name: "logo.png" })] : [];
+            const files        = hasLogo ? [new AttachmentBuilder(logoFullPath!, { name: "logo.png" })] : [];
 
-            let roster = await loadRoster(team, season, modality, interaction.guild!);
+            let [roster, titles] = await Promise.all([
+                loadRoster(team, season, modality, interaction.guild!),
+                loadClubTitles(team.id),
+            ]);
 
             const buildPayload = () => ({
-                embeds: [buildEmbed(team, modality, season, roster, interaction.guild!, hasLogo)],
+                embeds: [buildEmbed(team!, modality, season, roster, titles, interaction.guild!, hasLogo)],
                 components: [
                     new ActionRowBuilder<ButtonBuilder>().addComponents(
                         new ButtonBuilder()
@@ -342,7 +403,10 @@ export default {
             collector.on("collect", async i => {
                 if (i.customId === "refresh_club") {
                     await i.deferUpdate();
-                    roster = await loadRoster(team, season, modality, interaction.guild!);
+                    [roster, titles] = await Promise.all([
+                        loadRoster(team!, season, modality, interaction.guild!),
+                        loadClubTitles(team!.id),
+                    ]);
                     await interaction.editReply(buildPayload());
                 }
             });
