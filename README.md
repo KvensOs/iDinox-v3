@@ -1,16 +1,20 @@
 <div align="center">
 
-# iDinox v3
+# ⚡ iDinox v3
 
-**El sistema de gestión de ligas para HaxBall.**
-Todo desde Discord. Sin planillas. Sin trabajo manual cada temporada.
+### Bot de gestión de ligas para HaxBall
+Todo desde Discord. Sin gestores externos. Sin trabajo manual cada temporada.
 
-[![Node](https://img.shields.io/badge/node-%3E=18-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/typescript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Discord.js](https://img.shields.io/badge/discord.js-v14-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org)
-[![SQLite](https://img.shields.io/badge/sqlite-sequelize-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://sequelize.org)
-[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
-[![Status](https://img.shields.io/badge/estado-fase%205-f59e0b?style=flat-square)]()
+<br/>
+
+![Node](https://img.shields.io/badge/Node.js_≥18-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript_5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Discord.js](https://img.shields.io/badge/Discord.js_v14-5865F2?style=for-the-badge&logo=discord&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite_+_Sequelize-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+
+![License](https://img.shields.io/badge/Licencia-MIT-22c55e?style=for-the-badge)
+![Status](https://img.shields.io/badge/Estado-Fase_5_%F0%9F%94%A8-f59e0b?style=for-the-badge)
+![HaxBall](https://img.shields.io/badge/Hecho_para-HaxBall-e85d3f?style=for-the-badge)
 
 </div>
 
@@ -18,24 +22,27 @@ Todo desde Discord. Sin planillas. Sin trabajo manual cada temporada.
 
 ## El problema
 
-Las ligas de HaxBall crecen. Las planillas de Google Sheets, no.
+Si organizas ligas de HaxBall sabes cómo funciona: llevas las estadísticas a mano en un gestor como **Challenge Place** o **Arena17**, actualizas los datos después de cada jornada, y rezas para que nadie te pregunte cuántos goles metió alguien hace dos temporadas porque eso no está en ningún lado.
 
-Llega un punto donde el DT no sabe si el jugador ya está registrado, las stats están en un canal que nadie encuentra, y el admin tiene que hacer todo a mano cada vez que arranca una temporada nueva. Datos dispersos, jugadores duplicados, historial perdido en mensajes viejos.
+El problema más gordo no es el gestor en sí — es todo lo que no puede hacer. No guarda estadísticas separadas por temporada, no tiene historial de títulos, no tiene perfiles de jugador con todo su recorrido. Y aparte de eso, los fichajes, las altas, las bajas, los nicknames... todo eso lo está haciendo el admin a mano.
 
-iDinox no intenta ser un bot genérico de gestión. Es un sistema pensado para ligas serias, donde cada fichaje, estadística y premio queda registrado y es consultable en cualquier momento, para siempre.
+iDinox cubre esa parte. Los fichajes, las stats, los perfiles, el historial de premios y el ciclo de temporadas — todo desde Discord, sin tocar nada externo. Lo único que sigue estando aparte es la tabla de posiciones, los resultados y la gestión de fechas, que está planificado para la **v4**.
+
+> **En resumen:** sigues usando tu gestor para la tabla y los resultados. iDinox se encarga de todo lo demás.
 
 ---
 
 ## Qué hace
 
-- Gestiona **equipos** completos: logo, uniformes, DT, abreviación y rol de Discord vinculado
-- Controla el **mercado de fichajes** con flujo de confirmación y notificaciones automáticas en canales dedicados
-- Registra **estadísticas** por jugador, competencia y temporada — sin mezclarlas nunca
-- Muestra **perfiles** interactivos con historial completo navegable por menús
-- Soporta **múltiples modalidades** (X4, X5…) completamente independientes en el mismo servidor
-- Preserva el **historial** aunque equipos o competencias se eliminen
-- **Roster carry automático** al crear una nueva temporada
-- Todo con **slash commands** y autocomplete dinámico desde la base de datos
+- 🏟️ Gestiona **equipos** completos: logo, uniformes, DT, abreviación y rol de Discord vinculado
+- 🔄 Controla el **mercado de fichajes** con flujo de confirmación y notificaciones automáticas
+- 📊 Registra **estadísticas** por jugador, competencia y temporada — separadas, sin mezclarlas nunca
+- 👤 **Perfiles históricos** de jugadores: stats acumuladas, temporadas jugadas, premios ganados
+- 🏆 Sistema de **premios y títulos** por temporada, individuales y de equipo
+- 📁 **Historial permanente** aunque equipos o competencias se eliminen
+- ♻️ **Roster carry automático** al arrancar una temporada nueva
+- 🎮 Soporte para **múltiples modalidades** (X4, X5…) completamente independientes en el mismo servidor
+- ⚡ Todo con **slash commands** y autocomplete dinámico desde la base de datos
 
 ---
 
