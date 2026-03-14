@@ -41,111 +41,111 @@ const fkOpt = (name: string) => ({ name, allowNull: true });
 // ─── MODALITY ─────────────────────────────────────────────────────────────────
 
 Modality.hasMany(Season, {
-    foreignKey: fk("modalityId"),
-    as: "seasons",
-    onDelete: "RESTRICT",
-    onUpdate: "CASCADE",
+  foreignKey: fk("modalityId"),
+  as: "seasons",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
 });
 Season.belongsTo(Modality, {
-    foreignKey: fk("modalityId"),
-    as: "modality",
+  foreignKey: fk("modalityId"),
+  as: "modality",
 });
 
 Modality.hasMany(Team, {
-    foreignKey: fk("modalityId"),
-    as: "teams",
-    onDelete: "RESTRICT",
-    onUpdate: "CASCADE",
+  foreignKey: fk("modalityId"),
+  as: "teams",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
 });
 Team.belongsTo(Modality, {
-    foreignKey: fk("modalityId"),
-    as: "modality",
+  foreignKey: fk("modalityId"),
+  as: "modality",
 });
 
 // ─── SEASON ───────────────────────────────────────────────────────────────────
 
 Season.hasMany(Competition, {
-    foreignKey: fk("seasonId"),
-    as: "competitions",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("seasonId"),
+  as: "competitions",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Competition.belongsTo(Season, {
-    foreignKey: fk("seasonId"),
-    as: "season",
+  foreignKey: fk("seasonId"),
+  as: "season",
 });
 
 Season.hasMany(Participant, {
-    foreignKey: fk("seasonId"),
-    as: "participants",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("seasonId"),
+  as: "participants",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Participant.belongsTo(Season, {
-    foreignKey: fk("seasonId"),
-    as: "season",
+  foreignKey: fk("seasonId"),
+  as: "season",
 });
 
 Season.hasMany(Award, {
-    foreignKey: fk("seasonId"),
-    as: "awards",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("seasonId"),
+  as: "awards",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Award.belongsTo(Season, {
-    foreignKey: fk("seasonId"),
-    as: "season",
+  foreignKey: fk("seasonId"),
+  as: "season",
 });
 
 // ─── PLAYER ───────────────────────────────────────────────────────────────────
 
 Player.hasMany(Participant, {
-    foreignKey: fk("playerId"),
-    as: "participations",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("playerId"),
+  as: "participations",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Participant.belongsTo(Player, {
-    foreignKey: fk("playerId"),
-    as: "player",
+  foreignKey: fk("playerId"),
+  as: "player",
 });
 
 // ─── TEAM ─────────────────────────────────────────────────────────────────────
 // teamId nullable → agente libre cuando teamId = null
 
 Team.hasMany(Participant, {
-    foreignKey: fkOpt("teamId"),
-    as: "participants",
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE",
+  foreignKey: fkOpt("teamId"),
+  as: "participants",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE",
 });
 Participant.belongsTo(Team, {
-    foreignKey: fkOpt("teamId"),
-    as: "team",
+  foreignKey: fkOpt("teamId"),
+  as: "team",
 });
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 
 Participant.hasMany(Stat, {
-    foreignKey: fk("participantId"),
-    as: "stats",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("participantId"),
+  as: "stats",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Stat.belongsTo(Participant, {
-    foreignKey: fk("participantId"),
-    as: "participant",
+  foreignKey: fk("participantId"),
+  as: "participant",
 });
 
 Competition.hasMany(Stat, {
-    foreignKey: fk("competitionId"),
-    as: "stats",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("competitionId"),
+  as: "stats",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Stat.belongsTo(Competition, {
-    foreignKey: fk("competitionId"),
-    as: "competition",
+  foreignKey: fk("competitionId"),
+  as: "competition",
 });
 
 // ─── AWARDS ───────────────────────────────────────────────────────────────────
@@ -162,76 +162,78 @@ Stat.belongsTo(Competition, {
 //    competition.getAwards()
 
 Competition.hasMany(Award, {
-    foreignKey: fkOpt("competitionId"),
-    as: "awards",
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE",
+  foreignKey: fkOpt("competitionId"),
+  as: "awards",
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE",
 });
 Award.belongsTo(Competition, {
-    foreignKey: fkOpt("competitionId"),
-    as: "competition",
+  foreignKey: fkOpt("competitionId"),
+  as: "competition",
 });
 
 Award.hasMany(AwardWinner, {
-    foreignKey: fk("awardId"),
-    as: "winners",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fk("awardId"),
+  as: "winners",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 AwardWinner.belongsTo(Award, {
-    foreignKey: fk("awardId"),
-    as: "award",
+  foreignKey: fk("awardId"),
+  as: "award",
 });
 
 Player.hasMany(AwardWinner, {
-    foreignKey: fkOpt("playerId"),
-    as: "awardWins",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fkOpt("playerId"),
+  as: "awardWins",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 AwardWinner.belongsTo(Player, {
-    foreignKey: fkOpt("playerId"),
-    as: "player",
+  foreignKey: fkOpt("playerId"),
+  as: "player",
 });
 
 Team.hasMany(AwardWinner, {
-    foreignKey: fkOpt("teamId"),
-    as: "awardWins",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  foreignKey: fkOpt("teamId"),
+  as: "awardWins",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 AwardWinner.belongsTo(Team, {
-    foreignKey: fkOpt("teamId"),
-    as: "team",
+  foreignKey: fkOpt("teamId"),
+  as: "team",
 });
 
 // ─── SINCRONIZACIÓN CONTROLADA ────────────────────────────────────────────────
 
 export interface SyncOptions {
-    alter?: boolean;
-    force?: boolean;
+  alter?: boolean;
+  force?: boolean;
 }
 
 export async function syncModels(options: SyncOptions = {}): Promise<void> {
-    const env = process.env.NODE_ENV ?? "development";
-    const ENABLE_SYNC = process.env.DB_SYNC === "true";
+  const env = process.env.NODE_ENV ?? "development";
+  const ENABLE_SYNC = process.env.DB_SYNC === "true";
 
-    if (!ENABLE_SYNC) {
-        logger.warn("DB_SYNC is disabled — sequelize.sync() skipped.");
-        return;
-    }
+  if (!ENABLE_SYNC) {
+    logger.warn("DB_SYNC is disabled — sequelize.sync() skipped.");
+    return;
+  }
 
-    if ((options.force || options.alter) && env === "production") {
-        throw new Error("force/alter are blocked in production — use migrations.");
-    }
+  if ((options.force || options.alter) && env === "production") {
+    throw new Error("force/alter are blocked in production — use migrations.");
+  }
 
-    logger.info(`Syncing DB… [env: ${env}] [alter: ${options.alter ?? false}] [force: ${options.force ?? false}]`);
+  logger.info(
+    `Syncing DB… [env: ${env}] [alter: ${options.alter ?? false}] [force: ${options.force ?? false}]`,
+  );
 
-    try {
-        await sequelize.sync(options);
-        logger.success("Database synced successfully.");
-    } catch (error) {
-        logger.fatal("Failed to sync database.", error);
-        throw error;
-    }
+  try {
+    await sequelize.sync(options);
+    logger.success("Database synced successfully.");
+  } catch (error) {
+    logger.fatal("Failed to sync database.", error);
+    throw error;
+  }
 }

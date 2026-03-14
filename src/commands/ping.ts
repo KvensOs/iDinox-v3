@@ -1,4 +1,8 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} from "discord.js";
 
 export default {
   category: "⚙️ Sistema",
@@ -12,7 +16,8 @@ export default {
     const { resource } = await interaction.deferReply({ withResponse: true });
 
     const wsLatency = interaction.client.ws.ping;
-    const apiLatency = resource!.message!.createdTimestamp - interaction.createdTimestamp;
+    const apiLatency =
+      resource!.message!.createdTimestamp - interaction.createdTimestamp;
 
     const getColor = (ms: number) =>
       ms < 100 ? "#2ECC71" : ms < 200 ? "#F1C40F" : "#E74C3C";
@@ -26,9 +31,21 @@ export default {
           .setColor(getColor(wsLatency))
           .setTitle("🏓 Pong!")
           .addFields(
-            { name: "Latencia API", value: `\`${apiLatency}ms\` ${getStatus(apiLatency)}`, inline: true },
-            { name: "Latencia WebSocket", value: `\`${wsLatency}ms\` ${getStatus(wsLatency)}`, inline: true },
-            { name: "Uptime", value: `\`${formatUptime(interaction.client.uptime)}\``, inline: true },
+            {
+              name: "Latencia API",
+              value: `\`${apiLatency}ms\` ${getStatus(apiLatency)}`,
+              inline: true,
+            },
+            {
+              name: "Latencia WebSocket",
+              value: `\`${wsLatency}ms\` ${getStatus(wsLatency)}`,
+              inline: true,
+            },
+            {
+              name: "Uptime",
+              value: `\`${formatUptime(interaction.client.uptime)}\``,
+              inline: true,
+            },
           )
           .setTimestamp(),
       ],

@@ -84,59 +84,59 @@ Sin esto, los comandos de permisos y mercado no van a funcionar.
 
 ### Configuración y equipos
 
-| Comando | Qué hace |
-|---|---|
-| `/setup` | Configura roles y canales de una modalidad. Sin argumentos muestra la configuración actual. |
-| `/start` | Te registra en la temporada activa de una modalidad. Hay que repetirlo en cada temporada nueva. |
-| `/league-team add` | Crea un equipo, descarga el logo y registra al DT automáticamente. |
-| `/league-team edit` | Edita nombre, abreviación, rol o uniformes. Si cambia la abreviación, renombra el logo y actualiza todos los nicknames. |
-| `/league-team delete` | Soft delete: desactiva el equipo y libera el rol. Preserva todo el historial. |
-| `/league-competition new` | Crea una competencia en la temporada activa. Puede asignar o crear un canal de estadísticas automáticamente. |
-| `/league-competition edit` | Edita nombre, tipo o canal de estadísticas. |
-| `/league-competition close` | Cierra sin borrar. Las stats quedan intactas. |
-| `/league-competition delete` | Elimina permanentemente junto con todas sus stats. Pide confirmación. |
-| `/club-unis` | El DT o sub-DT edita los uniformes de su propio equipo. |
+| Comando                      | Qué hace                                                                                                                |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `/setup`                     | Configura roles y canales de una modalidad. Sin argumentos muestra la configuración actual.                             |
+| `/start`                     | Te registra en la temporada activa de una modalidad. Hay que repetirlo en cada temporada nueva.                         |
+| `/league-team add`           | Crea un equipo, descarga el logo y registra al DT automáticamente.                                                      |
+| `/league-team edit`          | Edita nombre, abreviación, rol o uniformes. Si cambia la abreviación, renombra el logo y actualiza todos los nicknames. |
+| `/league-team delete`        | Soft delete: desactiva el equipo y libera el rol. Preserva todo el historial.                                           |
+| `/league-competition new`    | Crea una competencia en la temporada activa. Puede asignar o crear un canal de estadísticas automáticamente.            |
+| `/league-competition edit`   | Edita nombre, tipo o canal de estadísticas.                                                                             |
+| `/league-competition close`  | Cierra sin borrar. Las stats quedan intactas.                                                                           |
+| `/league-competition delete` | Elimina permanentemente junto con todas sus stats. Pide confirmación.                                                   |
+| `/club-unis`                 | El DT o sub-DT edita los uniformes de su propio equipo.                                                                 |
 
 ### Mercado de fichajes
 
-| Comando | Qué hace |
-|---|---|
-| `/market open` | Abre el mercado de la modalidad. |
-| `/market close` | Cierra el mercado. |
-| `/market estado` | Muestra si el mercado está abierto o cerrado. Público. |
-| `/market agents` | Lista los jugadores sin equipo en la temporada activa. |
-| `/market sign` | Ficha a un jugador: le asigna equipo, actualiza su nickname y notifica en el canal de fichajes. |
-| `/market release` | Da de baja: desvincula del equipo, limpia el nickname y notifica en el canal de bajas. |
-| `/player-check` | Muestra el estado de un jugador en todas las modalidades. Sin restricción de permisos. |
+| Comando           | Qué hace                                                                                        |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| `/market open`    | Abre el mercado de la modalidad.                                                                |
+| `/market close`   | Cierra el mercado.                                                                              |
+| `/market estado`  | Muestra si el mercado está abierto o cerrado. Público.                                          |
+| `/market agents`  | Lista los jugadores sin equipo en la temporada activa.                                          |
+| `/market sign`    | Ficha a un jugador: le asigna equipo, actualiza su nickname y notifica en el canal de fichajes. |
+| `/market release` | Da de baja: desvincula del equipo, limpia el nickname y notifica en el canal de bajas.          |
+| `/player-check`   | Muestra el estado de un jugador en todas las modalidades. Sin restricción de permisos.          |
 
 ### Estadísticas y perfiles
 
-| Comando | Qué hace |
-|---|---|
-| `/league-stats add` | Registra o corrige estadísticas manualmente con autocomplete de jugador y competencia. |
-| `/perfil` | Perfil completo con stats por competencia, temporadas anteriores y premios. Navegación interactiva. |
-| `/club` | Ficha del equipo con plantilla, posiciones y stats de la temporada actual. |
-| `/league-tops` | Rankings por goles, asistencias, vallas y autogoles. Filtrable por competencia y temporada. |
-| `/league-compare` | Comparativa directa entre dos jugadores. *(próximamente)* |
-| `/league-history` | Palmarés y recorrido histórico de un jugador o equipo. *(próximamente)* |
-| `/league-trophy add` | Registra un premio o título de equipo o individual. *(próximamente)* |
+| Comando              | Qué hace                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| `/league-stats add`  | Registra o corrige estadísticas manualmente con autocomplete de jugador y competencia.              |
+| `/perfil`            | Perfil completo con stats por competencia, temporadas anteriores y premios. Navegación interactiva. |
+| `/club`              | Ficha del equipo con plantilla, posiciones y stats de la temporada actual.                          |
+| `/league-tops`       | Rankings por goles, asistencias, vallas y autogoles. Filtrable por competencia y temporada.         |
+| `/league-compare`    | Comparativa directa entre dos jugadores. _(próximamente)_                                           |
+| `/league-history`    | Palmarés y recorrido histórico de un jugador o equipo. _(próximamente)_                             |
+| `/league-trophy add` | Registra un premio o título de equipo o individual. _(próximamente)_                                |
 
 ### Temporadas
 
-| Comando | Qué hace |
-|---|---|
-| `/season new` | Crea una nueva temporada. Archiva la anterior y cierra sus competencias. *(próximamente)* |
-| `/season end` | Cierra la temporada activa sin crear una nueva. *(próximamente)* |
-| `/season info` | Info de la temporada activa o de cualquier temporada anterior. *(próximamente)* |
+| Comando        | Qué hace                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| `/season new`  | Crea una nueva temporada. Archiva la anterior y cierra sus competencias. _(próximamente)_ |
+| `/season end`  | Cierra la temporada activa sin crear una nueva. _(próximamente)_                          |
+| `/season info` | Info de la temporada activa o de cualquier temporada anterior. _(próximamente)_           |
 
 ### Utilidades
 
-| Comando | Qué hace |
-|---|---|
-| `/broadcast` | DM masivo a hasta 3 roles del servidor. *(próximamente)* |
-| `/hora` | Referencia de horarios para comunidades latinoamericanas. *(próximamente)* |
-| `/timestamp` | Generador de timestamps para Discord. *(próximamente)* |
-| `/ticket setup` | Sistema de tickets integrado. *(próximamente)* |
+| Comando         | Qué hace                                                                   |
+| --------------- | -------------------------------------------------------------------------- |
+| `/broadcast`    | DM masivo a hasta 3 roles del servidor. _(próximamente)_                   |
+| `/hora`         | Referencia de horarios para comunidades latinoamericanas. _(próximamente)_ |
+| `/timestamp`    | Generador de timestamps para Discord. _(próximamente)_                     |
+| `/ticket setup` | Sistema de tickets integrado. _(próximamente)_                             |
 
 ---
 
@@ -149,6 +149,7 @@ Las stats se pueden cargar de dos formas. Ambas requieren tener `rol_estadistiqu
 Esta es la forma rápida. Cada competencia puede tener un canal de Discord dedicado. El bot escucha los mensajes en ese canal y procesa todo automáticamente, sin necesidad de abrir ningún comando.
 
 Al crear o editar una competencia con `/league-competition`, puedes:
+
 - **Seleccionar un canal existente** — el bot configura los permisos automáticamente
 - **Pedir que cree uno** con `crear_canal:True` — lo crea con nombre `stats-competencia-modalidad` y bloquea el acceso a `@everyone` directamente
 
@@ -160,12 +161,12 @@ Una vez configurado, la sintaxis es simple:
 @Jugador g-1
 ```
 
-| Código | Stat |
-|---|---|
-| `g` | Goles |
-| `a` | Asistencias |
-| `cs` | Valla invicta |
-| `ag` | Autogol |
+| Código | Stat          |
+| ------ | ------------- |
+| `g`    | Goles         |
+| `a`    | Asistencias   |
+| `cs`   | Valla invicta |
+| `ag`   | Autogol       |
 
 Los valores negativos restan stats. Nunca pueden quedar en negativo — si el resultado sería menor a 0, se limita a 0 automáticamente y se avisa.
 
@@ -185,12 +186,12 @@ La alternativa formal. Útil para correcciones puntuales o cuando no se tiene ac
 
 El sistema tiene tres niveles, todos configurables por modalidad:
 
-| Nivel | Quién | Qué puede hacer |
-|---|---|---|
-| **Admin global** | Administrador del servidor | Todo, incluyendo cambiar `rol_admin` y crear temporadas. |
+| Nivel                  | Quién                             | Qué puede hacer                                           |
+| ---------------------- | --------------------------------- | --------------------------------------------------------- |
+| **Admin global**       | Administrador del servidor        | Todo, incluyendo cambiar `rol_admin` y crear temporadas.  |
 | **Admin de modalidad** | Tiene `rol_admin` de la modalidad | Gestión de equipos, mercado, competencias y estadísticas. |
-| **DT / Sub-DT** | Tiene `rol_dt` o `rol_sub_dt` | Fichajes de su propio equipo y uniformes. |
-| **Estadistiquero** | Tiene `rol_estadistiquero` | Cargar stats por canal o comando. |
+| **DT / Sub-DT**        | Tiene `rol_dt` o `rol_sub_dt`     | Fichajes de su propio equipo y uniformes.                 |
+| **Estadistiquero**     | Tiene `rol_estadistiquero`        | Cargar stats por canal o comando.                         |
 
 > El DT no se guarda en la base de datos. Se detecta dinámicamente: quien tiene `rol_dt` **y** pertenece al equipo en esa temporada es el DT. Cambiar de DT es simplemente reasignar el rol en Discord.
 
@@ -213,16 +214,16 @@ Season  → Award
 Modality → Award
 ```
 
-| Modelo | Qué representa |
-|---|---|
-| `Modality` | Modalidad de juego (X4, X5…). Guarda toda la configuración de Discord en un campo JSON. |
-| `Season` | Temporada de una modalidad. X4 y X5 avanzan independientemente. |
-| `Team` | Equipo con logo, uniformes y rol de Discord. Soft delete para preservar historial. |
-| `Player` | Registro global del usuario de Discord. Un ID, un perfil. Independiente de temporada o modalidad. |
+| Modelo        | Qué representa                                                                                                    |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Modality`    | Modalidad de juego (X4, X5…). Guarda toda la configuración de Discord en un campo JSON.                           |
+| `Season`      | Temporada de una modalidad. X4 y X5 avanzan independientemente.                                                   |
+| `Team`        | Equipo con logo, uniformes y rol de Discord. Soft delete para preservar historial.                                |
+| `Player`      | Registro global del usuario de Discord. Un ID, un perfil. Independiente de temporada o modalidad.                 |
 | `Participant` | **Nodo central.** Une un `Player` con un `Team` y una `Season+Modalidad`. `teamId = null` significa agente libre. |
-| `Competition` | Liga, copa, amistoso u otro. Hereda la modalidad de su `Season`. Puede tener un canal de stats asignado. |
-| `Stat` | Stats de un `Participant` en una `Competition` específica. Nunca se mezclan entre temporadas ni competencias. |
-| `Award` | Premio o título de equipo o individual. Sobrevive aunque la competencia o el equipo se eliminen. |
+| `Competition` | Liga, copa, amistoso u otro. Hereda la modalidad de su `Season`. Puede tener un canal de stats asignado.          |
+| `Stat`        | Stats de un `Participant` en una `Competition` específica. Nunca se mezclan entre temporadas ni competencias.     |
+| `Award`       | Premio o título de equipo o individual. Sobrevive aunque la competencia o el equipo se eliminen.                  |
 
 ### Multi-modalidad
 
@@ -231,10 +232,12 @@ X4 y X5 son universos completamente separados. Cada una tiene su propia configur
 ### Soft delete de equipos
 
 Los equipos no se borran realmente. Al eliminar:
+
 ```
 isActive = false
 roleId   = "deleted_${id}"
 ```
+
 El rol queda libre para usarse de nuevo. Las stats, participaciones y premios quedan intactos en la base de datos.
 
 ---
@@ -258,25 +261,25 @@ idinox-v3/
 
 ## Hoja de ruta
 
-| Fase | Contenido | Estado |
-|---|---|---|
-| 1 — Configuración y equipos | `/setup`, `/league-team`, `/league-competition`, `/start`, `/club-unis` | ✅ Completado |
-| 2 — Mercado de fichajes | `/market`, `/player-check` | ✅ Completado |
-| 3 — Estadísticas y perfiles | `/league-stats`, `/perfil`, `/club`, `/league-tops`, canal de stats | 🔄 En desarrollo |
-| 4 — Gestión de temporadas | `/season new/end/info` | 📋 Planificado |
-| 5 — Utilidades | `/broadcast`, `/hora`, `/timestamp`, `/ticket` | 📋 Planificado |
+| Fase                        | Contenido                                                               | Estado           |
+| --------------------------- | ----------------------------------------------------------------------- | ---------------- |
+| 1 — Configuración y equipos | `/setup`, `/league-team`, `/league-competition`, `/start`, `/club-unis` | ✅ Completado    |
+| 2 — Mercado de fichajes     | `/market`, `/player-check`                                              | ✅ Completado    |
+| 3 — Estadísticas y perfiles | `/league-stats`, `/perfil`, `/club`, `/league-tops`, canal de stats     | 🔄 En desarrollo |
+| 4 — Gestión de temporadas   | `/season new/end/info`                                                  | 📋 Planificado   |
+| 5 — Utilidades              | `/broadcast`, `/hora`, `/timestamp`, `/ticket`                          | 📋 Planificado   |
 
 ---
 
 ## Stack
 
-| Tecnología | Versión | Uso |
-|---|---|---|
-| Node.js | ≥ 18 | Runtime |
-| TypeScript | 5.x (ESM) | Lenguaje principal |
-| Discord.js | v14 | Integración con Discord |
-| Sequelize | 6.x | ORM |
-| SQLite | — | Base de datos |
+| Tecnología | Versión   | Uso                     |
+| ---------- | --------- | ----------------------- |
+| Node.js    | ≥ 18      | Runtime                 |
+| TypeScript | 5.x (ESM) | Lenguaje principal      |
+| Discord.js | v14       | Integración con Discord |
+| Sequelize  | 6.x       | ORM                     |
+| SQLite     | —         | Base de datos           |
 
 ---
 

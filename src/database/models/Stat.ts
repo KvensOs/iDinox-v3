@@ -1,12 +1,12 @@
 "use strict";
 
 import {
-    DataTypes,
-    Model,
-    InferAttributes,
-    InferCreationAttributes,
-    CreationOptional,
-    ForeignKey,
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
 } from "sequelize";
 
 import { sequelize } from "../../core/database.js";
@@ -15,30 +15,30 @@ import { Competition } from "./Competition.js";
 import { logger } from "../../utils/logger.js";
 
 export interface StatValues {
-    goles: number;
-    asistencias: number;
-    vallas: number;
-    autogoles: number;
-    [key: string]: number;
+  goles: number;
+  asistencias: number;
+  vallas: number;
+  autogoles: number;
+  [key: string]: number;
 }
 
 export const DEFAULT_STATS: StatValues = {
-    goles: 0,
-    asistencias: 0,
-    vallas: 0,
-    autogoles: 0,
+  goles: 0,
+  asistencias: 0,
+  vallas: 0,
+  autogoles: 0,
 };
 
 export class Stat extends Model<
-    InferAttributes<Stat>,
-    InferCreationAttributes<Stat>
+  InferAttributes<Stat>,
+  InferCreationAttributes<Stat>
 > {
-    declare id: CreationOptional<number>;
-    declare participantId: ForeignKey<Participant["id"]>;
-    declare competitionId: ForeignKey<Competition["id"]>;
-    declare values: CreationOptional<StatValues>;
+  declare id: CreationOptional<number>;
+  declare participantId: ForeignKey<Participant["id"]>;
+  declare competitionId: ForeignKey<Competition["id"]>;
+  declare values: CreationOptional<StatValues>;
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | addStats — acumula estadísticas de forma atómica
     |--------------------------------------------------------------------------
@@ -52,114 +52,116 @@ export class Stat extends Model<
     |
     */
 
-    static async addStats(
-        participantId: number,
-        competitionId: number,
-        toAdd: Partial<StatValues>
-    ): Promise<Stat> {
-        return sequelize.transaction(async (t) => {
-            const [stat] = await Stat.findOrCreate({
-                where: { participantId, competitionId },
-                defaults: {
-                    participantId,
-                    competitionId,
-                    values: { ...DEFAULT_STATS },
-                },
-                transaction: t,
-                lock: t.LOCK.UPDATE,
-            });
+  static async addStats(
+    participantId: number,
+    competitionId: number,
+    toAdd: Partial<StatValues>,
+  ): Promise<Stat> {
+    return sequelize.transaction(async (t) => {
+      const [stat] = await Stat.findOrCreate({
+        where: { participantId, competitionId },
+        defaults: {
+          participantId,
+          competitionId,
+          values: { ...DEFAULT_STATS },
+        },
+        transaction: t,
+        lock: t.LOCK.UPDATE,
+      });
 
-            const current: StatValues = { ...DEFAULT_STATS, ...(stat.values ?? {}) };
-            const updated: StatValues = { ...current };
+      const current: StatValues = { ...DEFAULT_STATS, ...(stat.values ?? {}) };
+      const updated: StatValues = { ...current };
 
-            for (const key of Object.keys(toAdd)) {
-                const raw = toAdd[key];
+      for (const key of Object.keys(toAdd)) {
+        const raw = toAdd[key];
 
-                if (typeof raw !== "number" || Number.isNaN(raw)) {
-                    throw new Error(`Stat inválida: "${key}" debe ser un número.`);
-                }
+        if (typeof raw !== "number" || Number.isNaN(raw)) {
+          throw new Error(`Stat inválida: "${key}" debe ser un número.`);
+        }
 
-                if (raw < 0) {
-                    logger.warn(`⚠️ Valor negativo ignorado en stat "${key}": ${raw}`);
-                    continue;
-                }
+        if (raw < 0) {
+          logger.warn(`⚠️ Valor negativo ignorado en stat "${key}": ${raw}`);
+          continue;
+        }
 
-                updated[key] = (updated[key] ?? 0) + raw;
-            }
+        updated[key] = (updated[key] ?? 0) + raw;
+      }
 
-            stat.values = updated;
-            stat.changed("values", true);
+      stat.values = updated;
+      stat.changed("values", true);
 
-            return stat.save({ transaction: t });
-        });
-    }
+      return stat.save({ transaction: t });
+    });
+  }
 }
 
 Stat.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        },
-
-        participantId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: { model: "participants", key: "id" },
-        },
-
-        competitionId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: { model: "competitions", key: "id" },
-        },
-
-        values: {
-            type: DataTypes.JSON,
-            allowNull: false,
-            defaultValue: () => ({ ...DEFAULT_STATS }),
-        },
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-        sequelize,
-        tableName: "stats",
 
-        indexes: [
-            { fields: ["participantId"] },
-            { fields: ["competitionId"] },
-            // un participant solo tiene un registro de stats por competition
-            {
-                unique: true,
-                name: "uq_stat_participant_competition",
-                fields: ["participantId", "competitionId"],
-            },
-        ],
+    participantId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "participants", key: "id" },
+    },
 
-        hooks: {
-            /**
-             * Antes de guardar, comprobamos que el participant y la competition existan
-             * y que ambos pertenezcan a la misma temporada.
-             * Solo lo hacemos cuando el registro es nuevo para evitar consultas extra
-             * en cada actualización.
-             */
-            async beforeSave(stat, { transaction }) {
-                if (!stat.isNewRecord) return;
+    competitionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "competitions", key: "id" },
+    },
 
-                const [participant, competition] = await Promise.all([
-                    Participant.findByPk(stat.participantId, { transaction }),
-                    Competition.findByPk(stat.competitionId, { transaction }),
-                ]);
+    values: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: () => ({ ...DEFAULT_STATS }),
+    },
+  },
+  {
+    sequelize,
+    tableName: "stats",
 
-                if (!participant) throw new Error("El participant especificado no existe.");
-                if (!competition) throw new Error("La competition especificada no existe.");
+    indexes: [
+      { fields: ["participantId"] },
+      { fields: ["competitionId"] },
+      // un participant solo tiene un registro de stats por competition
+      {
+        unique: true,
+        name: "uq_stat_participant_competition",
+        fields: ["participantId", "competitionId"],
+      },
+    ],
 
-                if (participant.seasonId !== competition.seasonId) {
-                    throw new Error(
-                        "El participant y la competition no pertenecen a la misma temporada."
-                    );
-                }
-            },
-        },
-    }
+    hooks: {
+      /**
+       * Antes de guardar, comprobamos que el participant y la competition existan
+       * y que ambos pertenezcan a la misma temporada.
+       * Solo lo hacemos cuando el registro es nuevo para evitar consultas extra
+       * en cada actualización.
+       */
+      async beforeSave(stat, { transaction }) {
+        if (!stat.isNewRecord) return;
+
+        const [participant, competition] = await Promise.all([
+          Participant.findByPk(stat.participantId, { transaction }),
+          Competition.findByPk(stat.competitionId, { transaction }),
+        ]);
+
+        if (!participant)
+          throw new Error("El participant especificado no existe.");
+        if (!competition)
+          throw new Error("La competition especificada no existe.");
+
+        if (participant.seasonId !== competition.seasonId) {
+          throw new Error(
+            "El participant y la competition no pertenecen a la misma temporada.",
+          );
+        }
+      },
+    },
+  },
 );
