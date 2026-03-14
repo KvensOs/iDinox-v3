@@ -22,13 +22,13 @@ Todo desde Discord. Sin gestores externos. Sin trabajo manual cada temporada.
 
 ## El problema
 
-Si organizas ligas de HaxBall sabes cómo funciona: llevas las estadísticas a mano en un gestor como **Challenge Place** o **Arena17**, actualizas los datos después de cada jornada, y rezas para que nadie te pregunte cuántos goles metió alguien hace dos temporadas porque eso no está en ningún lado.
+La mayoría de ligas de HaxBall se organizan con gestores como **Challenge Place** o **Arena17**. Funcionan bien para la tabla y los resultados, pero no van más allá. No hay estadísticas separadas por temporada, no hay historial de títulos, no hay perfil de jugador con su recorrido completo.
 
-El problema más gordo no es el gestor en sí — es todo lo que no puede hacer. No guarda estadísticas separadas por temporada, no tiene historial de títulos, no tiene perfiles de jugador con todo su recorrido. Y aparte de eso, los fichajes, las altas, las bajas, los nicknames... todo eso lo está haciendo el admin a mano.
+Lo que queda fuera del gestor — fichajes, altas, bajas, nicknames, premios — termina en manos del admin, que lo gestiona a mano temporada tras temporada.
 
-iDinox cubre esa parte. Los fichajes, las stats, los perfiles, el historial de premios y el ciclo de temporadas — todo desde Discord, sin tocar nada externo. Lo único que sigue estando aparte es la tabla de posiciones, los resultados y la gestión de fechas, que está planificado para la **v4**.
+iDinox cubre esa parte. Mercado de fichajes, estadísticas por competencia y temporada, perfiles históricos, premios y ciclo de temporadas completo, todo desde Discord.
 
-> **En resumen:** sigues usando tu gestor para la tabla y los resultados. iDinox se encarga de todo lo demás.
+> La tabla de posiciones, resultados y gestión de fechas están planificados para la **v4**. Por ahora sigues usando tu gestor para eso.
 
 ---
 
