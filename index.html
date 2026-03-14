@@ -1,2461 +1,2367 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>iDinox v3 — Bot de ligas para HaxBall</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Geist+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
 
-    <script>
-      const FASE_ACTUAL = 5;
-    </script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iDinox v3 — Bot de ligas para HaxBall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Geist+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <style>
-      :root {
-        --bg: #0d0f0b;
-        --bg2: #111410;
-        --s1: #161914;
-        --s2: #1c2018;
-        --s3: #22271e;
-        --border: #252a20;
-        --border2: #2e3428;
-        --accent: #c8714a;
-        --acc-lo: rgba(200, 113, 74, 0.12);
-        --acc-line: rgba(200, 113, 74, 0.25);
-        --green: #6db87a;
-        --amber: #d4a44c;
-        --muted: #6a7260;
-        --text: #b8c2a8;
-        --text-hi: #dce8cc;
-        --serif: "Playfair Display", Georgia, serif;
-        --sans: "Instrument Sans", system-ui, sans-serif;
-        --mono: "Geist Mono", monospace;
-      }
+  <script>
+    const FASE_ACTUAL = 5;
+  </script>
 
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
+  <style>
+    :root {
+      --bg: #0d0f0b;
+      --bg2: #111410;
+      --s1: #161914;
+      --s2: #1c2018;
+      --s3: #22271e;
+      --border: #252a20;
+      --border2: #2e3428;
+      --accent: #c8714a;
+      --acc-lo: rgba(200, 113, 74, 0.12);
+      --acc-line: rgba(200, 113, 74, 0.25);
+      --green: #6db87a;
+      --amber: #d4a44c;
+      --muted: #6a7260;
+      --text: #b8c2a8;
+      --text-hi: #dce8cc;
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "Instrument Sans", system-ui, sans-serif;
+      --mono: "Geist Mono", monospace;
+    }
 
-      body {
-        background: var(--bg);
-        color: var(--text);
-        font-family: var(--sans);
-        font-weight: 400;
-        line-height: 1.65;
-        overflow-x: hidden;
-      }
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 999;
-        pointer-events: none;
-        opacity: 0.015;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-        background-repeat: repeat;
-        animation: grain 8s steps(10) infinite;
-      }
+    html {
+      scroll-behavior: smooth;
+    }
 
-      @keyframes grain {
-        0%,
-        100% {
-          transform: translate(0, 0);
-        }
-        10% {
-          transform: translate(-1%, -1%);
-        }
-        20% {
-          transform: translate(1%, 1%);
-        }
-        30% {
-          transform: translate(-2%, 1%);
-        }
-        40% {
-          transform: translate(2%, -1%);
-        }
-        50% {
-          transform: translate(-1%, 2%);
-        }
-        60% {
-          transform: translate(1%, -2%);
-        }
-        70% {
-          transform: translate(-2%, -1%);
-        }
-        80% {
-          transform: translate(2%, 1%);
-        }
-        90% {
-          transform: translate(-1%, -1%);
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 400;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* grain overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      animation: grain 8s steps(10) infinite;
+    }
+
+    @keyframes grain {
+
+      0%,
+      100% {
+        transform: translate(0, 0)
       }
 
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        background:
-          radial-gradient(
-            ellipse 80% 60% at 50% 0%,
-            rgba(200, 113, 74, 0.05) 0%,
-            transparent 55%
-          ),
-          radial-gradient(
-            ellipse 50% 35% at 50% 100%,
-            rgba(109, 184, 122, 0.03) 0%,
-            transparent 55%
-          );
+      10% {
+        transform: translate(-1%, -1%)
       }
 
-      .wrap {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 2.5rem;
-        position: relative;
-        z-index: 1;
-      }
-      .wrap-tight {
-        max-width: 820px;
-        margin: 0 auto;
-        padding: 0 2.5rem;
-        position: relative;
-        z-index: 1;
+      20% {
+        transform: translate(1%, 1%)
       }
 
-      /* NAV */
-      nav {
-        position: sticky;
-        top: 0;
-        z-index: 200;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.95rem 2.5rem;
-        background: rgba(13, 15, 11, 0.85);
-        backdrop-filter: blur(16px) saturate(1.2);
-        border-bottom: 1px solid var(--border);
-        transition:
-          background 0.3s,
-          padding 0.3s,
-          border-color 0.3s;
-      }
-      nav.scrolled {
-        padding: 0.65rem 2.5rem;
-        background: rgba(13, 15, 11, 0.97);
-        border-bottom-color: var(--border2);
-      }
-      .nav-brand {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        font-family: var(--mono);
-        font-size: 0.88rem;
-        text-decoration: none;
-      }
-      .brand-bolt {
-        color: var(--accent);
-      }
-      .brand-name {
-        color: var(--text-hi);
-        font-weight: 500;
-        letter-spacing: 0.02em;
-      }
-      .brand-v {
-        font-size: 0.6rem;
-        background: var(--s3);
-        color: var(--muted);
-        padding: 0.12rem 0.5rem;
-        border-radius: 3px;
-        border: 1px solid var(--border2);
-        font-weight: 300;
-      }
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 2.2rem;
-      }
-      .nav-links a {
-        color: var(--muted);
-        text-decoration: none;
-        font-size: 0.82rem;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        transition: color 0.2s;
-        position: relative;
-      }
-      .nav-links a::after {
-        content: "";
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        width: 0;
-        height: 1px;
-        background: var(--accent);
-        transition: width 0.25s ease;
-      }
-      .nav-links a:hover {
-        color: var(--text-hi);
-      }
-      .nav-links a:hover::after {
-        width: 100%;
-      }
-      .nav-links a.active-nav {
-        color: var(--accent);
-      }
-      .nav-links a.active-nav::after {
-        width: 100%;
+      30% {
+        transform: translate(-2%, 1%)
       }
 
-      .btn-nav {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        border: 1px solid var(--border2);
-        color: var(--text);
-        padding: 0.38rem 0.95rem;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 0.78rem;
-        font-family: var(--mono);
-        font-weight: 400;
-        transition:
-          border-color 0.2s,
-          color 0.2s,
-          background 0.2s;
-      }
-      .btn-nav:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: var(--acc-lo);
-      }
-      .btn-nav::after {
-        display: none !important;
+      40% {
+        transform: translate(2%, -1%)
       }
 
-      .rule {
-        border: none;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--border),
-          transparent
-        );
-        margin: 0;
+      50% {
+        transform: translate(-1%, 2%)
       }
 
-      /* HERO */
+      60% {
+        transform: translate(1%, -2%)
+      }
+
+      70% {
+        transform: translate(-2%, -1%)
+      }
+
+      80% {
+        transform: translate(2%, 1%)
+      }
+
+      90% {
+        transform: translate(-1%, -1%)
+      }
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200, 113, 74, 0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 35% at 50% 100%, rgba(109, 184, 122, 0.03) 0%, transparent 55%);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .wrap-tight {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.95rem 2.5rem;
+      background: rgba(13, 15, 11, 0.85);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, padding 0.3s, border-color 0.3s;
+    }
+
+    nav.scrolled {
+      padding: 0.65rem 2.5rem;
+      background: rgba(13, 15, 11, 0.97);
+      border-bottom-color: var(--border2);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      text-decoration: none;
+    }
+
+    .brand-bolt {
+      color: var(--accent);
+    }
+
+    .brand-name {
+      color: var(--text-hi);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-v {
+      font-size: 0.6rem;
+      background: var(--s3);
+      color: var(--muted);
+      padding: 0.12rem 0.5rem;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      font-weight: 300;
+    }
+
+    /* hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 0.4rem;
+      background: none;
+      border: none;
+      outline: none;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--muted);
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.3s, opacity 0.3s;
+    }
+
+    .nav-hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+      background: var(--text-hi);
+    }
+
+    .nav-hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+      background: var(--text-hi);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-hi);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a.active-nav {
+      color: var(--accent);
+    }
+
+    .nav-links a.active-nav::after {
+      width: 100%;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 0.38rem 0.95rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-family: var(--mono);
+      font-weight: 400;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .btn-nav:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--acc-lo);
+    }
+
+    .btn-nav::after {
+      display: none !important;
+    }
+
+    /* mobile nav drawer */
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 15, 11, 0.97);
+      z-index: 190;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .nav-drawer.open {
+      opacity: 1;
+      pointer-events: all;
+      display: flex;
+    }
+
+    .nav-drawer a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+
+    .nav-drawer a:hover {
+      color: var(--accent);
+    }
+
+    .nav-drawer .btn-nav {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.4rem;
+    }
+
+    .rule {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 8rem 0 6rem;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 2.8rem;
+      animation: fadeInUp 0.7s ease-out both;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2.2s ease infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(1.3);
+      }
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 5rem;
+      align-items: end;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 7vw, 5.6rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--text-hi);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.7s ease-out 0.08s both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero h1 .sub-line {
+      display: block;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 0.32em;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+      margin-top: 0.9rem;
+      animation: fadeInUp 0.7s ease-out 0.16s both;
+    }
+
+    .hero-desc {
+      font-size: 1.01rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.9;
+      margin-bottom: 2.8rem;
+      animation: fadeInUp 0.7s ease-out 0.22s both;
+    }
+
+    .hero-desc strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .progress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: var(--s2);
+      border: 1px solid var(--border2);
+      padding: 0.55rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.7s ease-out 0.1s both;
+    }
+
+    .pb-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .pb-bar-wrap {
+      width: 100px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .pb-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+
+    .pb-pct {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+      animation: fadeInUp 0.7s ease-out 0.28s both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #0d0f0b;
+      text-decoration: none;
+      padding: 0.8rem 1.7rem;
+      border-radius: 5px;
+      font-size: 0.87rem;
+      font-weight: 500;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #d97c55;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(200, 113, 74, 0.28);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border2);
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.8rem 1.7rem;
+      border-radius: 5px;
+      font-size: 0.87rem;
+      font-weight: 400;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--acc-lo);
+    }
+
+    /* Status sidebar */
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      animation: fadeInRight 0.7s ease-out 0.2s both;
+    }
+
+    .st-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+    }
+
+    .st-item.st-active {
+      border-color: var(--acc-line);
+      background: rgba(200, 113, 74, 0.04);
+    }
+
+    .st-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .st-green {
+      background: var(--green);
+    }
+
+    .st-amber {
+      background: var(--amber);
+      animation: pulse 2.2s infinite;
+    }
+
+    .st-grey {
+      background: var(--muted);
+      opacity: 0.5;
+    }
+
+    .st-item span {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text);
+    }
+
+    .st-item span em {
+      color: var(--muted);
+      font-style: normal;
+    }
+
+    .st-item.st-active span {
+      color: var(--text-hi);
+    }
+
+    .section {
+      padding: 6rem 0;
+    }
+
+    .sec-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .sec-label::before {
+      content: "";
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .sec-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--text-hi);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.2rem;
+    }
+
+    .sec-sub {
+      color: var(--muted);
+      font-size: 0.97rem;
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-body p {
+      color: var(--muted);
+      line-height: 1.85;
+      margin-bottom: 1.1rem;
+      font-size: 0.95rem;
+    }
+
+    .about-body p strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .stack-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .s-row {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .s-row:hover {
+      border-color: var(--border2);
+      transform: translateX(5px);
+      background: var(--s2);
+    }
+
+    .s-ic {
+      color: var(--accent);
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .s-text h5 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      margin-bottom: 0.1rem;
+    }
+
+    .s-text p {
+      font-size: 0.77rem;
+      color: var(--muted);
+    }
+
+    /* CODE */
+    .code-block {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .code-block:hover {
+      border-color: var(--border2);
+    }
+
+    .code-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.42rem;
+      padding: 0.6rem 1rem;
+      background: var(--s2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cbdot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .cr {
+      background: #ff5f57;
+    }
+
+    .cy {
+      background: #febc2e;
+    }
+
+    .cg {
+      background: #28c840;
+    }
+
+    .cfile {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--muted);
+      margin-left: 0.35rem;
+    }
+
+    .copy-hint {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-left: auto;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .code-block:hover .copy-hint {
+      opacity: 1;
+    }
+
+    .code-block.copied .copy-hint {
+      color: var(--green);
+      opacity: 1;
+    }
+
+    .code-body {
+      padding: 1.4rem 1.6rem;
+      font-family: var(--mono);
+      font-size: 0.77rem;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .kw {
+      color: #b48ead;
+    }
+
+    .fn {
+      color: #81a1c1;
+    }
+
+    .str {
+      color: #a3be8c;
+    }
+
+    .cm {
+      color: var(--border2);
+      font-style: italic;
+    }
+
+    /* MODELS */
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      gap: 1px;
+      background: var(--border);
+      margin-top: 3rem;
+    }
+
+    .m-card {
+      background: var(--s1);
+      padding: 1.6rem 1.3rem;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .m-card:hover {
+      background: var(--s2);
+    }
+
+    .m-card.central {
+      background: var(--s2);
+      border: 1px solid var(--acc-line);
+    }
+
+    .mc-ic {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: rgba(200, 113, 74, 0.1);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .m-card h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      margin-bottom: 0.3rem;
+    }
+
+    .mc-note {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .mc-fields {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+      line-height: 1.7;
+    }
+
+    .m-card p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* RELATIONS */
+    .rel-box {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2.2rem;
+      margin-top: 2rem;
+    }
+
+    .rel-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .rel-node {
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      background: var(--s2);
+      border: 1px solid var(--border2);
+      padding: 0.28rem 0.7rem;
+      border-radius: 4px;
+      color: var(--text);
+      cursor: default;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .rel-node:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .rel-node.hl {
+      border-color: var(--acc-line);
+      color: var(--accent);
+    }
+
+    .rel-arr {
+      color: var(--border2);
+      font-size: 0.7rem;
+    }
+
+    .rel-note {
+      margin-top: 1.8rem;
+      padding: 1.1rem 1.4rem;
+      background: rgba(200, 113, 74, 0.04);
+      border: 1px solid var(--acc-line);
+      border-radius: 7px;
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .rel-note strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .rel-note code {
+      font-family: var(--mono);
+      font-size: 0.78em;
+      color: var(--accent);
+    }
+
+    /* ── PHASES ── */
+    .phases-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .ph {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      background: var(--bg);
+    }
+
+    .ph[data-status="pending"] {
+      opacity: 0.7;
+    }
+
+    .ph-side {
+      background: var(--s1);
+      padding: 1.8rem 1.5rem;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      justify-content: center;
+    }
+
+    .ph-num {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+    }
+
+    .ph-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      line-height: 1.35;
+    }
+
+    .ph-tag {
+      display: inline-block;
+      margin-top: 0.3rem;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      padding: 0.18rem 0.6rem;
+      border-radius: 3px;
+    }
+
+    .t-done {
+      background: rgba(109, 184, 122, 0.1);
+      color: var(--green);
+    }
+
+    .t-wip {
+      background: rgba(212, 164, 76, 0.1);
+      color: var(--amber);
+    }
+
+    .t-pend {
+      background: rgba(106, 114, 96, 0.1);
+      color: var(--muted);
+    }
+
+    .ph-body {
+      background: var(--s1);
+      padding: 1.8rem 2rem;
+    }
+
+    .ph-body h5 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      margin-bottom: 0.65rem;
+    }
+
+    .ph-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 1.1rem;
+    }
+
+    .ph-body code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+      color: var(--accent);
+    }
+
+    .cmds {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .cmd-t {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 3px;
+      border: 1px solid;
+      transition: background 0.15s;
+    }
+
+    .cmd-done {
+      color: var(--green);
+      background: rgba(109, 184, 122, 0.06);
+      border-color: rgba(109, 184, 122, 0.2);
+    }
+
+    .cmd-done:hover {
+      background: rgba(109, 184, 122, 0.12);
+    }
+
+    .cmd-wip {
+      color: var(--amber);
+      background: rgba(212, 164, 76, 0.06);
+      border-color: rgba(212, 164, 76, 0.2);
+    }
+
+    .cmd-wip:hover {
+      background: rgba(212, 164, 76, 0.12);
+    }
+
+    .cmd-pend {
+      color: var(--muted);
+      background: rgba(106, 114, 96, 0.05);
+      border-color: rgba(106, 114, 96, 0.18);
+    }
+
+    .ph[data-status="wip"] .ph-side {
+      border-left: 2px solid var(--accent);
+    }
+
+    /* TECH */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .tech-card {
+      background: var(--s1);
+      padding: 1.7rem 1.6rem;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-card:hover {
+      background: var(--s2);
+    }
+
+    .tech-card h5 {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .tech-card h5 i {
+      color: var(--accent);
+      font-size: 0.82rem;
+    }
+
+    .tech-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .tech-card code {
+      font-family: var(--mono);
+      font-size: 0.76em;
+      color: var(--accent);
+    }
+
+    /* COMMANDS TABLE */
+    .cmd-table {
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .cmd-row {
+      display: grid;
+      grid-template-columns: 240px 1fr 88px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+
+    .cmd-row:last-child {
+      border-bottom: none;
+    }
+
+    .cmd-row:hover {
+      background: var(--s1);
+    }
+
+    .cmd-row>div {
+      padding: 0.82rem 1.1rem;
+    }
+
+    .cname {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+
+    .cdesc {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .cphase {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      text-align: right;
+    }
+
+    .cp1 {
+      color: var(--green);
+    }
+
+    .cp2 {
+      color: var(--amber);
+    }
+
+    .cp3 {
+      color: var(--muted);
+    }
+
+    .cmd-group-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.1rem;
+      background: var(--s2);
+      border-bottom: 1px solid var(--border);
+      grid-column: span 3;
+    }
+
+    .cmd-row[data-cmd-status="done"] .cname {
+      color: var(--green);
+    }
+
+    .cmd-row[data-cmd-status="wip"] .cname {
+      color: var(--amber);
+    }
+
+    .cmd-row[data-cmd-status="pending"] {
+      opacity: 0.55;
+    }
+
+    /* CTA */
+    .cta-wrap {
+      padding: 7rem 0 6rem;
+    }
+
+    .cta-box {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--acc-line), transparent);
+    }
+
+    .cta-box::after {
+      content: "v3";
+      position: absolute;
+      right: 3.5rem;
+      bottom: 2.5rem;
+      font-family: var(--serif);
+      font-size: 8rem;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.05em;
+    }
+
+    .cta-box h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: var(--text-hi);
+      margin-bottom: 1rem;
+      line-height: 1.05;
+      max-width: 500px;
+    }
+
+    .cta-box p {
+      color: var(--muted);
+      font-size: 0.97rem;
+      max-width: 460px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-dc {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #5865f2;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.8rem 1.7rem;
+      border-radius: 5px;
+      font-size: 0.87rem;
+      font-weight: 500;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-dc:hover {
+      background: #4752c4;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(88, 101, 242, 0.28);
+    }
+
+    /* STATS */
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 1rem;
+      animation: fadeInUp 0.7s ease-out 0.35s both;
+      flex-wrap: wrap;
+    }
+
+    .hs-num {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--text-hi);
+      line-height: 1;
+    }
+
+    .hs-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .foot-l {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .foot-r {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .foot-r a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+
+    .foot-r a:hover {
+      color: var(--text-hi);
+    }
+
+    /* REVEAL */
+    .rv {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .rv.on {
+      opacity: 1;
+      transform: none;
+    }
+
+    .rv-d1 {
+      transition-delay: 0.07s;
+    }
+
+    .rv-d2 {
+      transition-delay: 0.14s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 920px) {
       .hero {
-        padding: 8rem 0 6rem;
-      }
-
-      .hero-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.7rem;
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        color: var(--muted);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        margin-bottom: 2.8rem;
-        animation: fadeInUp 0.7s ease-out both;
-      }
-      .live-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--green);
-        box-shadow: 0 0 8px var(--green);
-        animation: pulse 2.2s ease infinite;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.4;
-          transform: scale(1.3);
-        }
+        padding: 5rem 0 4rem;
       }
 
       .hero-layout {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 5rem;
-        align-items: end;
+        grid-template-columns: 1fr;
+        gap: 3rem;
       }
 
-      .hero h1 {
-        font-family: var(--serif);
-        font-size: clamp(3.2rem, 7vw, 5.6rem);
-        font-weight: 900;
-        line-height: 0.92;
-        letter-spacing: -0.02em;
-        color: var(--text-hi);
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.7s ease-out 0.08s both;
-      }
-      .hero h1 em {
-        font-style: italic;
-        color: var(--accent);
-        position: relative;
-        display: inline-block;
-      }
-      .hero h1 .sub-line {
-        display: block;
-        font-family: var(--sans);
-        font-weight: 400;
-        font-size: 0.32em;
-        color: var(--muted);
-        letter-spacing: 0.01em;
-        line-height: 1.5;
-        margin-top: 0.9rem;
-        animation: fadeInUp 0.7s ease-out 0.16s both;
-      }
-
-      .hero-desc {
-        font-size: 1.01rem;
-        color: var(--muted);
-        max-width: 520px;
-        line-height: 1.9;
-        margin-bottom: 2.8rem;
-        animation: fadeInUp 0.7s ease-out 0.22s both;
-      }
-      .hero-desc strong {
-        color: var(--text);
-        font-weight: 500;
-      }
-
-      /* Badge de progreso en el hero */
-      .progress-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.7rem;
-        background: var(--s2);
-        border: 1px solid var(--border2);
-        padding: 0.55rem 1rem;
-        border-radius: 6px;
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.7s ease-out 0.1s both;
-      }
-      .pb-label {
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        color: var(--muted);
-      }
-      .pb-bar-wrap {
-        width: 100px;
-        height: 4px;
-        background: var(--border);
-        border-radius: 2px;
-      }
-      .pb-bar {
-        height: 100%;
-        background: var(--accent);
-        border-radius: 2px;
-        transition: width 1s ease;
-      }
-      .pb-pct {
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        color: var(--accent);
-      }
-
-      .hero-actions {
-        display: flex;
-        gap: 0.8rem;
-        flex-wrap: wrap;
-        margin-bottom: 3.5rem;
-        animation: fadeInUp 0.7s ease-out 0.28s both;
-      }
-      .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--accent);
-        color: #0d0f0b;
-        text-decoration: none;
-        padding: 0.8rem 1.7rem;
-        border-radius: 5px;
-        font-size: 0.87rem;
-        font-weight: 500;
-        transition:
-          background 0.2s,
-          transform 0.15s,
-          box-shadow 0.2s;
-      }
-      .btn-primary:hover {
-        background: #d97c55;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(200, 113, 74, 0.28);
-      }
-
-      .btn-outline {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        border: 1px solid var(--border2);
-        color: var(--text);
-        text-decoration: none;
-        padding: 0.8rem 1.7rem;
-        border-radius: 5px;
-        font-size: 0.87rem;
-        font-weight: 400;
-        transition:
-          border-color 0.2s,
-          color 0.2s,
-          background 0.2s;
-      }
-      .btn-outline:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: var(--acc-lo);
-      }
-
-      /* Status sidebar */
-      .status-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        animation: fadeInRight 0.7s ease-out 0.2s both;
-      }
-      .st-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        background: var(--s1);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        transition:
-          border-color 0.2s,
-          background 0.2s;
-        cursor: default;
-      }
-      .st-item.st-active {
-        border-color: var(--acc-line);
-        background: rgba(200, 113, 74, 0.04);
-      }
-      .st-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        flex-shrink: 0;
-      }
-      .st-green {
-        background: var(--green);
-      }
-      .st-amber {
-        background: var(--amber);
-        animation: pulse 2.2s infinite;
-      }
-      .st-grey {
-        background: var(--muted);
-        opacity: 0.5;
-      }
-      .st-item span {
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        color: var(--text);
-      }
-      .st-item span em {
-        color: var(--muted);
-        font-style: normal;
-      }
-      .st-item.st-active span {
-        color: var(--text-hi);
-      }
-
-      .section {
-        padding: 6rem 0;
-      }
-
-      .sec-label {
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        color: var(--accent);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        margin-bottom: 1.1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-      .sec-label::before {
-        content: "";
-        width: 20px;
-        height: 1px;
-        background: var(--accent);
-      }
-      .sec-title {
-        font-family: var(--serif);
-        font-size: clamp(2.2rem, 5vw, 3.4rem);
-        color: var(--text-hi);
-        line-height: 1;
-        letter-spacing: -0.025em;
-        margin-bottom: 1.2rem;
-      }
-      .sec-sub {
-        color: var(--muted);
-        font-size: 0.97rem;
-        max-width: 520px;
-        line-height: 1.8;
-      }
-
-      /* ABOUT */
       .about-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5rem;
-        align-items: start;
-      }
-      .about-body p {
-        color: var(--muted);
-        line-height: 1.85;
-        margin-bottom: 1.1rem;
-        font-size: 0.95rem;
-      }
-      .about-body p strong {
-        color: var(--text);
-        font-weight: 500;
+        grid-template-columns: 1fr;
+        gap: 3rem;
       }
 
-      .stack-rows {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-top: 2rem;
-      }
-      .s-row {
-        display: grid;
-        grid-template-columns: 32px 1fr;
-        gap: 0.85rem;
-        align-items: center;
-        padding: 0.85rem 1rem;
-        background: var(--s1);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        transition:
-          border-color 0.2s,
-          background 0.2s,
-          transform 0.2s;
-      }
-      .s-row:hover {
-        border-color: var(--border2);
-        transform: translateX(5px);
-        background: var(--s2);
-      }
-      .s-ic {
-        color: var(--accent);
-        font-size: 0.82rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .s-text h5 {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        margin-bottom: 0.1rem;
-      }
-      .s-text p {
-        font-size: 0.77rem;
-        color: var(--muted);
-      }
-
-      /* CODE */
-      .code-block {
-        background: var(--s1);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        overflow: hidden;
-        margin-top: 1.5rem;
-        cursor: pointer;
-        transition: border-color 0.2s;
-      }
-      .code-block:hover {
-        border-color: var(--border2);
-      }
-      .code-bar {
-        display: flex;
-        align-items: center;
-        gap: 0.42rem;
-        padding: 0.6rem 1rem;
-        background: var(--s2);
-        border-bottom: 1px solid var(--border);
-      }
-      .cbdot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-      }
-      .cr {
-        background: #ff5f57;
-      }
-      .cy {
-        background: #febc2e;
-      }
-      .cg {
-        background: #28c840;
-      }
-      .cfile {
-        font-family: var(--mono);
-        font-size: 0.66rem;
-        color: var(--muted);
-        margin-left: 0.35rem;
-      }
-      .copy-hint {
-        font-family: var(--mono);
-        font-size: 0.62rem;
-        color: var(--muted);
-        margin-left: auto;
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      .code-block:hover .copy-hint {
-        opacity: 1;
-      }
-      .code-block.copied .copy-hint {
-        color: var(--green);
-        opacity: 1;
-      }
-      .code-body {
-        padding: 1.4rem 1.6rem;
-        font-family: var(--mono);
-        font-size: 0.77rem;
-        line-height: 2;
-        overflow-x: auto;
-      }
-      .kw {
-        color: #b48ead;
-      }
-      .fn {
-        color: #81a1c1;
-      }
-      .str {
-        color: #a3be8c;
-      }
-      .cm {
-        color: var(--border2);
-        font-style: italic;
-      }
-
-      /* MODELS */
       .models-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-        gap: 1px;
-        background: var(--border);
-        margin-top: 3rem;
-      }
-      .m-card {
-        background: var(--s1);
-        padding: 1.6rem 1.3rem;
-        transition: background 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-      .m-card:hover {
-        background: var(--s2);
-      }
-      .m-card.central {
-        background: var(--s2);
-        border: 1px solid var(--acc-line);
-      }
-      .mc-ic {
-        width: 30px;
-        height: 30px;
-        border-radius: 6px;
-        background: rgba(200, 113, 74, 0.1);
-        color: var(--accent);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.78rem;
-        margin-bottom: 0.9rem;
-      }
-      .m-card h4 {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        margin-bottom: 0.3rem;
-      }
-      .mc-note {
-        font-family: var(--mono);
-        font-size: 0.63rem;
-        color: var(--accent);
-        margin-bottom: 0.5rem;
-      }
-      .mc-fields {
-        font-family: var(--mono);
-        font-size: 0.64rem;
-        color: var(--muted);
-        margin-bottom: 0.55rem;
-        line-height: 1.7;
-      }
-      .m-card p {
-        font-size: 0.78rem;
-        color: var(--muted);
-        line-height: 1.55;
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      /* RELATIONS */
-      .rel-box {
-        background: var(--s1);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 2.2rem;
-        margin-top: 2rem;
-      }
-      .rel-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.45rem;
-        margin-bottom: 0.7rem;
-      }
-      .rel-node {
-        font-family: var(--mono);
-        font-size: 0.76rem;
-        background: var(--s2);
-        border: 1px solid var(--border2);
-        padding: 0.28rem 0.7rem;
-        border-radius: 4px;
-        color: var(--text);
-        cursor: default;
-        transition:
-          border-color 0.2s,
-          color 0.2s;
-      }
-      .rel-node:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-      .rel-node.hl {
-        border-color: var(--acc-line);
-        color: var(--accent);
-      }
-      .rel-arr {
-        color: var(--border2);
-        font-size: 0.7rem;
-      }
-      .rel-note {
-        margin-top: 1.8rem;
-        padding: 1.1rem 1.4rem;
-        background: rgba(200, 113, 74, 0.04);
-        border: 1px solid var(--acc-line);
-        border-radius: 7px;
-        font-size: 0.83rem;
-        color: var(--muted);
-        line-height: 1.75;
-      }
-      .rel-note strong {
-        color: var(--text);
-        font-weight: 500;
-      }
-      .rel-note code {
-        font-family: var(--mono);
-        font-size: 0.78em;
-        color: var(--accent);
+      .tech-grid {
+        grid-template-columns: 1fr;
       }
 
-      /* ── PHASES ─────────────────────────────────────────────────────────────── */
-      .phases-wrap {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-        background: var(--border);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 3rem;
-      }
       .ph {
-        display: grid;
-        grid-template-columns: 200px 1fr;
-        background: var(--bg);
-      }
-
-      /* estados dinámicos */
-      .ph[data-status="done"] {
-      }
-      .ph[data-status="wip"] {
-      }
-      .ph[data-status="pending"] {
-        opacity: 0.7;
+        grid-template-columns: 1fr;
       }
 
       .ph-side {
-        background: var(--s1);
-        padding: 1.8rem 1.5rem;
-        border-right: 1px solid var(--border);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cmd-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cphase {
+        display: none;
+      }
+
+      .cmd-group-label {
+        grid-column: span 2;
+      }
+
+      nav {
+        padding: 0.9rem 1.5rem;
+      }
+
+      .nav-links a:not(.btn-nav) {
+        display: none;
+      }
+
+      .nav-hamburger {
         display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        justify-content: center;
       }
-      .ph-num {
-        font-family: var(--mono);
+
+      .status-list {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      .wrap,
+      .wrap-tight {
+        padding: 0 1.2rem;
+      }
+
+      .hero {
+        padding: 4rem 0 3rem;
+      }
+
+      .hero h1 {
+        font-size: 2.7rem;
+        line-height: 1;
+      }
+
+      .hero-kicker {
         font-size: 0.62rem;
-        color: var(--muted);
+        margin-bottom: 2rem;
       }
-      .ph-name {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        line-height: 1.35;
+
+      .hero-desc {
+        font-size: 0.92rem;
       }
-      .ph-tag {
-        display: inline-block;
-        margin-top: 0.3rem;
-        font-family: var(--mono);
-        font-size: 0.6rem;
-        padding: 0.18rem 0.6rem;
-        border-radius: 3px;
+
+      .hero-actions {
+        gap: 0.6rem;
       }
-      .t-done {
-        background: rgba(109, 184, 122, 0.1);
-        color: var(--green);
+
+      .btn-primary,
+      .btn-outline {
+        padding: 0.7rem 1.3rem;
+        font-size: 0.82rem;
       }
-      .t-wip {
-        background: rgba(212, 164, 76, 0.1);
-        color: var(--amber);
+
+      .models-grid {
+        grid-template-columns: 1fr 1fr;
       }
-      .t-pend {
-        background: rgba(106, 114, 96, 0.1);
-        color: var(--muted);
+
+      .cmd-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cmd-group-label {
+        grid-column: span 1;
+      }
+
+      .cdesc {
+        display: none;
+      }
+
+      .cta-box {
+        padding: 2.5rem 1.8rem;
+      }
+
+      .cta-box::after {
+        display: none;
+      }
+
+      .hero-stats {
+        gap: 1.5rem;
+      }
+
+      .hs-num {
+        font-size: 1.1rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .sec-title {
+        font-size: 2rem;
+      }
+
+      nav {
+        padding: 0.75rem 1.2rem;
       }
 
       .ph-body {
-        background: var(--s1);
-        padding: 1.8rem 2rem;
-      }
-      .ph-body h5 {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        margin-bottom: 0.65rem;
-      }
-      .ph-body p {
-        font-size: 0.85rem;
-        color: var(--muted);
-        line-height: 1.75;
-        margin-bottom: 1.1rem;
-      }
-      .ph-body code {
-        font-family: var(--mono);
-        font-size: 0.82em;
-        color: var(--accent);
-      }
-      .cmds {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-      }
-      .cmd-t {
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        padding: 0.22rem 0.6rem;
-        border-radius: 3px;
-        border: 1px solid;
-        transition: background 0.15s;
-      }
-      .cmd-done {
-        color: var(--green);
-        background: rgba(109, 184, 122, 0.06);
-        border-color: rgba(109, 184, 122, 0.2);
-      }
-      .cmd-done:hover {
-        background: rgba(109, 184, 122, 0.12);
-      }
-      .cmd-wip {
-        color: var(--amber);
-        background: rgba(212, 164, 76, 0.06);
-        border-color: rgba(212, 164, 76, 0.2);
-      }
-      .cmd-wip:hover {
-        background: rgba(212, 164, 76, 0.12);
-      }
-      .cmd-pend {
-        color: var(--muted);
-        background: rgba(106, 114, 96, 0.05);
-        border-color: rgba(106, 114, 96, 0.18);
+        padding: 1.4rem 1.2rem;
       }
 
-      /* Marcador de fase activa en el sidebar */
-      .ph[data-status="wip"] .ph-side {
-        border-left: 2px solid var(--accent);
+      .ph-side {
+        padding: 1.2rem;
       }
 
-      /* TECH */
-      .tech-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1px;
-        background: var(--border);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 3rem;
-      }
-      .tech-card {
-        background: var(--s1);
-        padding: 1.7rem 1.6rem;
-        transition: background 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-      .tech-card:hover {
-        background: var(--s2);
-      }
-      .tech-card h5 {
-        font-size: 0.88rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        margin-bottom: 0.6rem;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-      .tech-card h5 i {
-        color: var(--accent);
-        font-size: 0.82rem;
-      }
-      .tech-card p {
-        font-size: 0.82rem;
-        color: var(--muted);
-        line-height: 1.7;
-      }
-      .tech-card code {
-        font-family: var(--mono);
-        font-size: 0.76em;
-        color: var(--accent);
-      }
-
-      /* COMMANDS TABLE */
-      .cmd-table {
-        margin-top: 3rem;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-      }
-      .cmd-row {
-        display: grid;
-        grid-template-columns: 240px 1fr 88px;
-        border-bottom: 1px solid var(--border);
-        transition: background 0.12s;
-      }
-      .cmd-row:last-child {
-        border-bottom: none;
-      }
-      .cmd-row:hover {
-        background: var(--s1);
-      }
-      .cmd-row > div {
-        padding: 0.82rem 1.1rem;
-      }
-      .cname {
-        font-family: var(--mono);
-        font-size: 0.78rem;
-        color: var(--accent);
-      }
-      .cdesc {
-        font-size: 0.82rem;
-        color: var(--muted);
-      }
-      .cphase {
-        font-family: var(--mono);
-        font-size: 0.66rem;
-        text-align: right;
-      }
-      .cp1 {
-        color: var(--green);
-      }
-      .cp2 {
-        color: var(--amber);
-      }
-      .cp3 {
-        color: var(--muted);
-      }
-      .cmd-group-label {
-        font-family: var(--mono);
-        font-size: 0.65rem;
-        color: var(--muted);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 0.5rem 1.1rem;
-        background: var(--s2);
-        border-bottom: 1px solid var(--border);
-        grid-column: span 3;
-      }
-
-      /* Fila pendiente vs completada en comandos */
-      .cmd-row[data-cmd-status="done"] .cname {
-        color: var(--green);
-      }
-      .cmd-row[data-cmd-status="wip"] .cname {
-        color: var(--amber);
-      }
-      .cmd-row[data-cmd-status="pending"] {
-        opacity: 0.55;
-      }
-
-      /* CTA */
       .cta-wrap {
-        padding: 7rem 0 6rem;
-      }
-      .cta-box {
-        background: var(--s1);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 4rem;
-        position: relative;
-        overflow: hidden;
-      }
-      .cta-box::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--acc-line),
-          transparent
-        );
-      }
-      .cta-box::after {
-        content: "v3";
-        position: absolute;
-        right: 3.5rem;
-        bottom: 2.5rem;
-        font-family: var(--serif);
-        font-size: 8rem;
-        font-weight: 900;
-        color: var(--border);
-        line-height: 1;
-        pointer-events: none;
-        user-select: none;
-        letter-spacing: -0.05em;
-      }
-      .cta-box h2 {
-        font-family: var(--serif);
-        font-size: clamp(2rem, 4vw, 3.2rem);
-        color: var(--text-hi);
-        margin-bottom: 1rem;
-        line-height: 1.05;
-        max-width: 500px;
-      }
-      .cta-box p {
-        color: var(--muted);
-        font-size: 0.97rem;
-        max-width: 460px;
-        margin-bottom: 2.5rem;
-        line-height: 1.8;
-      }
-      .cta-btns {
-        display: flex;
-        gap: 0.9rem;
-        flex-wrap: wrap;
-      }
-      .btn-dc {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: #5865f2;
-        color: #fff;
-        text-decoration: none;
-        padding: 0.8rem 1.7rem;
-        border-radius: 5px;
-        font-size: 0.87rem;
-        font-weight: 500;
-        transition:
-          background 0.2s,
-          transform 0.2s,
-          box-shadow 0.2s;
-      }
-      .btn-dc:hover {
-        background: #4752c4;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(88, 101, 242, 0.28);
+        padding: 4rem 0 3.5rem;
       }
 
-      /* STATS BAR en hero */
+      .code-body {
+        font-size: 0.7rem;
+        padding: 1rem 1.1rem;
+      }
+
+      .rel-box {
+        padding: 1.4rem;
+      }
+
+      .tech-card {
+        padding: 1.3rem 1.2rem;
+      }
+
       .hero-stats {
-        display: flex;
-        gap: 2.5rem;
-        margin-top: 1rem;
-        animation: fadeInUp 0.7s ease-out 0.35s both;
-      }
-      .hs-item {
-      }
-      .hs-num {
-        font-family: var(--mono);
-        font-size: 1.4rem;
-        font-weight: 500;
-        color: var(--text-hi);
-        line-height: 1;
-      }
-      .hs-label {
-        font-size: 0.72rem;
-        color: var(--muted);
-        margin-top: 0.2rem;
+        margin-top: 0.5rem;
       }
 
-      /* Separator decorativo */
-      .sep-deco {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        margin: 3rem 0 2rem;
-      }
-      .sep-line {
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
-      .sep-text {
-        font-family: var(--mono);
-        font-size: 0.64rem;
-        color: var(--muted);
-        letter-spacing: 0.1em;
-        white-space: nowrap;
-      }
-
-      footer {
-        border-top: 1px solid var(--border);
-        padding: 2rem 0;
-        position: relative;
-        z-index: 1;
-      }
-      .foot {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      .progress-badge {
         flex-wrap: wrap;
-        gap: 1rem;
-      }
-      .foot-l {
-        font-family: var(--mono);
-        font-size: 0.72rem;
-        color: var(--muted);
-      }
-      .foot-r {
-        display: flex;
-        gap: 1.5rem;
-      }
-      .foot-r a {
-        color: var(--muted);
-        text-decoration: none;
-        font-size: 0.82rem;
-        transition: color 0.2s;
-      }
-      .foot-r a:hover {
-        color: var(--text-hi);
+        gap: 0.5rem;
       }
 
-      .rv {
-        opacity: 0;
-        transform: translateY(16px);
-        transition:
-          opacity 0.55s ease,
-          transform 0.55s ease;
-      }
-      .rv.on {
-        opacity: 1;
-        transform: none;
-      }
-      .rv-d1 {
-        transition-delay: 0.07s;
-      }
-      .rv-d2 {
-        transition-delay: 0.14s;
+      .cmds {
+        gap: 0.35rem;
       }
 
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(18px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .cmd-t {
+        font-size: 0.65rem;
+        padding: 0.18rem 0.5rem;
       }
-      @keyframes fadeInRight {
-        from {
-          opacity: 0;
-          transform: translateX(18px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
+    }
+
+    @media (max-width: 380px) {
+      .hero h1 {
+        font-size: 2.2rem;
       }
 
-      @media (max-width: 920px) {
-        .hero-layout {
-          grid-template-columns: 1fr;
-          gap: 3rem;
-        }
-        .about-grid {
-          grid-template-columns: 1fr;
-          gap: 3rem;
-        }
-        .models-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .tech-grid {
-          grid-template-columns: 1fr;
-        }
-        .ph {
-          grid-template-columns: 1fr;
-        }
-        .ph-side {
-          border-right: none;
-          border-bottom: 1px solid var(--border);
-        }
-        .cmd-row {
-          grid-template-columns: 1fr 1fr;
-        }
-        .cphase {
-          display: none;
-        }
-        .cmd-group-label {
-          grid-column: span 2;
-        }
-        nav {
-          padding: 0.9rem 1.5rem;
-        }
-        .nav-links a:not(.btn-nav) {
-          display: none;
-        }
+      .hero-actions {
+        flex-direction: column;
       }
-      @media (max-width: 600px) {
-        .wrap,
-        .wrap-tight {
-          padding: 0 1.2rem;
-        }
-        .models-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        .cmd-row {
-          grid-template-columns: 1fr;
-        }
-        .cdesc {
-          display: none;
-        }
-        .hero h1 {
-          font-size: 2.9rem;
-        }
-        .cta-box {
-          padding: 2.5rem 1.8rem;
-        }
-        .cta-box::after {
-          display: none;
-        }
-        .hero-stats {
-          gap: 1.5rem;
-        }
+
+      .btn-primary,
+      .btn-outline {
+        width: 100%;
+        justify-content: center;
       }
-    </style>
-  </head>
-  <body>
-    <nav id="mainNav">
-      <a href="#" class="nav-brand">
-        <i class="fas fa-bolt brand-bolt"></i>
-        <span class="brand-name">iDinox</span>
-        <span class="brand-v">v3</span>
-      </a>
-      <div class="nav-links">
-        <a href="#que-es">¿Qué es?</a>
-        <a href="#modelos">Modelos</a>
-        <a href="#fases">Fases</a>
-        <a href="#tecnico">Técnico</a>
-        <a href="#comandos">Comandos</a>
-        <a
-          href="https://github.com/KvensOs/iDinox-v3"
-          target="_blank"
-          class="btn-nav"
-          ><i class="fab fa-github"></i> GitHub</a
-        >
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="mainNav">
+    <a href="#" class="nav-brand">
+      <i class="fas fa-bolt brand-bolt"></i>
+      <span class="brand-name">iDinox</span>
+      <span class="brand-v">v3</span>
+    </a>
+    <div class="nav-links">
+      <a href="#que-es">¿Qué es?</a>
+      <a href="#modelos">Modelos</a>
+      <a href="#fases">Fases</a>
+      <a href="#tecnico">Técnico</a>
+      <a href="#comandos">Comandos</a>
+      <a href="https://github.com/KvensOs/iDinox-v3" target="_blank" class="btn-nav"><i class="fab fa-github"></i>
+        GitHub</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- mobile drawer -->
+  <div class="nav-drawer" id="navDrawer">
+    <a href="#que-es" class="drawer-link">¿Qué es?</a>
+    <a href="#modelos" class="drawer-link">Modelos</a>
+    <a href="#fases" class="drawer-link">Fases</a>
+    <a href="#tecnico" class="drawer-link">Técnico</a>
+    <a href="#comandos" class="drawer-link">Comandos</a>
+    <a href="https://github.com/KvensOs/iDinox-v3" target="_blank" class="btn-nav"><i class="fab fa-github"></i>
+      GitHub</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-kicker">
+        <span class="live-dot"></span>
+        open source &nbsp;·&nbsp; gratuito &nbsp;·&nbsp; hecho para HaxBall
       </div>
-    </nav>
+      <div class="hero-layout">
+        <div>
+          <h1>
+            La liga sin<br />la planilla de<br /><em>Google Sheets.</em>
+            <span class="sub-line">Todo en Discord. Sin costo. Sin trampa.</span>
+          </h1>
 
-    <!-- HERO -->
-    <div class="wrap">
-      <div class="hero">
-        <div class="hero-kicker">
-          <span class="live-dot"></span>
-          open source &nbsp;·&nbsp; gratuito &nbsp;·&nbsp; hecho para HaxBall
-        </div>
-        <div class="hero-layout">
-          <div>
-            <h1>
-              La liga sin<br />
-              la planilla de<br />
-              <em>Google Sheets.</em>
-              <span class="sub-line"
-                >Todo en Discord. Sin costo. Sin trampa.</span
-              >
-            </h1>
-
-            <div class="progress-badge" id="heroBadge">
-              <span class="pb-label">Progreso</span>
-              <div class="pb-bar-wrap">
-                <div class="pb-bar" id="pbBar" style="width: 0%"></div>
-              </div>
-              <span class="pb-pct" id="pbPct">—</span>
+          <div class="progress-badge" id="heroBadge">
+            <span class="pb-label">Progreso</span>
+            <div class="pb-bar-wrap">
+              <div class="pb-bar" id="pbBar" style="width:0%"></div>
             </div>
-
-            <p class="hero-desc">
-              Equipos, fichajes, estadísticas y temporadas — gestionados directo
-              desde Discord, sin planillas que se rompen ni trabajo manual cada
-              temporada.
-              <strong>Código abierto para siempre.</strong> Hecho por gente que
-              lleva años jugando y organizando ligas.
-            </p>
-            <div class="hero-actions">
-              <a
-                href="https://github.com/KvensOs/iDinox-v3"
-                class="btn-primary"
-                target="_blank"
-                ><i class="fab fa-github"></i> Ver en GitHub</a
-              >
-              <a href="#fases" class="btn-outline"
-                ><i class="fas fa-map-signs"></i> Hoja de ruta</a
-              >
-              <a
-                href="https://discord.gg/RFSK6ZeWnF"
-                class="btn-outline"
-                target="_blank"
-                ><i class="fab fa-discord"></i> Discord</a
-              >
-            </div>
-            <div class="hero-stats">
-              <div class="hs-item">
-                <div class="hs-num">8</div>
-                <div class="hs-label">Modelos relacionales</div>
-              </div>
-              <div class="hs-item">
-                <div class="hs-num">30+</div>
-                <div class="hs-label">Comandos slash</div>
-              </div>
-              <div class="hs-item">
-                <div class="hs-num">0€</div>
-                <div class="hs-label">Coste para siempre</div>
-              </div>
-            </div>
+            <span class="pb-pct" id="pbPct">—</span>
           </div>
 
-          <div class="status-list" id="statusList">
-            <!-- generado por JS según FASE_ACTUAL -->
+          <p class="hero-desc">
+            Equipos, fichajes, estadísticas y temporadas — gestionados directo desde Discord, sin planillas que se
+            rompen ni trabajo manual cada temporada.
+            <strong>Código abierto para siempre.</strong> Hecho por gente que lleva años jugando y organizando ligas.
+          </p>
+          <div class="hero-actions">
+            <a href="https://github.com/KvensOs/iDinox-v3" class="btn-primary" target="_blank"><i
+                class="fab fa-github"></i> Ver en GitHub</a>
+            <a href="#fases" class="btn-outline"><i class="fas fa-map-signs"></i> Hoja de ruta</a>
+            <a href="https://discord.gg/RFSK6ZeWnF" class="btn-outline" target="_blank"><i class="fab fa-discord"></i>
+              Discord</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hs-item">
+              <div class="hs-num">8</div>
+              <div class="hs-label">Modelos relacionales</div>
+            </div>
+            <div class="hs-item">
+              <div class="hs-num">35+</div>
+              <div class="hs-label">Comandos slash</div>
+            </div>
+            <div class="hs-item">
+              <div class="hs-num">4/5</div>
+              <div class="hs-label">Fases completadas</div>
+            </div>
+            <div class="hs-item">
+              <div class="hs-num">0€</div>
+              <div class="hs-label">Coste para siempre</div>
+            </div>
           </div>
         </div>
+
+        <div class="status-list" id="statusList"></div>
       </div>
     </div>
+  </div>
 
-    <hr class="rule" />
+  <hr class="rule" />
 
-    <!-- QUÉ ES -->
-    <section id="que-es" class="section">
-      <div class="wrap">
-        <div class="about-grid">
-          <div class="rv">
-            <p class="sec-label">qué es iDinox</p>
-            <h2 class="sec-title">
-              No es un bot<br />genérico.<br /><em
-                style="font-style: italic; color: var(--accent)"
-                >Es la liga<br />completa.</em
-              >
-            </h2>
-            <div class="about-body" style="margin-top: 2rem">
-              <p>
-                Nace de algo concreto: comunidades de HaxBall que organizaban
-                sus ligas con planillas de Google Sheets, mensajes sueltos y
-                mucho trabajo manual cada temporada. Datos perdidos, jugadores
-                confundidos, admins quemados. Con iDinox v3 eso se acabó.
-              </p>
-              <p>
-                <strong>Todo queda registrado</strong> — desde la inscripción de
-                un jugador hasta el palmarés histórico. La base de datos
-                relacional garantiza que los datos de temporadas pasadas nunca
-                desaparecen aunque el servidor arranque de cero.
-              </p>
-              <p>
-                La arquitectura soporta <strong>multi-modalidad</strong> nativa:
-                X4 y X5 conviven en el mismo servidor como instancias
-                completamente independientes, con sus propios canales, roles,
-                equipos, temporadas y mercados.
-              </p>
-            </div>
-          </div>
-          <div class="rv rv-d1">
-            <div class="stack-rows">
-              <div class="s-row">
-                <div class="s-ic"><i class="fas fa-code"></i></div>
-                <div class="s-text">
-                  <h5>TypeScript ESM + Discord.js v14</h5>
-                  <p>
-                    Tipado fuerte. Autocomplete dinámico en todos los slash
-                    commands. Código que se puede mantener.
-                  </p>
-                </div>
-              </div>
-              <div class="s-row">
-                <div class="s-ic"><i class="fas fa-database"></i></div>
-                <div class="s-text">
-                  <h5>SQLite + Sequelize</h5>
-                  <p>
-                    8 modelos relacionales. Seed automático. Sin servidor
-                    externo, sin costes, sin complicaciones.
-                  </p>
-                </div>
-              </div>
-              <div class="s-row">
-                <div class="s-ic"><i class="fas fa-layer-group"></i></div>
-                <div class="s-text">
-                  <h5>Multi-modalidad nativa</h5>
-                  <p>
-                    X4 y X5 con universos separados bajo el mismo bot. Cada
-                    modalidad con su propia configuración completa.
-                  </p>
-                </div>
-              </div>
-              <div class="s-row">
-                <div class="s-ic"><i class="fas fa-folder-open"></i></div>
-                <div class="s-text">
-                  <h5>Estructura clara</h5>
-                  <p>
-                    <code
-                      style="
-                        font-family: var(--mono);
-                        font-size: 0.82em;
-                        color: var(--accent);
-                      "
-                      >commands/ · models/ · events/ · utils/ · core/</code
-                    >
-                  </p>
-                </div>
-              </div>
-              <div class="s-row">
-                <div class="s-ic"><i class="fab fa-github"></i></div>
-                <div class="s-text">
-                  <h5>100 % MIT, 0 € de coste</h5>
-                  <p>
-                    Open source sin asteriscos. Sin planes de pago. Sin
-                    anuncios. Para siempre.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="code-block" id="codeSnippet">
-              <div class="code-bar">
-                <span class="cbdot cr"></span><span class="cbdot cy"></span
-                ><span class="cbdot cg"></span>
-                <span class="cfile">league-team.ts</span>
-                <span class="copy-hint">clic para copiar</span>
-              </div>
-              <div class="code-body">
-                <span class="cm"
-                  >// DT creado automáticamente al añadir equipo</span
-                ><br />
-                <span class="kw">const</span> [dtPlayer] =
-                <span class="kw">await</span>
-                <span class="fn">Player</span>.findOrCreate({<br />
-                &nbsp;&nbsp;where: { discordId: dtUser.id },<br />
-                &nbsp;&nbsp;defaults: { username: dtUser.username }<br />
-                });<br />
-                <br />
-                <span class="kw">const</span> [participant] =
-                <span class="kw">await</span>
-                <span class="fn">Participant</span>.findOrCreate({<br />
-                &nbsp;&nbsp;where: { playerId, seasonId, modalityId },<br />
-                &nbsp;&nbsp;defaults: { teamId: team.id, isActive:
-                <span class="str">true</span> }<br />
-                });<br />
-                <br />
-                <span class="cm">// nickname automático: #DRG DT Nombre</span
-                ><br />
-                <span class="kw">await</span> dtMember.<span class="fn"
-                  >setNickname</span
-                >(<span class="str">`#${abrev} DT ${name}`</span>);
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- MODELOS -->
-    <section id="modelos" class="section">
-      <div class="wrap">
+  <!-- QUÉ ES -->
+  <section id="que-es" class="section">
+    <div class="wrap">
+      <div class="about-grid">
         <div class="rv">
-          <p class="sec-label">base de datos</p>
-          <h2 class="sec-title">Ocho modelos<br />que lo conectan todo.</h2>
-          <p class="sec-sub">
-            Una base relacional que guarda la historia completa de cada liga.
-            Temporadas cerradas, equipos eliminados, campeones de hace tres años
-            — todo queda. La historia de una liga importa tanto como su
-            presente.
-          </p>
-        </div>
-        <div class="models-grid rv rv-d1">
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-toggle-on"></i></div>
-            <h4>Modality</h4>
-            <div class="mc-fields">
-              id · name (unique) · displayName<br />playersPerTeam · settings
-              (JSON) · isActive
-            </div>
-            <p>
-              X4, X5, etc. Cada modalidad tiene canales, roles y mercado
-              independiente. El campo
-              <code
-                style="
-                  font-family: var(--mono);
-                  font-size: 0.85em;
-                  color: var(--accent);
-                "
-                >settings</code
-              >
-              almacena toda la configuración de Discord.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-calendar-alt"></i></div>
-            <h4>Season</h4>
-            <div class="mc-fields">
-              id · name · modalityId (FK)<br />isActive · startedAt · endedAt
-            </div>
-            <p>
-              Temporadas independientes por modalidad. Al cerrar una, todas sus
-              competencias se cierran en cascada. Nunca más una competencia
-              olvidada abierta.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-shield-alt"></i></div>
-            <h4>Team</h4>
-            <div class="mc-fields">
-              id · name · abbreviation · logoPath<br />modalityId · roleId ·
-              uniformHome · uniformAway<br />emergencySigns · isActive
-            </div>
-            <p>
-              Logo descargado a disco, uniformes con validación. Soft delete:
-              <code
-                style="
-                  font-family: var(--mono);
-                  font-size: 0.82em;
-                  color: var(--accent);
-                "
-                >roleId = "deleted_${id}"</code
-              >
-              para liberar el rol sin perder historial.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-user"></i></div>
-            <h4>Player</h4>
-            <div class="mc-fields">
-              id · discordId (unique)<br />username · globalName
-            </div>
-            <p>
-              Perfil global del jugador, independiente de temporada o modalidad.
-              Un registro por Discord ID. Un jugador, una identidad.
-            </p>
-          </div>
-          <div class="m-card central">
-            <div class="mc-ic" style="background: rgba(200, 113, 74, 0.2)">
-              <i class="fas fa-link"></i>
-            </div>
-            <h4>Participant</h4>
-            <div class="mc-note">nodo central</div>
-            <div class="mc-fields">
-              id · playerId · teamId (nullable)<br />seasonId · modalityId ·
-              position · isActive<br /><em style="color: var(--accent)"
-                >UNIQUE (playerId, seasonId, modalityId)</em
-              >
-            </div>
-            <p>
-              Une Player + Team + Season.
-              <code
-                style="
-                  font-family: var(--mono);
-                  font-size: 0.82em;
-                  color: var(--accent);
-                "
-                >teamId = null</code
-              >
-              es agente libre. Un jugador puede tener Participant en X4 y X5
-              simultáneamente.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-flag-checkered"></i></div>
-            <h4>Competition</h4>
-            <div class="mc-fields">
-              id · name · seasonId (FK)<br />type (league|cup|friendly|other) ·
-              isActive
-            </div>
-            <p>
-              Ligas, copas, amistosos. Sin
-              <code
-                style="
-                  font-family: var(--mono);
-                  font-size: 0.82em;
-                  color: var(--accent);
-                "
-                >modalityId</code
-              >
-              propio — se hereda del Season. Una fuente de verdad.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-chart-bar"></i></div>
-            <h4>Stat</h4>
-            <div class="mc-fields">
-              id · participantId (FK) · competitionId (FK)<br />goles ·
-              asistencias · amarillas · rojas
-            </div>
-            <p>
-              Stats granulares por Participant y competencia. Nunca se mezclan
-              entre temporadas o modalidades. Cada gol cuenta en su contexto
-              exacto.
-            </p>
-          </div>
-          <div class="m-card">
-            <div class="mc-ic"><i class="fas fa-medal"></i></div>
-            <h4>Award</h4>
-            <div class="mc-fields">
-              id · name · type (team|individual)<br />winnerId · seasonId ·
-              modalityId<br />competitionId (nullable) · notes
-            </div>
-            <p>
-              MVP, bota de oro, campeón de liga — con notas opcionales y
-              referencia a competencia. El palmarés que toda liga merece.
-            </p>
+          <p class="sec-label">qué es iDinox</p>
+          <h2 class="sec-title">No es un bot<br />genérico.<br /><em style="font-style:italic;color:var(--accent)">Es la
+              liga<br />completa.</em></h2>
+          <div class="about-body" style="margin-top:2rem">
+            <p>Nace de algo concreto: comunidades de HaxBall que organizaban sus ligas con planillas de Google Sheets,
+              mensajes sueltos y mucho trabajo manual cada temporada. Datos perdidos, jugadores confundidos, admins
+              quemados. Con iDinox v3 eso se acabó.</p>
+            <p><strong>Todo queda registrado</strong> — desde la inscripción de un jugador hasta el palmarés histórico.
+              La base de datos relacional garantiza que los datos de temporadas pasadas nunca desaparecen aunque el
+              servidor arranque de cero.</p>
+            <p>La arquitectura soporta <strong>multi-modalidad</strong> nativa: X4 y X5 conviven en el mismo servidor
+              como instancias completamente independientes, con sus propios canales, roles, equipos, temporadas y
+              mercados.</p>
           </div>
         </div>
-        <div class="rel-box rv rv-d2">
-          <p
-            style="
-              font-family: var(--mono);
-              font-size: 0.66rem;
-              color: var(--muted);
-              letter-spacing: 0.1em;
-              margin-bottom: 1.4rem;
-            "
-          >
-            // relaciones entre modelos
-          </p>
-          <div class="rel-row">
-            <span class="rel-node">Modality</span><span class="rel-arr">→</span>
-            <span class="rel-node">Season</span><span class="rel-arr">→</span>
-            <span class="rel-node">Competition</span
-            ><span class="rel-arr">→</span> <span class="rel-node">Stat</span
-            ><span class="rel-arr">←</span>
-            <span class="rel-node hl">Participant</span
-            ><span class="rel-arr">←</span>
-            <span class="rel-node">Player</span>
+        <div class="rv rv-d1">
+          <div class="stack-rows">
+            <div class="s-row">
+              <div class="s-ic"><i class="fas fa-code"></i></div>
+              <div class="s-text">
+                <h5>TypeScript ESM + Discord.js v14</h5>
+                <p>Tipado fuerte. Autocomplete dinámico en todos los slash commands. Código que se puede mantener.</p>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-ic"><i class="fas fa-database"></i></div>
+              <div class="s-text">
+                <h5>SQLite + Sequelize</h5>
+                <p>8 modelos relacionales. Backups automáticos antes de cada operación destructiva. Sin servidor
+                  externo.</p>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-ic"><i class="fas fa-layer-group"></i></div>
+              <div class="s-text">
+                <h5>Multi-modalidad nativa</h5>
+                <p>X4 y X5 con universos separados bajo el mismo bot. Cada modalidad con su propia configuración
+                  completa.</p>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-ic"><i class="fas fa-shield-halved"></i></div>
+              <div class="s-text">
+                <h5>Permisos granulares</h5>
+                <p>isAdmin · isModalityAdmin · DT · sub-DT · estadistiquero. Verificados en tiempo real contra roles de
+                  Discord.</p>
+              </div>
+            </div>
+            <div class="s-row">
+              <div class="s-ic"><i class="fab fa-github"></i></div>
+              <div class="s-text">
+                <h5>100 % MIT, 0 € de coste</h5>
+                <p>Open source sin asteriscos. Sin planes de pago. Sin anuncios. Para siempre.</p>
+              </div>
+            </div>
           </div>
-          <div class="rel-row">
-            <span class="rel-node">Modality</span><span class="rel-arr">→</span>
-            <span class="rel-node">Team</span><span class="rel-arr">→</span>
-            <span class="rel-node hl">Participant</span
-            ><span class="rel-arr">·</span> <span class="rel-node">Season</span
-            ><span class="rel-arr">→</span>
-            <span class="rel-node">Award</span>
-          </div>
-          <div class="rel-note">
-            <strong>Participant</strong> es el nodo central — une
-            <strong>Player</strong> + <strong>Team</strong> +
-            <strong>Season</strong>. El índice
-            <code>UNIQUE (playerId, seasonId, modalityId)</code> garantiza
-            integridad a nivel de base de datos. Las <strong>Stats</strong> son
-            por Participant + Competition: el historial es granular y nunca se
-            mezcla entre temporadas o modalidades.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- FASES -->
-    <section id="fases" class="section">
-      <div class="wrap">
-        <div class="rv">
-          <p class="sec-label">hoja de ruta</p>
-          <h2 class="sec-title">5 fases.<br />Un sistema completo.</h2>
-          <p class="sec-sub">
-            Cada fase añade una capa funcional sin romper nada de lo anterior.
-            El desarrollo es incremental, estable y siempre hacia adelante.
-          </p>
-        </div>
-        <div class="phases-wrap rv rv-d1" id="phasesWrap">
-          <!-- generado por JS -->
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- TÉCNICO -->
-    <section id="tecnico" class="section">
-      <div class="wrap">
-        <div class="rv">
-          <p class="sec-label">arquitectura &amp; decisiones</p>
-          <h2 class="sec-title">Bajo el capó.</h2>
-          <p class="sec-sub">
-            Decisiones que tienen un porqué. No son caprichos — son respuestas a
-            problemas reales de ligas que crecen y cambian cada temporada.
-          </p>
-        </div>
-        <div class="tech-grid rv rv-d1">
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-user-shield"></i> DT sin campo fijo en la DB
-            </h5>
-            <p>
-              El Director Técnico no se almacena en Team. Se detecta
-              dinámicamente: DT = quien tiene <code>rol_dt</code> de los
-              settings de la modalidad y pertenece al equipo. Cambiar de DT es
-              solo cambiar el rol de Discord — sin queries de actualización, sin
-              comandos especiales.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-trash-can-arrow-up"></i> Soft delete en equipos
-            </h5>
-            <p>
-              Eliminar un equipo no borra nada: <code>isActive = false</code> y
-              <code>roleId = "deleted_${id}"</code>. Libera el roleId para
-              nuevos equipos pero conserva todo el historial de stats,
-              participants y awards. "Los Pumas" ganaron la liga en 2023 aunque
-              ya no estén activos — eso queda.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-arrows-split-up-and-left"></i> Competition hereda
-              modalidad de Season
-            </h5>
-            <p>
-              Las Competition no tienen <code>modalityId</code> propio — lo
-              heredan del Season al que pertenecen. Un dato, una fuente de
-              verdad. Nunca puede haber una competencia de X4 en una temporada
-              de X5.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-fingerprint"></i> Participant UNIQUE a nivel DB
-            </h5>
-            <p>
-              El índice único sobre
-              <code>(playerId, seasonId, modalityId)</code> garantiza integridad
-              sin validaciones extra en la capa de aplicación. Ni por error ni
-              por condición de carrera se puede duplicar un participante.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-calendar-xmark"></i> Cierre en cascada automático
-            </h5>
-            <p>
-              Al cerrar una temporada, todas sus Competition activas se cierran
-              solas. Sin pasos manuales, sin competencias abiertas en temporadas
-              archivadas que contaminen queries futuras.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-magnifying-glass"></i> Autocomplete dinámico
-              desde la DB
-            </h5>
-            <p>
-              Los campos de modalidad, equipo y competencia en los slash
-              commands se cargan desde la DB en cada interacción. Añadir una
-              modalidad o equipo nuevo lo hace disponible al instante, sin tocar
-              código ni reiniciar el bot.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-user-plus"></i> Player.findOrCreate en lugar de
-              findOne
-            </h5>
-            <p>
-              Los DTs creados desde <code>/league-team add</code> pueden no
-              haber usado nunca <code>/start</code>.
-              <code>findOrCreate</code> garantiza que siempre existe su registro
-              de Player sin romper el flujo — aunque nunca hayan tocado el bot
-              directamente.
-            </p>
-          </div>
-          <div class="tech-card">
-            <h5>
-              <i class="fas fa-shirt"></i> Validación de uniformes con regex
-            </h5>
-            <p>
-              Los campos <code>uniformHome</code> y
-              <code>uniformAway</code> deben iniciar con
-              <code>/colors</code> (regex <code>/^\/colors\b/i</code>). Se
-              valida en creación y en edición posterior por DT o sub-DT,
-              asegurando que siempre sean códigos válidos de HaxBall.
-            </p>
-          </div>
-        </div>
-
-        <div class="rv rv-d2" style="margin-top: 4rem">
-          <p class="sec-label">configuración por modalidad</p>
-          <h3
-            style="
-              font-family: var(--serif);
-              font-size: 1.8rem;
-              color: var(--text-hi);
-              margin-bottom: 0.8rem;
-              letter-spacing: -0.02em;
-            "
-          >
-            El objeto
-            <em style="font-style: italic; color: var(--accent)"
-              >ModalitySettings</em
-            >
-          </h3>
-          <p
-            style="
-              color: var(--muted);
-              font-size: 0.9rem;
-              max-width: 580px;
-              margin-bottom: 1.5rem;
-              line-height: 1.8;
-            "
-          >
-            Cada modalidad almacena su configuración completa en un campo JSON.
-            El bot lee este objeto para saber a qué canales enviar
-            notificaciones y qué roles tienen permisos. Cada modalidad funciona
-            como un servidor independiente dentro del mismo Discord.
-          </p>
-          <div class="code-block">
+          <div class="code-block" id="codeSnippet">
             <div class="code-bar">
-              <span class="cbdot cr"></span><span class="cbdot cy"></span
-              ><span class="cbdot cg"></span>
-              <span class="cfile">ModalitySettings — tipo TypeScript</span>
+              <span class="cbdot cr"></span><span class="cbdot cy"></span><span class="cbdot cg"></span>
+              <span class="cfile">season.ts — roster carry</span>
               <span class="copy-hint">clic para copiar</span>
             </div>
             <div class="code-body">
-              <span class="kw">type</span>
-              <span class="fn">ModalitySettings</span> = {<br />
-              &nbsp;&nbsp;marketOpen: <span class="kw">boolean</span>,<br />
-              &nbsp;&nbsp;rol_dt: <span class="str">string</span> |
-              <span class="kw">null</span>,
-              <span class="cm">// Discord role ID del DT</span><br />
-              &nbsp;&nbsp;rol_sub_dt: <span class="str">string</span> |
-              <span class="kw">null</span>,
-              <span class="cm">// sub-DT puede editar uniformes</span><br />
-              &nbsp;&nbsp;rol_admin: <span class="str">string</span> |
-              <span class="kw">null</span>,
-              <span class="cm">// admin de la modalidad</span><br />
-              &nbsp;&nbsp;canal_mercado_fichajes:
-              <span class="str">string</span> | <span class="kw">null</span>,
-              <span class="cm">// notificaciones de altas</span><br />
-              &nbsp;&nbsp;canal_mercado_bajas: <span class="str">string</span> |
-              <span class="kw">null</span>,
-              <span class="cm">// notificaciones de bajas</span><br />
-              &nbsp;&nbsp;canal_resultados: <span class="str">string</span> |
-              <span class="kw">null</span>,<br />
-              &nbsp;&nbsp;canal_logs: <span class="str">string</span> |
-              <span class="kw">null</span>,
-              <span class="cm">// discordLogger envía aquí</span><br />
-              }
+              <span class="cm">// Roster carry al crear nueva temporada</span><br />
+              <span class="kw">const</span> prevParticipants = <span class="kw">await</span> <span
+                class="fn">Participant</span>.findAll({<br />
+              &nbsp;&nbsp;where: { seasonId: prevSeason.id, teamId: { [Op.ne]: <span class="kw">null</span> } }<br />
+              });<br />
+              <br />
+              <span class="kw">const</span> carries = prevParticipants.map(p => ({<br />
+              &nbsp;&nbsp;playerId: p.playerId, teamId: p.teamId,<br />
+              &nbsp;&nbsp;seasonId: newSeason.id, modalityId: p.modalityId,<br />
+              &nbsp;&nbsp;position: p.position, isActive: <span class="str">true</span><br />
+              }));<br />
+              <br />
+              <span class="kw">await</span> <span class="fn">Participant</span>.bulkCreate(carries, {<br />
+              &nbsp;&nbsp;hooks: <span class="str">false</span>, ignoreDuplicates: <span class="str">true</span><br />
+              }); <span class="cm">// N validaciones evitadas</span>
             </div>
-          </div>
-        </div>
-
-        <div class="rv rv-d2" style="margin-top: 3rem">
-          <p class="sec-label">utilidades del core</p>
-          <h3
-            style="
-              font-family: var(--serif);
-              font-size: 1.8rem;
-              color: var(--text-hi);
-              margin-bottom: 2rem;
-              letter-spacing: -0.02em;
-            "
-          >
-            Funciones que usa todo el bot
-          </h3>
-          <div class="tech-grid">
-            <div class="tech-card">
-              <h5><i class="fas fa-terminal"></i> discordLogger</h5>
-              <p>
-                Envía embeds con color e icono al canal
-                <code>canal_logs</code> de la modalidad. Niveles:
-                <code>info</code>, <code>success</code>, <code>warn</code>,
-                <code>error</code>, <code>fatal</code>. Todos los comandos lo
-                usan — quién, cuándo, qué. Trazabilidad completa sin esfuerzo.
-              </p>
-            </div>
-            <div class="tech-card">
-              <h5><i class="fas fa-lock"></i> Permisos granulares</h5>
-              <p>
-                <code>isAdmin</code> para admin global del servidor.
-                <code>isModalityAdmin</code> para admin de modalidad.
-                <code>isDT</code> para DT de equipo.
-                <code>DENIED_EMBED</code> como respuesta reutilizable con
-                mensajes claros sobre qué permiso falta y cómo obtenerlo.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- COMANDOS -->
-    <section id="comandos" class="section">
-      <div class="wrap">
-        <div class="rv">
-          <p class="sec-label">referencia completa</p>
-          <h2 class="sec-title">Todos los comandos.</h2>
-          <p class="sec-sub" style="max-width: none">
-            30+ comandos organizados por fase. Cada uno con autocomplete,
-            validaciones y logging automático.
-          </p>
-        </div>
-        <div class="cmd-table rv rv-d1" id="cmdTable">
-          <!-- generado por JS -->
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- CTA -->
-    <div class="cta-wrap">
-      <div class="wrap">
-        <div class="cta-box rv">
-          <h2>¿Tu liga merece<br />algo mejor?</h2>
-          <p>
-            iDinox v3 es gratuito, open source y hecho para la comunidad de
-            HaxBall. Si organizas una liga seria y estás cansado de hacerlo todo
-            a mano, este es tu bot. Sin costes ocultos, sin sorpresas.
-          </p>
-          <div class="cta-btns">
-            <a
-              href="https://github.com/KvensOs/iDinox-v3"
-              class="btn-primary"
-              target="_blank"
-              ><i class="fab fa-github"></i> Estrella en GitHub</a
-            >
-            <a
-              href="https://discord.gg/RFSK6ZeWnF"
-              class="btn-dc"
-              target="_blank"
-              ><i class="fab fa-discord"></i> Discord de desarrollo</a
-            >
-            <a href="#fases" class="btn-outline">Ver roadmap</a>
           </div>
         </div>
       </div>
     </div>
+  </section>
 
-    <footer>
-      <div class="wrap">
-        <div class="foot">
-          <div class="foot-l">
-            iDinox v3 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; Open source
-            &nbsp;·&nbsp; Gratuito para siempre
+  <hr class="rule" />
+
+  <!-- MODELOS -->
+  <section id="modelos" class="section">
+    <div class="wrap">
+      <div class="rv">
+        <p class="sec-label">base de datos</p>
+        <h2 class="sec-title">Ocho modelos<br />que lo conectan todo.</h2>
+        <p class="sec-sub">Una base relacional que guarda la historia completa de cada liga. Temporadas cerradas,
+          equipos eliminados, campeones de hace tres años — todo queda.</p>
+      </div>
+      <div class="models-grid rv rv-d1">
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-toggle-on"></i></div>
+          <h4>Modality</h4>
+          <div class="mc-fields">id · name (unique) · displayName<br />playersPerTeam · settings (JSON) · isActive</div>
+          <p>X4, X5, etc. Cada modalidad tiene canales, roles y mercado independiente. El campo <code
+              style="font-family:var(--mono);font-size:0.85em;color:var(--accent)">settings</code> almacena toda la
+            configuración de Discord.</p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-calendar-alt"></i></div>
+          <h4>Season</h4>
+          <div class="mc-fields">id · name · modalityId (FK)<br />isActive · startedAt · endedAt</div>
+          <p>Solo una activa por modalidad. Al cerrar, todas sus competencias se cierran en cascada. Backup automático
+            antes de cada cierre.</p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-shield-alt"></i></div>
+          <h4>Team</h4>
+          <div class="mc-fields">id · name · abbreviation · logoPath<br />modalityId · roleId · uniformHome ·
+            uniformAway<br />emergencySigns · isActive</div>
+          <p>Logo descargado a disco, uniformes con validación. Soft delete: <code
+              style="font-family:var(--mono);font-size:0.82em;color:var(--accent)">roleId = "deleted_${id}"</code>.</p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-user"></i></div>
+          <h4>Player</h4>
+          <div class="mc-fields">id · discordId (unique)<br />username · globalName</div>
+          <p>Perfil global del jugador, independiente de temporada o modalidad. Un registro por Discord ID.</p>
+        </div>
+        <div class="m-card central">
+          <div class="mc-ic" style="background:rgba(200,113,74,0.2)"><i class="fas fa-link"></i></div>
+          <h4>Participant</h4>
+          <div class="mc-note">nodo central</div>
+          <div class="mc-fields">id · playerId · teamId (nullable)<br />seasonId · modalityId · position ·
+            isActive<br /><em style="color:var(--accent)">UNIQUE (playerId, seasonId, modalityId)</em></div>
+          <p>Une Player + Team + Season. <code
+              style="font-family:var(--mono);font-size:0.82em;color:var(--accent)">teamId = null</code> es agente libre.
+          </p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-flag-checkered"></i></div>
+          <h4>Competition</h4>
+          <div class="mc-fields">id · name · seasonId (FK)<br />type (league|cup|friendly|other)<br />canalEstadisticas
+            · isActive</div>
+          <p>Ligas, copas, amistosos. Tiene canal dedicado para cargar stats por mensaje. Hereda modalidad de su Season.
+          </p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-chart-bar"></i></div>
+          <h4>Stat</h4>
+          <div class="mc-fields">id · participantId (FK) · competitionId (FK)<br />goles · asistencias · cs · autogoles
           </div>
-          <div class="foot-r">
-            <a href="https://github.com/KvensOs/iDinox-v3" target="_blank"
-              ><i class="fab fa-github"></i> GitHub</a
-            >
-            <a href="https://discord.gg/RFSK6ZeWnF" target="_blank"
-              ><i class="fab fa-discord"></i> Discord</a
-            >
+          <p>Stats por Participant y competencia. Soporta negativos con clamp a 0. Nunca se mezclan entre temporadas.
+          </p>
+        </div>
+        <div class="m-card">
+          <div class="mc-ic"><i class="fas fa-medal"></i></div>
+          <h4>Award + AwardWinner</h4>
+          <div class="mc-fields">Award: name · type (team|individual)<br />seasonId · competitionId (nullable) ·
+            notes<br />AwardWinner: playerId | teamId</div>
+          <p>Premios individuales y de equipo por temporada. Awards de equipo crean una fila por cada Participant
+            activo.</p>
+        </div>
+      </div>
+      <div class="rel-box rv rv-d2">
+        <p
+          style="font-family:var(--mono);font-size:0.66rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:1.4rem">
+          // relaciones entre modelos</p>
+        <div class="rel-row">
+          <span class="rel-node">Modality</span><span class="rel-arr">→</span>
+          <span class="rel-node">Season</span><span class="rel-arr">→</span>
+          <span class="rel-node">Competition</span><span class="rel-arr">→</span>
+          <span class="rel-node">Stat</span><span class="rel-arr">←</span>
+          <span class="rel-node hl">Participant</span><span class="rel-arr">←</span>
+          <span class="rel-node">Player</span>
+        </div>
+        <div class="rel-row">
+          <span class="rel-node">Modality</span><span class="rel-arr">→</span>
+          <span class="rel-node">Team</span><span class="rel-arr">→</span>
+          <span class="rel-node hl">Participant</span><span class="rel-arr">·</span>
+          <span class="rel-node">Season</span><span class="rel-arr">→</span>
+          <span class="rel-node">Award</span><span class="rel-arr">→</span>
+          <span class="rel-node">AwardWinner</span>
+        </div>
+        <div class="rel-note">
+          <strong>Participant</strong> es el nodo central — une <strong>Player</strong> + <strong>Team</strong> +
+          <strong>Season</strong>. El índice <code>UNIQUE (playerId, seasonId, modalityId)</code> garantiza integridad a
+          nivel de base de datos. Las <strong>Stats</strong> son por Participant + Competition: el historial es granular
+          y nunca se mezcla. Los <strong>AwardWinner</strong> caen en CASCADE al borrar el Award.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- FASES -->
+  <section id="fases" class="section">
+    <div class="wrap">
+      <div class="rv">
+        <p class="sec-label">hoja de ruta</p>
+        <h2 class="sec-title">5 fases.<br />Un sistema completo.</h2>
+        <p class="sec-sub">Cada fase añade una capa funcional sin romper nada de lo anterior. El desarrollo es
+          incremental, estable y siempre hacia adelante.</p>
+      </div>
+      <div class="phases-wrap rv rv-d1" id="phasesWrap"></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- TÉCNICO -->
+  <section id="tecnico" class="section">
+    <div class="wrap">
+      <div class="rv">
+        <p class="sec-label">arquitectura &amp; decisiones</p>
+        <h2 class="sec-title">Bajo el capó.</h2>
+        <p class="sec-sub">Decisiones que tienen un porqué. No son caprichos — son respuestas a problemas reales de
+          ligas que crecen y cambian cada temporada.</p>
+      </div>
+      <div class="tech-grid rv rv-d1">
+        <div class="tech-card">
+          <h5><i class="fas fa-user-shield"></i> DT sin campo fijo en la DB</h5>
+          <p>El Director Técnico no se almacena en Team. Se detecta dinámicamente: DT = quien tiene <code>rol_dt</code>
+            de los settings de la modalidad y pertenece al equipo. Cambiar de DT es solo cambiar el rol de Discord.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-trash-can-arrow-up"></i> Soft delete en equipos</h5>
+          <p>Eliminar un equipo no borra nada: <code>isActive = false</code> y <code>roleId = "deleted_${id}"</code>.
+            Libera el roleId para nuevos equipos pero conserva todo el historial de stats, participants y awards.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-arrows-split-up-and-left"></i> Competition hereda modalidad de Season</h5>
+          <p>Las Competition no tienen <code>modalityId</code> propio — lo heredan del Season. Un dato, una fuente de
+            verdad. Nunca puede haber una competencia de X4 en una temporada de X5.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-fingerprint"></i> Participant UNIQUE a nivel DB</h5>
+          <p>El índice único sobre <code>(playerId, seasonId, modalityId)</code> garantiza integridad sin validaciones
+            extra. Ni por error ni por condición de carrera se puede duplicar un participante.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-calendar-xmark"></i> Cierre en cascada automático</h5>
+          <p>Al cerrar una temporada, todas sus Competition activas se cierran solas. Sin pasos manuales, sin
+            competencias abiertas en temporadas archivadas que contaminen queries futuras.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-magnifying-glass"></i> Autocomplete dinámico desde la DB</h5>
+          <p>Los campos de modalidad, equipo y competencia en los slash commands se cargan desde la DB en cada
+            interacción. Añadir una modalidad nueva la hace disponible al instante, sin reiniciar el bot.</p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-shield-halved"></i> SEASON_SECRET + confirmar</h5>
+          <p>Los comandos <code>/season new</code> y <code>/season end</code> requieren una clave secreta en
+            <code>.env</code> y el nombre exacto de la temporada a cerrar. Backup automático del <code>.sqlite</code>
+            antes de cualquier escritura.
+          </p>
+        </div>
+        <div class="tech-card">
+          <h5><i class="fas fa-message"></i> Stats por canal dedicado</h5>
+          <p>Cada Competition puede tener un <code>canalEstadisticas</code>. El evento <code>messageCreate</code>
+            detecta el canal y procesa <code>@Jugador g2 a1 cs1</code> automáticamente. Sin el rol correcto → ignorado
+            silencioso.</p>
+        </div>
+      </div>
+
+      <div class="rv rv-d2" style="margin-top:4rem">
+        <p class="sec-label">configuración por modalidad</p>
+        <h3
+          style="font-family:var(--serif);font-size:1.8rem;color:var(--text-hi);margin-bottom:0.8rem;letter-spacing:-0.02em">
+          El objeto <em style="font-style:italic;color:var(--accent)">ModalitySettings</em></h3>
+        <p style="color:var(--muted);font-size:0.9rem;max-width:580px;margin-bottom:1.5rem;line-height:1.8">Cada
+          modalidad almacena su configuración completa en un campo JSON. El bot lee este objeto para saber a qué canales
+          enviar notificaciones y qué roles tienen permisos.</p>
+        <div class="code-block">
+          <div class="code-bar">
+            <span class="cbdot cr"></span><span class="cbdot cy"></span><span class="cbdot cg"></span>
+            <span class="cfile">ModalitySettings — tipo TypeScript</span>
+            <span class="copy-hint">clic para copiar</span>
+          </div>
+          <div class="code-body">
+            <span class="kw">type</span> <span class="fn">ModalitySettings</span> = {<br />
+            &nbsp;&nbsp;marketOpen: <span class="kw">boolean</span>,<br />
+            &nbsp;&nbsp;rol_dt: <span class="str">string</span> | <span class="kw">null</span>, <span class="cm">//
+              Discord role ID del DT</span><br />
+            &nbsp;&nbsp;rol_sub_dt: <span class="str">string</span> | <span class="kw">null</span>, <span class="cm">//
+              sub-DT puede editar uniformes</span><br />
+            &nbsp;&nbsp;rol_admin: <span class="str">string</span> | <span class="kw">null</span>, <span class="cm">//
+              admin de la modalidad</span><br />
+            &nbsp;&nbsp;rol_estadistiquero: <span class="str">string</span> | <span class="kw">null</span>, <span
+              class="cm">// carga stats por canal o comando</span><br />
+            &nbsp;&nbsp;canal_mercado_fichajes: <span class="str">string</span> | <span class="kw">null</span>, <span
+              class="cm">// notificaciones de altas</span><br />
+            &nbsp;&nbsp;canal_mercado_bajas: <span class="str">string</span> | <span class="kw">null</span>, <span
+              class="cm">// notificaciones de bajas</span><br />
+            &nbsp;&nbsp;canal_resultados: <span class="str">string</span> | <span class="kw">null</span>,<br />
+            &nbsp;&nbsp;canal_logs: <span class="str">string</span> | <span class="kw">null</span>, <span class="cm">//
+              discordLogger envía aquí</span><br />
+            }
           </div>
         </div>
       </div>
-    </footer>
 
-    <script>
-      // ────────────────────────────────────────────────────────────────────────────
-      // DATOS DE FASES
-      // ────────────────────────────────────────────────────────────────────────────
-      const FASES = [
-        {
-          num: 1,
-          nombre: "Configuración\n& Equipos",
-          titulo: "Los cimientos del sistema",
-          desc: `Configuración de roles y canales por modalidad. Creación de equipos con logo descargado a disco (<code>logos/ABREV.ext</code>), uniformes con validación, y DT asignado automáticamente con nickname <code>#ABREV DT Nombre</code>. Gestión de competencias dentro de temporadas activas. Autocomplete dinámico en todos los comandos — añadir una modalidad nueva no requiere tocar código, solo usar <code>/setup</code>.`,
-          cmds: [
-            { cmd: "/setup", estado: "done" },
-            { cmd: "/league-team add", estado: "done" },
-            { cmd: "/league-team edit", estado: "done" },
-            { cmd: "/league-team delete", estado: "done" },
-            { cmd: "/league-competition new", estado: "done" },
-            { cmd: "/league-competition edit", estado: "done" },
-            { cmd: "/league-competition close", estado: "done" },
-            { cmd: "/league-competition delete", estado: "done" },
-            { cmd: "/club-unis", estado: "done" },
-          ],
-        },
-        {
-          num: 2,
-          nombre: "Mercado\n& Fichajes",
-          titulo: "El flujo diario de la liga",
-          desc: `Abrir y cerrar mercado por modalidad. Lista de agentes libres (Participants con <code>teamId = null</code>). Fichajes con notificación automática al canal configurado y nickname <code>#ABREV Nombre</code>. Baja con restauración de nickname. Los DTs pueden fichar directamente a agentes libres, y los admins tienen control total. El sistema de emergencySigns permite habilitar fichajes extra para equipos con bajas.`,
-          cmds: [
-            { cmd: "/market open", estado: "wip" },
-            { cmd: "/market close", estado: "wip" },
-            { cmd: "/market agents", estado: "wip" },
-            { cmd: "/market sign", estado: "wip" },
-            { cmd: "/market release", estado: "wip" },
-            { cmd: "/player check", estado: "wip" },
-          ],
-        },
-        {
-          num: 3,
-          nombre: "Estadísticas\n& Perfil",
-          titulo: "La cara visible de la liga",
-          desc: `Perfil completo de jugador con stats por competencia y temporada. Ficha del equipo con plantilla actual e historial. Rankings filtrables de goles, asistencias y tarjetas. Comparativa cara a cara entre dos jugadores. Palmarés histórico con trofeos y premios. Los perfiles serán accesibles por mención o ID, mostrando la trayectoria completa del jugador.`,
-          cmds: [
-            { cmd: "/perfil", estado: "pending" },
-            { cmd: "/club", estado: "pending" },
-            { cmd: "/league-tops", estado: "pending" },
-            { cmd: "/league-compare", estado: "pending" },
-            { cmd: "/league-history", estado: "pending" },
-            { cmd: "/league-trophy add", estado: "pending" },
-          ],
-        },
-        {
-          num: 4,
-          nombre: "Gestión de\nTemporadas",
-          titulo: "El ciclo completo de una liga",
-          desc: `Crear nueva temporada desactiva la anterior y cierra todas sus Competition en cascada. Cierre manual sin crear nueva. Consulta del historial de temporadas. El dato histórico nunca se pierde — solo se archiva. Al iniciar una temporada nueva, todos los participantes se convierten en agentes libres listos para el próximo mercado.`,
-          cmds: [
-            { cmd: "/season new", estado: "pending" },
-            { cmd: "/season end", estado: "pending" },
-            { cmd: "/season info", estado: "pending" },
-          ],
-        },
-        {
-          num: 5,
-          nombre: "Utilidades",
-          titulo: "Herramientas para el día a día",
-          desc: `Comunicación masiva a hasta 3 roles vía DM. Referencia de horarios para comunidades de Venezuela y América Latina. Generador de timestamps para Discord. Sistema de tickets integrado. Subida y registro de grabaciones de partidos con enlaces permanentes. Funciones que antes requerían bots externos, ahora en un solo lugar.`,
-          cmds: [
-            { cmd: "/broadcast", estado: "pending" },
-            { cmd: "/hora", estado: "pending" },
-            { cmd: "/timestamp", estado: "pending" },
-            { cmd: "/ticket setup", estado: "pending" },
-            { cmd: "/upload", estado: "pending" },
-          ],
-        },
-      ];
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // CALCULAR ESTADOS según FASE_ACTUAL
-      // ────────────────────────────────────────────────────────────────────────────
-      function getFaseStatus(faseNum) {
-        if (faseNum < FASE_ACTUAL) return "done";
-        if (faseNum === FASE_ACTUAL) return "wip";
-        return "pending";
-      }
-
-      function getCmdStatus(faseNum) {
-        const fs = getFaseStatus(faseNum);
-        if (fs === "done") return "done";
-        if (fs === "wip") return "wip";
-        return "pending";
-      }
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // STATUS SIDEBAR (hero)
-      // ────────────────────────────────────────────────────────────────────────────
-      const LABELS = [
-        "Configuración & Equipos",
-        "Mercado & Fichajes",
-        "Estadísticas & Perfil",
-        "Gestión de Temporadas",
-        "Utilidades",
-      ];
-      const STATUS_TEXTS = {
-        done: "— completada",
-        wip: "— en desarrollo",
-        pending: "— planificada",
-      };
-
-      function buildStatusList() {
-        const el = document.getElementById("statusList");
-        el.innerHTML = "";
-        FASES.forEach((f) => {
-          const status = getFaseStatus(f.num);
-          const item = document.createElement("div");
-          item.className = "st-item" + (status === "wip" ? " st-active" : "");
-          const dotClass =
-            status === "done"
-              ? "st-green"
-              : status === "wip"
-                ? "st-amber"
-                : "st-grey";
-          item.innerHTML = `<span class="st-dot ${dotClass}"></span><span>Fase ${f.num}: ${LABELS[f.num - 1]} <em>${STATUS_TEXTS[status]}</em></span>`;
-          el.appendChild(item);
-        });
-      }
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // PROGRESS BADGE
-      // ────────────────────────────────────────────────────────────────────────────
-      function buildProgressBadge() {
-        const pct = Math.round(((FASE_ACTUAL - 1) / 5) * 100);
-        document.getElementById("pbBar").style.width = pct + "%";
-        document.getElementById("pbPct").textContent = pct + "%";
-      }
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // PHASES
-      // ────────────────────────────────────────────────────────────────────────────
-      function buildPhases() {
-        const wrap = document.getElementById("phasesWrap");
-        wrap.innerHTML = "";
-
-        FASES.forEach((f) => {
-          const status = getFaseStatus(f.num);
-          const tagClass = { done: "t-done", wip: "t-wip", pending: "t-pend" }[
-            status
-          ];
-          const tagText = {
-            done: "completada",
-            wip: "en desarrollo",
-            pending: "planificada",
-          }[status];
-
-          // calcular estilo de comandos según el status de la fase
-          const cmdClass = {
-            done: "cmd-done",
-            wip: "cmd-wip",
-            pending: "cmd-pend",
-          }[status];
-
-          const ph = document.createElement("div");
-          ph.className = "ph";
-          ph.dataset.status = status;
-
-          const nombreHtml = f.nombre.replace("\n", "<br>");
-          const cmdsHtml = f.cmds
-            .map((c) => `<span class="cmd-t ${cmdClass}">${c.cmd}</span>`)
-            .join("");
-
-          ph.innerHTML = `
-      <div class="ph-side">
-        <span class="ph-num">Fase 0${f.num}</span>
-        <span class="ph-name">${nombreHtml}</span>
-        <span class="ph-tag ${tagClass}">${tagText}</span>
+      <div class="rv rv-d2" style="margin-top:3rem">
+        <p class="sec-label">utilidades del core</p>
+        <h3
+          style="font-family:var(--serif);font-size:1.8rem;color:var(--text-hi);margin-bottom:2rem;letter-spacing:-0.02em">
+          Funciones que usa todo el bot</h3>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <h5><i class="fas fa-terminal"></i> discordLogger</h5>
+            <p>Envía embeds con color e icono al canal <code>canal_logs</code> de la modalidad. Niveles:
+              <code>info</code>, <code>success</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>.
+              Síncrono — nunca usar <code>await logger.*</code>. Trazabilidad completa sin esfuerzo.
+            </p>
+          </div>
+          <div class="tech-card">
+            <h5><i class="fas fa-lock"></i> Permisos granulares</h5>
+            <p><code>isAdmin(member, client)</code> para admin global.
+              <code>isModalityAdmin(member, client, settings)</code> para admin de modalidad. <code>DENIED_EMBED</code>
+              como respuesta reutilizable. Los permisos nunca se almacenan en DB — siempre en tiempo real.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="ph-body">
-        <h5>${f.titulo}</h5>
-        <p>${f.desc}</p>
-        <div class="cmds">${cmdsHtml}</div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- COMANDOS -->
+  <section id="comandos" class="section">
+    <div class="wrap">
+      <div class="rv">
+        <p class="sec-label">referencia completa</p>
+        <h2 class="sec-title">Todos los comandos.</h2>
+        <p class="sec-sub" style="max-width:none">35+ comandos organizados por fase. Cada uno con autocomplete,
+          validaciones y logging automático.</p>
       </div>
-    `;
-          wrap.appendChild(ph);
+      <div class="cmd-table rv rv-d1" id="cmdTable"></div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <div class="wrap">
+      <div class="cta-box rv">
+        <h2>¿Tu liga merece<br />algo mejor?</h2>
+        <p>iDinox v3 es gratuito, open source y hecho para la comunidad de HaxBall. Si organizas una liga seria y estás
+          cansado de hacerlo todo a mano, este es tu bot. Sin costes ocultos, sin sorpresas.</p>
+        <div class="cta-btns">
+          <a href="https://github.com/KvensOs/iDinox-v3" class="btn-primary" target="_blank"><i
+              class="fab fa-github"></i> Estrella en GitHub</a>
+          <a href="https://discord.gg/RFSK6ZeWnF" class="btn-dc" target="_blank"><i class="fab fa-discord"></i> Discord
+            de desarrollo</a>
+          <a href="#fases" class="btn-outline">Ver roadmap</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div class="foot-l">iDinox v3 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; Open source &nbsp;·&nbsp; Gratuito para
+          siempre</div>
+        <div class="foot-r">
+          <a href="https://github.com/KvensOs/iDinox-v3" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+          <a href="https://discord.gg/RFSK6ZeWnF" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ────────────────────────────────────────────────────────────────────────────
+    // DATOS DE FASES — actualizados con documentación real
+    // ────────────────────────────────────────────────────────────────────────────
+    const FASES = [
+      {
+        num: 1,
+        nombre: "Configuración\n& Equipos",
+        titulo: "Los cimientos del sistema",
+        desc: `Configuración de roles y canales por modalidad vía <code>/setup</code>. Creación de equipos con logo descargado a disco, uniformes con validación <code>/colors</code>, y DT asignado automáticamente con nickname <code>[ABREV] DT Nombre</code>. Gestión completa de competencias dentro de temporadas activas — incluyendo creación automática de canal de estadísticas. Autocomplete dinámico en todos los comandos: añadir una modalidad nueva no requiere tocar código.`,
+        cmds: [
+          { cmd: "/setup" }, { cmd: "/league-team add" }, { cmd: "/league-team edit" },
+          { cmd: "/league-team delete" }, { cmd: "/league-competition new" },
+          { cmd: "/league-competition edit" }, { cmd: "/league-competition close" },
+          { cmd: "/league-competition delete" }, { cmd: "/club-unis" }, { cmd: "/start" },
+        ],
+      },
+      {
+        num: 2,
+        nombre: "Mercado\n& Fichajes",
+        titulo: "El flujo diario de la liga",
+        desc: `Abrir y cerrar mercado por modalidad con notificación automática en canales configurados. Lista de agentes libres (Participants con <code>teamId = null</code>). Fichajes con flujo de confirmación — botones Aceptar / Rechazar / Retirar. Baja con restauración de nickname. Una oferta pendiente (<code>SignOffer</code>) bloquea nuevas ofertas al mismo jugador. Hasta 2 fichajes de emergencia por equipo por temporada.`,
+        cmds: [
+          { cmd: "/market open" }, { cmd: "/market close" }, { cmd: "/market estado" },
+          { cmd: "/market agents" }, { cmd: "/market sign" }, { cmd: "/market release" },
+          { cmd: "/player-check" },
+        ],
+      },
+      {
+        num: 3,
+        nombre: "Estadísticas\n& Perfil",
+        titulo: "La cara visible de la liga",
+        desc: `Perfil completo con navegación interactiva por menús desplegables: vista global, modalidad, temporada y competencia. Punto de entrada inteligente según el historial del jugador. Stats cargables por canal dedicado (<code>@Jugador g2 a1 cs1 ag1</code>) o por comando. Soporte de negativos con clamp a 0. Rankings filtrables, comparativa cara a cara y palmarés histórico. Premios individuales y de equipo con iconos diferenciados en el perfil.`,
+        cmds: [
+          { cmd: "/perfil" }, { cmd: "/club" }, { cmd: "/league-stats add" },
+          { cmd: "/league-tops" }, { cmd: "/league-compare" }, { cmd: "/league-history" },
+          { cmd: "/league-trophy add" }, { cmd: "/league-trophy edit" }, { cmd: "/league-trophy delete" },
+        ],
+      },
+      {
+        num: 4,
+        nombre: "Gestión de\nTemporadas",
+        titulo: "El ciclo completo de una liga",
+        desc: `Ciclo de vida completo con seguridad máxima: <code>SEASON_SECRET</code> + confirmación con nombre exacto + backup automático del <code>.sqlite</code> antes de cualquier escritura. Todo en una transacción Sequelize — si algo falla, rollback completo. Roster carry automático al crear nueva temporada: todos los Participants con equipo se copian. Consulta de historial con indicadores 🟢/🔴 en autocomplete.`,
+        cmds: [
+          { cmd: "/season new" }, { cmd: "/season end" },
+          { cmd: "/season edit" }, { cmd: "/season info" },
+        ],
+      },
+      {
+        num: 5,
+        nombre: "Utilidades",
+        titulo: "Herramientas para el día a día",
+        desc: `Funciones de soporte para la comunidad. DM masivo a hasta 3 roles del servidor. Referencia de horarios para Venezuela y América Latina. Generador de timestamps en todos los formatos de Discord. Sistema de tickets con panel de botón configurable. Subida y registro de grabaciones de partidos. Funciones que antes requerían bots externos, ahora en un solo lugar.`,
+        cmds: [
+          { cmd: "/upload" }, { cmd: "/broadcast" }, { cmd: "/hora" },
+          { cmd: "/timestamp" }, { cmd: "/ticket setup" },
+        ],
+      },
+    ];
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // ESTADOS
+    // ────────────────────────────────────────────────────────────────────────────
+    function getFaseStatus(n) {
+      if (n < FASE_ACTUAL) return "done";
+      if (n === FASE_ACTUAL) return "wip";
+      return "pending";
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // STATUS SIDEBAR
+    // ────────────────────────────────────────────────────────────────────────────
+    const LABELS = ["Configuración & Equipos", "Mercado & Fichajes", "Estadísticas & Perfil", "Gestión de Temporadas", "Utilidades"];
+    const STATUS_TEXTS = { done: "— completada", wip: "— en desarrollo", pending: "— planificada" };
+
+    function buildStatusList() {
+      const el = document.getElementById("statusList");
+      el.innerHTML = "";
+      FASES.forEach(f => {
+        const status = getFaseStatus(f.num);
+        const item = document.createElement("div");
+        item.className = "st-item" + (status === "wip" ? " st-active" : "");
+        const dotClass = status === "done" ? "st-green" : status === "wip" ? "st-amber" : "st-grey";
+        item.innerHTML = `<span class="st-dot ${dotClass}"></span><span>Fase ${f.num}: ${LABELS[f.num - 1]} <em>${STATUS_TEXTS[status]}</em></span>`;
+        el.appendChild(item);
+      });
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // PROGRESS BADGE
+    // ────────────────────────────────────────────────────────────────────────────
+    function buildProgressBadge() {
+      const done = FASES.filter(f => getFaseStatus(f.num) === "done").length;
+      const pct = Math.round((done / FASES.length) * 100);
+      document.getElementById("pbBar").style.width = pct + "%";
+      document.getElementById("pbPct").textContent = pct + "%";
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // PHASES
+    // ────────────────────────────────────────────────────────────────────────────
+    function buildPhases() {
+      const wrap = document.getElementById("phasesWrap");
+      wrap.innerHTML = "";
+      FASES.forEach(f => {
+        const status = getFaseStatus(f.num);
+        const tagClass = { done: "t-done", wip: "t-wip", pending: "t-pend" }[status];
+        const tagText = { done: "completada", wip: "en desarrollo", pending: "planificada" }[status];
+        const cmdClass = { done: "cmd-done", wip: "cmd-wip", pending: "cmd-pend" }[status];
+        const ph = document.createElement("div");
+        ph.className = "ph";
+        ph.dataset.status = status;
+        const nombreHtml = f.nombre.replace("\n", "<br>");
+        const cmdsHtml = f.cmds.map(c => `<span class="cmd-t ${cmdClass}">${c.cmd}</span>`).join("");
+        ph.innerHTML = `
+            <div class="ph-side">
+              <span class="ph-num">Fase 0${f.num}</span>
+              <span class="ph-name">${nombreHtml}</span>
+              <span class="ph-tag ${tagClass}">${tagText}</span>
+            </div>
+            <div class="ph-body">
+              <h5>${f.titulo}</h5>
+              <p>${f.desc}</p>
+              <div class="cmds">${cmdsHtml}</div>
+            </div>`;
+        wrap.appendChild(ph);
+      });
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // COMMANDS TABLE — completa con todos los comandos reales
+    // ────────────────────────────────────────────────────────────────────────────
+    const CMD_DATA = [
+      {
+        fase: 1,
+        group: "Fase 1 — Configuración & Equipos",
+        rows: [
+          { cmd: "/setup", desc: "Configura roles y canales de una modalidad. Sin campo → muestra config actual. Editar rol_admin requiere isAdmin global." },
+          { cmd: "/league-team add", desc: "Crea equipo. Descarga logo, crea Player+Participant del DT, setea nickname [ABREV] DT Nombre." },
+          { cmd: "/league-team edit", desc: "Edita nombre, abreviación (renombra logo y actualiza nicknames), rol, logo y uniformes." },
+          { cmd: "/league-team delete", desc: "Soft delete: isActive=false, roleId='deleted_id', libera jugadores y limpia nicknames." },
+          { cmd: "/league-competition new", desc: "Crea competencia en la temporada activa. Acepta canal existente o crea_canal:True automáticamente." },
+          { cmd: "/league-competition edit", desc: "Edita nombre, tipo y canal de estadísticas de la competencia." },
+          { cmd: "/league-competition close", desc: "Soft close: isActive=false, stats y awards intactos. No se puede reabrir." },
+          { cmd: "/league-competition delete", desc: "Elimina permanentemente. Stats y Awards caen en CASCADE." },
+          { cmd: "/club-unis", desc: "DT o sub-DT edita uniformes de su equipo. Requiere formato /colors (regex /^\\/colors\\b/i)." },
+          { cmd: "/start", desc: "El jugador se registra en la temporada activa de una modalidad. Si ya existe, actualiza la posición." },
+        ],
+      },
+      {
+        fase: 2,
+        group: "Fase 2 — Mercado & Fichajes",
+        rows: [
+          { cmd: "/market open", desc: "Abre el mercado (marketOpen = true). Notifica en canal_mercado_fichajes y canal_mercado_bajas." },
+          { cmd: "/market close", desc: "Cierra el mercado (marketOpen = false). Notifica en canales configurados." },
+          { cmd: "/market estado", desc: "Muestra si el mercado está abierto o cerrado. Público, sin restricción de permisos." },
+          { cmd: "/market agents", desc: "Lista Participants con teamId=null en la temporada activa. Requiere isModalityAdmin." },
+          { cmd: "/market sign", desc: "Envía oferta con botones Aceptar/Rechazar/Retirar. Asigna teamId, nickname y notifica al canal." },
+          { cmd: "/market release", desc: "Da de baja: teamId=null, limpia nickname, notifica en canal_mercado_bajas." },
+          { cmd: "/player-check", desc: "Estado del jugador en todas las modalidades activas: equipo, posición, roles de Discord. Público." },
+        ],
+      },
+      {
+        fase: 3,
+        group: "Fase 3 — Estadísticas & Perfil",
+        rows: [
+          { cmd: "/perfil", desc: "Perfil completo con navegación interactiva. Vistas: global, modalidad, temporada, competencia." },
+          { cmd: "/club", desc: "Ficha técnica del equipo: cuerpo técnico, plantilla con stats, uniformes, logo y campeonatos históricos." },
+          { cmd: "/league-stats add", desc: "Carga stats manualmente con autocomplete de jugador y competencia. Mismos permisos que el canal." },
+          { cmd: "/league-tops", desc: "Ranking de jugadores. Filtrable por competición y temporada. Ordenable por g/a/cs/ag." },
+          { cmd: "/league-compare", desc: "Comparativa entre dos jugadores. Autocomplete cruzado: solo temporadas/competencias comunes." },
+          { cmd: "/league-history", desc: "Palmarés completo de una temporada: títulos de equipo e individuales. Sin restricción de permisos." },
+          { cmd: "/league-trophy add", desc: "Crea Award en la temporada activa. Tipo team: AwardWinner por equipo + N filas por Participant activo." },
+          { cmd: "/league-trophy edit", desc: "Edita nombre, notas y competencia asociada. Autocomplete filtra por temporada del premio." },
+          { cmd: "/league-trophy delete", desc: "Elimina el Award. AwardWinner caen en CASCADE. Informa cuántos registros se eliminaron." },
+        ],
+      },
+      {
+        fase: 4,
+        group: "Fase 4 — Temporadas",
+        rows: [
+          { cmd: "/season new", desc: "Nueva temporada con clave+confirmar+backup+transacción. Roster carry automático de Participants con equipo." },
+          { cmd: "/season end", desc: "Cierra la temporada activa sin crear una nueva. Cierra Competition activas en cascada." },
+          { cmd: "/season edit", desc: "Renombra una temporada (activa o cerrada). Sin clave — operación no destructiva." },
+          { cmd: "/season info", desc: "Info de temporada: fechas, participantes, equipos activos, competencias 🟢/🔴. Público." },
+        ],
+      },
+      {
+        fase: 5,
+        group: "Fase 5 — Utilidades",
+        rows: [
+          { cmd: "/upload", desc: "Sube grabaciones de partidos a un canal configurado." },
+          { cmd: "/broadcast", desc: "DM masivo a miembros de hasta 3 roles seleccionados. Requiere isAdmin global." },
+          { cmd: "/hora", desc: "Hora actual en Venezuela (UTC-4) vs otras zonas de América. Sin permisos, sin DB." },
+          { cmd: "/timestamp", desc: "Generador de timestamps en todos los formatos Discord (<t:UNIX:F>, <t:UNIX:R>, etc.)." },
+          { cmd: "/ticket setup", desc: "Sistema de tickets: panel con botón, canal destino y rol de soporte. Requiere isAdmin global." },
+        ],
+      },
+    ];
+
+    const PHASE_COLORS = { done: "cp1", wip: "cp2", pending: "cp3" };
+
+    function buildCmdTable() {
+      const table = document.getElementById("cmdTable");
+      table.innerHTML = "";
+      CMD_DATA.forEach(section => {
+        const status = getFaseStatus(section.fase);
+        const colClass = PHASE_COLORS[status];
+        const labelSpan = { done: " ✓", wip: " ↻", pending: "" }[status];
+
+        const groupRow = document.createElement("div");
+        groupRow.className = "cmd-row";
+        groupRow.innerHTML = `<div class="cmd-group-label">${section.group}${labelSpan}</div>`;
+        table.appendChild(groupRow);
+
+        section.rows.forEach(r => {
+          const row = document.createElement("div");
+          row.className = "cmd-row";
+          row.dataset.cmdStatus = status;
+          row.innerHTML = `
+              <div class="cname">${r.cmd}</div>
+              <div class="cdesc">${r.desc}</div>
+              <div class="cphase ${colClass}">Fase ${section.fase}</div>`;
+          table.appendChild(row);
         });
+      });
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // INIT
+    // ────────────────────────────────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", () => {
+      buildStatusList();
+      buildPhases();
+      buildCmdTable();
+      setTimeout(buildProgressBadge, 300);
+    });
+
+    // ────────────────────────────────────────────────────────────────────────────
+    // HAMBURGER MENU
+    // ────────────────────────────────────────────────────────────────────────────
+    const hamburger = document.getElementById("hamburger");
+    const navDrawer = document.getElementById("navDrawer");
+
+    hamburger.addEventListener("click", () => {
+      const isOpen = navDrawer.classList.toggle("open");
+      hamburger.classList.toggle("open", isOpen);
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
+
+    document.querySelectorAll(".drawer-link, .nav-drawer .btn-nav").forEach(link => {
+      link.addEventListener("click", () => {
+        navDrawer.classList.remove("open");
+        hamburger.classList.remove("open");
+        document.body.style.overflow = "";
+      });
+    });
+
+    // close on outside tap
+    navDrawer.addEventListener("click", e => {
+      if (e.target === navDrawer) {
+        navDrawer.classList.remove("open");
+        hamburger.classList.remove("open");
+        document.body.style.overflow = "";
       }
+    });
 
-      // ────────────────────────────────────────────────────────────────────────────
-      // COMMANDS TABLE
-      // ────────────────────────────────────────────────────────────────────────────
-      const CMD_DATA = [
-        {
-          fase: 1,
-          group: "Fase 1 — Configuración & Equipos",
-          rows: [
-            {
-              cmd: "/setup",
-              desc: "Configura roles y canales de una modalidad. Sin campo → muestra config actual.",
-            },
-            {
-              cmd: "/league-team add",
-              desc: "Crea equipo. Descarga logo, crea Player+Participant del DT, setea nickname #ABREV DT Nombre.",
-            },
-            {
-              cmd: "/league-team edit",
-              desc: "Edita nombre, abreviación (renombra logo y actualiza nicknames), rol, uniformes. Solo admin o DT.",
-            },
-            {
-              cmd: "/league-team delete",
-              desc: "Soft delete: isActive=false, roleId='deleted_id', libera jugadores del equipo.",
-            },
-            {
-              cmd: "/league-competition new",
-              desc: "Crea competencia (liga/copa/amistoso/otro) en la temporada activa.",
-            },
-            {
-              cmd: "/league-competition edit",
-              desc: "Edita nombre y tipo de competencia. Solo si está activa.",
-            },
-            {
-              cmd: "/league-competition close",
-              desc: "Soft close: isActive=false, preserva todos los datos y stats. No se puede reabrir.",
-            },
-            {
-              cmd: "/league-competition delete",
-              desc: "Elimina permanentemente. Verifica stats antes de proceder.",
-            },
-            {
-              cmd: "/club-unis",
-              desc: "DT o sub-DT edita uniformes de su equipo. Requiere formato /colors.",
-            },
-          ],
-        },
-        {
-          fase: 2,
-          group: "Fase 2 — Mercado & Fichajes",
-          rows: [
-            {
-              cmd: "/market open",
-              desc: "Abre el mercado de fichajes (marketOpen = true). Solo admin de modalidad.",
-            },
-            {
-              cmd: "/market close",
-              desc: "Cierra el mercado de fichajes (marketOpen = false). Solo admin de modalidad.",
-            },
-            {
-              cmd: "/market agents",
-              desc: "Lista Participants con teamId=null en la temporada activa. Filtrable por posición.",
-            },
-            {
-              cmd: "/market sign",
-              desc: "Ficha un jugador. Asigna teamId, setea nickname, notifica en canal. DT o admin.",
-            },
-            {
-              cmd: "/market release",
-              desc: "Da de baja. teamId=null, limpia nickname, notifica en canal de bajas.",
-            },
-            {
-              cmd: "/player check",
-              desc: "Estado del jugador en X4 y X5 simultáneamente. Sin restricción de permisos.",
-            },
-          ],
-        },
-        {
-          fase: 3,
-          group: "Fase 3 — Estadísticas & Perfil",
-          rows: [
-            {
-              cmd: "/perfil",
-              desc: "Stats completas por competencia, temporada y modalidad.",
-            },
-            {
-              cmd: "/club",
-              desc: "Ficha del equipo con plantilla actual e historial de temporadas.",
-            },
-            {
-              cmd: "/league-tops",
-              desc: "Rankings filtrables de goles, asistencias, tarjetas.",
-            },
-            {
-              cmd: "/league-compare",
-              desc: "Comparativa cara a cara entre dos jugadores.",
-            },
-            {
-              cmd: "/league-history",
-              desc: "Palmarés histórico completo con todas las temporadas.",
-            },
-            {
-              cmd: "/league-trophy add",
-              desc: "Registra un Award para jugador o equipo en una temporada.",
-            },
-          ],
-        },
-        {
-          fase: 4,
-          group: "Fase 4 — Temporadas",
-          rows: [
-            {
-              cmd: "/season new",
-              desc: "Nueva temporada — archiva la anterior y cierra Competition en cascada.",
-            },
-            {
-              cmd: "/season end",
-              desc: "Cierra la temporada activa sin crear una nueva.",
-            },
-            {
-              cmd: "/season info",
-              desc: "Consulta temporadas activas e historial de anteriores.",
-            },
-          ],
-        },
-        {
-          fase: 5,
-          group: "Fase 5 — Utilidades",
-          rows: [
-            {
-              cmd: "/broadcast",
-              desc: "DM masivo a hasta 3 roles del servidor.",
-            },
-            {
-              cmd: "/hora",
-              desc: "Referencia de hora Venezuela vs. resto de América Latina.",
-            },
-            {
-              cmd: "/timestamp",
-              desc: "Generador de timestamps para Discord con todos los formatos.",
-            },
-            {
-              cmd: "/ticket setup",
-              desc: "Sistema de tickets integrado. Configurable por modalidad.",
-            },
-            {
-              cmd: "/upload",
-              desc: "Subida y registro de grabaciones de partidos.",
-            },
-          ],
-        },
-      ];
+    // ────────────────────────────────────────────────────────────────────────────
+    // SCROLL REVEAL
+    // ────────────────────────────────────────────────────────────────────────────
+    const obs = new IntersectionObserver(
+      entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("on"); obs.unobserve(e.target); } }); },
+      { threshold: 0.06 }
+    );
+    document.querySelectorAll(".rv").forEach(el => obs.observe(el));
 
-      const PHASE_COLORS = { done: "cp1", wip: "cp2", pending: "cp3" };
+    // ────────────────────────────────────────────────────────────────────────────
+    // NAV SCROLL
+    // ────────────────────────────────────────────────────────────────────────────
+    window.addEventListener("scroll", () => {
+      document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 50);
+    });
 
-      function buildCmdTable() {
-        const table = document.getElementById("cmdTable");
-        table.innerHTML = "";
-
-        CMD_DATA.forEach((section) => {
-          const status = getFaseStatus(section.fase);
-          const colClass = PHASE_COLORS[status];
-          const labelSpan = { done: " ✓", wip: " ↻", pending: "" }[status];
-
-          // group label
-          const groupRow = document.createElement("div");
-          groupRow.className = "cmd-row";
-          groupRow.innerHTML = `<div class="cmd-group-label">${section.group}${labelSpan}</div>`;
-          table.appendChild(groupRow);
-
-          section.rows.forEach((r) => {
-            const row = document.createElement("div");
-            row.className = "cmd-row";
-            row.dataset.cmdStatus = status;
-            row.innerHTML = `
-        <div class="cname">${r.cmd}</div>
-        <div class="cdesc">${r.desc}</div>
-        <div class="cphase ${colClass}">Fase ${section.fase}</div>
-      `;
-            table.appendChild(row);
-          });
-        });
-      }
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // INIT
-      // ────────────────────────────────────────────────────────────────────────────
-      document.addEventListener("DOMContentLoaded", () => {
-        buildStatusList();
-        buildPhases();
-        buildCmdTable();
-        // delay para animación de la barra
-        setTimeout(buildProgressBadge, 300);
+    // ────────────────────────────────────────────────────────────────────────────
+    // NAV ACTIVE
+    // ────────────────────────────────────────────────────────────────────────────
+    const sections = document.querySelectorAll("section[id]");
+    window.addEventListener("scroll", () => {
+      let current = "";
+      sections.forEach(s => { if (scrollY >= s.offsetTop - 300) current = s.getAttribute("id"); });
+      document.querySelectorAll(".nav-links a:not(.btn-nav)").forEach(link => {
+        link.classList.remove("active-nav");
+        if (link.getAttribute("href") === `#${current}`) link.classList.add("active-nav");
       });
+    }, { passive: true });
 
-      // ────────────────────────────────────────────────────────────────────────────
-      // SCROLL REVEAL
-      // ────────────────────────────────────────────────────────────────────────────
-      const obs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              e.target.classList.add("on");
-              obs.unobserve(e.target);
-            }
-          });
-        },
-        { threshold: 0.06 },
-      );
-      document.querySelectorAll(".rv").forEach((el) => obs.observe(el));
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // NAV SCROLL
-      // ────────────────────────────────────────────────────────────────────────────
-      window.addEventListener("scroll", () => {
-        const nav = document.getElementById("mainNav");
-        nav.classList.toggle("scrolled", window.scrollY > 50);
-      });
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // NAV ACTIVE
-      // ────────────────────────────────────────────────────────────────────────────
-      const sections = document.querySelectorAll("section[id]");
-      window.addEventListener(
-        "scroll",
-        () => {
-          let current = "";
-          sections.forEach((section) => {
-            if (scrollY >= section.offsetTop - 300)
-              current = section.getAttribute("id");
-          });
-          document
-            .querySelectorAll(".nav-links a:not(.btn-nav)")
-            .forEach((link) => {
-              link.classList.remove("active-nav");
-              if (link.getAttribute("href") === `#${current}`)
-                link.classList.add("active-nav");
-            });
-        },
-        { passive: true },
-      );
-
-      // ────────────────────────────────────────────────────────────────────────────
-      // CODE COPY
-      // ────────────────────────────────────────────────────────────────────────────
-      document.querySelectorAll(".code-block").forEach((block) => {
-        block.addEventListener("click", () => {
-          const code = block.querySelector(".code-body").innerText;
-          navigator.clipboard.writeText(code).then(() => {
-            const hint = block.querySelector(".copy-hint");
-            if (hint) {
-              block.classList.add("copied");
-              hint.textContent = "¡copiado!";
-              setTimeout(() => {
-                block.classList.remove("copied");
-                hint.textContent = "clic para copiar";
-              }, 1800);
-            }
-          });
+    // ────────────────────────────────────────────────────────────────────────────
+    // CODE COPY
+    // ────────────────────────────────────────────────────────────────────────────
+    document.querySelectorAll(".code-block").forEach(block => {
+      block.addEventListener("click", () => {
+        const code = block.querySelector(".code-body").innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          const hint = block.querySelector(".copy-hint");
+          if (hint) {
+            block.classList.add("copied");
+            hint.textContent = "¡copiado!";
+            setTimeout(() => { block.classList.remove("copied"); hint.textContent = "clic para copiar"; }, 1800);
+          }
         });
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>
