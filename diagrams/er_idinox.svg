@@ -1,0 +1,292 @@
+<svg width="1200" height="1080" viewBox="0 0 1200 1080" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8aad60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-opt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b0b8a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="1080" fill="#0f1209"/>
+
+  <!-- title -->
+  <text x="600" y="42" text-anchor="middle" font-size="18" font-weight="600" fill="#c8d8b0" letter-spacing="0.05em">iDinox v3 — Diagrama Entidad-Relación</text>
+  <line x1="60" y1="56" x2="1140" y2="56" stroke="#2a3020" stroke-width="1"/>
+
+  <!-- legend -->
+  <rect x="60" y="1020" width="12" height="12" rx="2" fill="#1e2a14" stroke="#8aad60" stroke-width="1"/>
+  <text x="80" y="1031" font-size="11" fill="#7a8a68">relación obligatoria</text>
+  <rect x="200" y="1020" width="12" height="12" rx="2" fill="#1e2a14" stroke="#b0b8a0" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="220" y="1031" font-size="11" fill="#7a8a68">relación opcional (nullable)</text>
+  <rect x="420" y="1020" width="12" height="12" rx="2" fill="#c8714a" fill-opacity="0.15" stroke="#c8714a" stroke-width="1"/>
+  <text x="440" y="1031" font-size="11" fill="#7a8a68">nodo central</text>
+  <text x="1140" y="1031" text-anchor="end" font-size="11" fill="#3a4a28">iDinox v3</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- MODALITY  x=60 y=75 w=200 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="60" y="75" width="200" height="220" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="60" y="75" width="200" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="60" y="97" width="200" height="12" fill="#2a3c18"/>
+  <text x="160" y="97" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">MODALITY</text>
+  <line x1="60" y1="109" x2="260" y2="109" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="76" y="127" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="220" y="127" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="68" y1="131" x2="252" y2="131" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="147" font-size="11" fill="#a0b888">name</text><text x="220" y="147" text-anchor="end" font-size="11" fill="#4a6030">string · UK</text>
+  <line x1="68" y1="151" x2="252" y2="151" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="167" font-size="11" fill="#a0b888">displayName</text><text x="220" y="167" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="171" x2="252" y2="171" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="187" font-size="11" fill="#a0b888">playersPerTeam</text><text x="220" y="187" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+  <line x1="68" y1="191" x2="252" y2="191" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="207" font-size="11" fill="#a0b888">settings</text><text x="220" y="207" text-anchor="end" font-size="11" fill="#4a6030">JSON</text>
+  <line x1="68" y1="211" x2="252" y2="211" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="227" font-size="11" fill="#a0b888">isActive</text><text x="220" y="227" text-anchor="end" font-size="11" fill="#4a6030">bool</text>
+  <line x1="68" y1="231" x2="252" y2="231" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="247" font-size="11" fill="#c8714a">→ seasons</text>
+  <text x="76" y="263" font-size="11" fill="#c8714a">→ teams</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SEASON  x=340 y=75 w=210 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="340" y="75" width="210" height="220" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="340" y="75" width="210" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="340" y="97" width="210" height="12" fill="#2a3c18"/>
+  <text x="445" y="97" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">SEASON</text>
+  <line x1="340" y1="109" x2="550" y2="109" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="356" y="127" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="530" y="127" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="348" y1="131" x2="542" y2="131" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="147" font-size="11" fill="#a0b888">name</text><text x="530" y="147" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="348" y1="151" x2="542" y2="151" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="167" font-size="11" fill="#e8a878">modalityId</text><text x="530" y="167" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="348" y1="171" x2="542" y2="171" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="187" font-size="11" fill="#a0b888">isActive</text><text x="530" y="187" text-anchor="end" font-size="11" fill="#4a6030">bool</text>
+  <line x1="348" y1="191" x2="542" y2="191" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="207" font-size="11" fill="#a0b888">startedAt</text><text x="530" y="207" text-anchor="end" font-size="11" fill="#4a6030">datetime</text>
+  <line x1="348" y1="211" x2="542" y2="211" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="227" font-size="11" fill="#a0b888">endedAt</text><text x="530" y="227" text-anchor="end" font-size="11" fill="#4a6030">datetime</text>
+  <line x1="348" y1="231" x2="542" y2="231" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="247" font-size="11" fill="#c8714a">→ competitions</text>
+  <text x="356" y="263" font-size="11" fill="#c8714a">→ participants · awards</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TEAM  x=60 y=360 w=200 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="60" y="360" width="200" height="260" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="60" y="360" width="200" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="60" y="382" width="200" height="12" fill="#2a3c18"/>
+  <text x="160" y="382" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">TEAM</text>
+  <line x1="60" y1="394" x2="260" y2="394" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="76" y="412" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="220" y="412" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="68" y1="416" x2="252" y2="416" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="432" font-size="11" fill="#a0b888">name</text><text x="220" y="432" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="436" x2="252" y2="436" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="452" font-size="11" fill="#a0b888">abbreviation</text><text x="220" y="452" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="456" x2="252" y2="456" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="472" font-size="11" fill="#a0b888">logoPath</text><text x="220" y="472" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="476" x2="252" y2="476" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="492" font-size="11" fill="#e8a878">modalityId</text><text x="220" y="492" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="68" y1="496" x2="252" y2="496" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="512" font-size="11" fill="#a0b888">roleId</text><text x="220" y="512" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="516" x2="252" y2="516" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="532" font-size="11" fill="#a0b888">uniformHome/Away</text><text x="220" y="532" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="68" y1="536" x2="252" y2="536" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="552" font-size="11" fill="#a0b888">emergencySigns</text><text x="220" y="552" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+  <line x1="68" y1="556" x2="252" y2="556" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="572" font-size="11" fill="#a0b888">isActive</text><text x="220" y="572" text-anchor="end" font-size="11" fill="#4a6030">bool</text>
+  <line x1="68" y1="576" x2="252" y2="576" stroke="#222e14" stroke-width="0.5"/>
+  <text x="76" y="592" font-size="11" fill="#c8714a">→ participants (SET NULL)</text>
+  <text x="76" y="608" font-size="11" fill="#c8714a">→ awardWins (SET NULL)</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PLAYER  x=340 y=360 w=210 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="340" y="360" width="210" height="160" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="340" y="360" width="210" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="340" y="382" width="210" height="12" fill="#2a3c18"/>
+  <text x="445" y="382" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">PLAYER</text>
+  <line x1="340" y1="394" x2="550" y2="394" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="356" y="412" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="530" y="412" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="348" y1="416" x2="542" y2="416" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="432" font-size="11" fill="#a0b888">discordId</text><text x="530" y="432" text-anchor="end" font-size="11" fill="#4a6030">string · UK</text>
+  <line x1="348" y1="436" x2="542" y2="436" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="452" font-size="11" fill="#a0b888">username</text><text x="530" y="452" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="348" y1="456" x2="542" y2="456" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="472" font-size="11" fill="#a0b888">globalName</text><text x="530" y="472" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="348" y1="476" x2="542" y2="476" stroke="#222e14" stroke-width="0.5"/>
+  <text x="356" y="492" font-size="11" fill="#c8714a">→ participations (CASCADE)</text>
+  <text x="356" y="508" font-size="11" fill="#c8714a">→ awardWins (CASCADE)</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PARTICIPANT (central) x=590 y=300 w=230 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="590" y="300" width="230" height="240" rx="8" fill="#1a120a" stroke="#c8714a" stroke-width="2"/>
+  <rect x="590" y="300" width="230" height="34" rx="8" fill="#2e1c0e"/>
+  <rect x="590" y="322" width="230" height="12" fill="#2e1c0e"/>
+  <text x="705" y="320" text-anchor="middle" font-size="13" font-weight="600" fill="#e8a878">PARTICIPANT</text>
+  <text x="705" y="335" text-anchor="middle" font-size="10" fill="#c8714a">nodo central</text>
+  <line x1="590" y1="340" x2="820" y2="340" stroke="#4a2810" stroke-width="0.5"/>
+  <text x="606" y="358" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="810" y="358" text-anchor="end" font-size="11" fill="#7a5030">PK · int</text>
+  <line x1="598" y1="362" x2="812" y2="362" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="378" font-size="11" fill="#e8a878">playerId</text><text x="810" y="378" text-anchor="end" font-size="11" fill="#7a5030">FK · int</text>
+  <line x1="598" y1="382" x2="812" y2="382" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="398" font-size="11" fill="#e8a878">teamId</text><text x="810" y="398" text-anchor="end" font-size="11" fill="#7a5030">FK · int?</text>
+  <line x1="598" y1="402" x2="812" y2="402" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="418" font-size="11" fill="#e8a878">seasonId</text><text x="810" y="418" text-anchor="end" font-size="11" fill="#7a5030">FK · int</text>
+  <line x1="598" y1="422" x2="812" y2="422" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="438" font-size="11" fill="#e8a878">modalityId</text><text x="810" y="438" text-anchor="end" font-size="11" fill="#7a5030">int</text>
+  <line x1="598" y1="442" x2="812" y2="442" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="458" font-size="11" fill="#d0a888">position</text><text x="810" y="458" text-anchor="end" font-size="11" fill="#7a5030">string</text>
+  <line x1="598" y1="462" x2="812" y2="462" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="478" font-size="11" fill="#d0a888">isActive</text><text x="810" y="478" text-anchor="end" font-size="11" fill="#7a5030">bool</text>
+  <line x1="598" y1="482" x2="812" y2="482" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="498" font-size="11" fill="#c8714a">UNIQUE (playerId, seasonId, modalityId)</text>
+  <line x1="598" y1="502" x2="812" y2="502" stroke="#2a1a0a" stroke-width="0.5"/>
+  <text x="606" y="518" font-size="11" fill="#c8714a">→ stats (CASCADE)</text>
+  <text x="606" y="532" font-size="11" fill="#9a7850">teamId=null → agente libre</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- COMPETITION  x=590 y=75 w=230 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="590" y="75" width="230" height="200" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="590" y="75" width="230" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="590" y="97" width="230" height="12" fill="#2a3c18"/>
+  <text x="705" y="97" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">COMPETITION</text>
+  <line x1="590" y1="109" x2="820" y2="109" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="606" y="127" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="810" y="127" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="598" y1="131" x2="812" y2="131" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="147" font-size="11" fill="#a0b888">name</text><text x="810" y="147" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="598" y1="151" x2="812" y2="151" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="167" font-size="11" fill="#e8a878">seasonId</text><text x="810" y="167" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="598" y1="171" x2="812" y2="171" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="187" font-size="11" fill="#a0b888">type</text><text x="810" y="187" text-anchor="end" font-size="11" fill="#4a6030">league|cup|friendly</text>
+  <line x1="598" y1="191" x2="812" y2="191" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="207" font-size="11" fill="#a0b888">canalEstadisticas</text><text x="810" y="207" text-anchor="end" font-size="11" fill="#4a6030">string?</text>
+  <line x1="598" y1="211" x2="812" y2="211" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="227" font-size="11" fill="#a0b888">isActive</text><text x="810" y="227" text-anchor="end" font-size="11" fill="#4a6030">bool</text>
+  <line x1="598" y1="231" x2="812" y2="231" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="247" font-size="11" fill="#c8714a">→ stats (CASCADE)</text>
+  <text x="606" y="263" font-size="11" fill="#c8714a">→ awards (SET NULL)</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- STAT  x=880 y=300 w=200 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="880" y="300" width="200" height="200" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="880" y="300" width="200" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="880" y="322" width="200" height="12" fill="#2a3c18"/>
+  <text x="980" y="320" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">STAT</text>
+  <line x1="880" y1="334" x2="1080" y2="334" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="896" y="352" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="1060" y="352" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="888" y1="356" x2="1072" y2="356" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="372" font-size="11" fill="#e8a878">participantId</text><text x="1060" y="372" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="888" y1="376" x2="1072" y2="376" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="392" font-size="11" fill="#e8a878">competitionId</text><text x="1060" y="392" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="888" y1="396" x2="1072" y2="396" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="412" font-size="11" fill="#a0b888">goles</text><text x="1060" y="412" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+  <line x1="888" y1="416" x2="1072" y2="416" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="432" font-size="11" fill="#a0b888">asistencias</text><text x="1060" y="432" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+  <line x1="888" y1="436" x2="1072" y2="436" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="452" font-size="11" fill="#a0b888">cs</text><text x="1060" y="452" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+  <line x1="888" y1="456" x2="1072" y2="456" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="472" font-size="11" fill="#a0b888">autogoles</text><text x="1060" y="472" text-anchor="end" font-size="11" fill="#4a6030">int</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- AWARD  x=590 y=620 w=230 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="590" y="620" width="230" height="200" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="590" y="620" width="230" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="590" y="642" width="230" height="12" fill="#2a3c18"/>
+  <text x="705" y="642" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">AWARD</text>
+  <line x1="590" y1="654" x2="820" y2="654" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="606" y="672" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="810" y="672" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="598" y1="676" x2="812" y2="676" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="692" font-size="11" fill="#a0b888">name</text><text x="810" y="692" text-anchor="end" font-size="11" fill="#4a6030">string</text>
+  <line x1="598" y1="696" x2="812" y2="696" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="712" font-size="11" fill="#a0b888">type</text><text x="810" y="712" text-anchor="end" font-size="11" fill="#4a6030">team | individual</text>
+  <line x1="598" y1="716" x2="812" y2="716" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="732" font-size="11" fill="#e8a878">seasonId</text><text x="810" y="732" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="598" y1="736" x2="812" y2="736" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="752" font-size="11" fill="#e8a878">competitionId</text><text x="810" y="752" text-anchor="end" font-size="11" fill="#4a6030">FK · int?</text>
+  <line x1="598" y1="756" x2="812" y2="756" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="772" font-size="11" fill="#a0b888">notes</text><text x="810" y="772" text-anchor="end" font-size="11" fill="#4a6030">string?</text>
+  <line x1="598" y1="776" x2="812" y2="776" stroke="#222e14" stroke-width="0.5"/>
+  <text x="606" y="792" font-size="11" fill="#c8714a">→ winners (CASCADE)</text>
+  <text x="606" y="808" font-size="11" fill="#9a7850">sobrevive si competition se borra</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- AWARDWINNER  x=880 y=620 w=210 -->
+  <!-- ═══════════════════════════════════════ -->
+  <rect x="880" y="620" width="210" height="180" rx="8" fill="#1a2210" stroke="#8aad60" stroke-width="1.5"/>
+  <rect x="880" y="620" width="210" height="34" rx="8" fill="#2a3c18"/>
+  <rect x="880" y="642" width="210" height="12" fill="#2a3c18"/>
+  <text x="985" y="642" text-anchor="middle" font-size="13" font-weight="600" fill="#b8d898">AWARDWINNER</text>
+  <line x1="880" y1="654" x2="1090" y2="654" stroke="#3a5020" stroke-width="0.5"/>
+  <text x="896" y="672" font-size="11" fill="#6db87a" font-weight="500">id</text><text x="1070" y="672" text-anchor="end" font-size="11" fill="#4a7a38">PK · int</text>
+  <line x1="888" y1="676" x2="1082" y2="676" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="692" font-size="11" fill="#e8a878">awardId</text><text x="1070" y="692" text-anchor="end" font-size="11" fill="#4a6030">FK · int</text>
+  <line x1="888" y1="696" x2="1082" y2="696" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="712" font-size="11" fill="#e8a878">playerId</text><text x="1070" y="712" text-anchor="end" font-size="11" fill="#4a6030">FK · int?</text>
+  <line x1="888" y1="716" x2="1082" y2="716" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="732" font-size="11" fill="#e8a878">teamId</text><text x="1070" y="732" text-anchor="end" font-size="11" fill="#4a6030">FK · int?</text>
+  <line x1="888" y1="736" x2="1082" y2="736" stroke="#222e14" stroke-width="0.5"/>
+  <text x="896" y="760" font-size="11" fill="#9a7850">playerId o teamId según</text>
+  <text x="896" y="776" font-size="11" fill="#9a7850">tipo de premio</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- RELACIONES -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Modality → Season -->
+  <line x1="260" y1="140" x2="340" y2="140" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="298" y="133" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Modality → Team -->
+  <line x1="160" y1="295" x2="160" y2="360" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="175" y="332" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Season → Competition -->
+  <line x1="550" y1="140" x2="590" y2="140" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="568" y="133" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Season → Participant -->
+  <path d="M 445 295 L 445 320 L 590 320 L 590 340" fill="none" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="520" y="314" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Season → Award -->
+  <path d="M 550 200 L 570 200 L 570 700 L 590 700" fill="none" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="562" y="460" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Player → Participant -->
+  <line x1="550" y1="430" x2="590" y2="410" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="564" y="416" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Team → Participant (nullable) -->
+  <path d="M 260 490 L 590 420" fill="none" stroke="#b0b8a0" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrow-opt)"/>
+  <text x="420" y="448" text-anchor="middle" font-size="10" fill="#707860">0:N</text>
+
+  <!-- Competition → Stat -->
+  <path d="M 705 275 L 705 285 L 930 285 L 930 300" fill="none" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="820" y="280" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Participant → Stat -->
+  <line x1="820" y1="400" x2="880" y2="380" stroke="#c8714a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="856" y="384" font-size="10" fill="#c8714a">1:N</text>
+
+  <!-- Competition → Award (nullable) -->
+  <path d="M 705 275 L 705 620" fill="none" stroke="#b0b8a0" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrow-opt)"/>
+  <text x="718" y="460" font-size="10" fill="#707860">0:N</text>
+
+  <!-- Award → AwardWinner -->
+  <line x1="820" y1="720" x2="880" y2="720" stroke="#8aad60" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="848" y="713" text-anchor="middle" font-size="10" fill="#6a8a50">1:N</text>
+
+  <!-- Player → AwardWinner (nullable) -->
+  <path d="M 550 490 L 560 490 L 560 900 L 920 900 L 920 800" fill="none" stroke="#b0b8a0" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrow-opt)"/>
+  <text x="800" y="896" font-size="10" fill="#707860">0:N</text>
+
+  <!-- Team → AwardWinner (nullable) -->
+  <path d="M 260 580 L 270 580 L 270 940 L 960 940 L 960 800" fill="none" stroke="#b0b8a0" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arrow-opt)"/>
+  <text x="870" y="936" font-size="10" fill="#707860">0:N</text>
+
+</svg>

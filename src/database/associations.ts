@@ -33,12 +33,10 @@ import { logger } from "../utils/logger.js";
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 const fk = (name: string) => ({ name, allowNull: false });
 const fkOpt = (name: string) => ({ name, allowNull: true });
 
-// ─── MODALITY ─────────────────────────────────────────────────────────────────
+// MODALITY
 
 Modality.hasMany(Season, {
   foreignKey: fk("modalityId"),
@@ -62,7 +60,7 @@ Team.belongsTo(Modality, {
   as: "modality",
 });
 
-// ─── SEASON ───────────────────────────────────────────────────────────────────
+// SEASON
 
 Season.hasMany(Competition, {
   foreignKey: fk("seasonId"),
@@ -97,7 +95,7 @@ Award.belongsTo(Season, {
   as: "season",
 });
 
-// ─── PLAYER ───────────────────────────────────────────────────────────────────
+// PLAYER
 
 Player.hasMany(Participant, {
   foreignKey: fk("playerId"),
@@ -110,7 +108,7 @@ Participant.belongsTo(Player, {
   as: "player",
 });
 
-// ─── TEAM ─────────────────────────────────────────────────────────────────────
+// TEAM
 // teamId nullable → agente libre cuando teamId = null
 
 Team.hasMany(Participant, {
@@ -124,7 +122,7 @@ Participant.belongsTo(Team, {
   as: "team",
 });
 
-// ─── STATS ────────────────────────────────────────────────────────────────────
+// STATS
 
 Participant.hasMany(Stat, {
   foreignKey: fk("participantId"),
@@ -205,7 +203,7 @@ AwardWinner.belongsTo(Team, {
   as: "team",
 });
 
-// ─── SINCRONIZACIÓN CONTROLADA ────────────────────────────────────────────────
+// SINCRONIZACIÓN CONTROLADA
 
 export interface SyncOptions {
   alter?: boolean;
