@@ -354,5 +354,8 @@ iDinox-v3/
 ## Licencia
 
 Desarrollado por Keury. Presentado como proyecto académico en el Politécnico Loyola.
-MD3 - Liga Deportiva con Base de datos relacionales
+### MD3 
+Liga Deportiva con
+Base de datos relacionales
+
 [MIT](LICENSE) — libre para siempre.
